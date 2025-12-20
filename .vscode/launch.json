@@ -1,0 +1,46 @@
+{
+    "configurations": [
+        
+        {
+            "type": "stlinkgdbtarget",
+            "request": "launch",
+            "name": "STM32Cube: STM32 Launch ST-Link GDB Server",
+            "origin": "snippet",
+            "cwd": "${workspaceFolder}",
+            "preBuild": "${command:st-stm32-ide-debug-launch.build}",
+            "runEntry": "main",
+            "imagesAndSymbols": [
+                {
+                    "imageFileName": "${command:st-stm32-ide-debug-launch.get-projects-binary-from-context1}"
+                }
+            ],
+            "liveWatch": {
+                "enabled": true,
+                "samplesPerSecond": "100"
+            },
+        },
+        {
+            "cwd": "${workspaceRoot}",
+            "executable": "build/Debug/freeRTOS.elf",
+            "name": "OpenOCD",
+            "request": "launch",
+            "type": "cortex-debug",
+            "servertype": "openocd",
+            "configFiles": [
+                "interface/cmsis-dap.cfg",
+                "target/stm32h7x.cfg"
+            ],
+            "serverpath": "D:/xpack-openocd-0.12.0-7/bin/openocd.exe",
+            "searchDir": [
+                "D:/xpack-openocd-0.12.0-7/openocd/scripts"
+            ],
+            "runToEntryPoint": "main",
+            "showDevDebugOutput": "none",
+            "gdbPath": "C:/Users/congq/AppData/Local/stm32cube/bundles/gnu-tools-for-stm32/14.3.1+st.2/bin/arm-none-eabi-gdb.exe",
+            "liveWatch": {
+                "enabled": true,
+                "samplesPerSecond": 20
+            },
+        },
+    ]
+}
