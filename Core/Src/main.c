@@ -137,6 +137,9 @@ int main(void)
   Beep_Init();
   Detect_InitAll();
   MX_USB_DEVICE_Init();
+
+
+  
   /* USER CODE END 2 */
 
   /* Call init function for freertos objects (in cmsis_os2.c) */
