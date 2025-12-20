@@ -1,0 +1,9 @@
+{
+	"InstallScripts" : 
+	[
+		"D:/PROJECTS/Wheel_Leg_About/UP_Wheel_Leg_VScode/build/Debug/cmake_install.cmake",
+		"D:/PROJECTS/Wheel_Leg_About/UP_Wheel_Leg_VScode/build/Debug/cmake/stm32cubemx/cmake_install.cmake",
+		"D:/PROJECTS/Wheel_Leg_About/UP_Wheel_Leg_VScode/build/Debug/bin_dsp/cmake_install.cmake"
+	],
+	"Parallel" : false
+}

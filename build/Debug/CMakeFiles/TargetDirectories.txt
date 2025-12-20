@@ -1,0 +1,11 @@
+D:/PROJECTS/Wheel_Leg_About/UP_Wheel_Leg_VScode/build/Debug/CMakeFiles/freeRTOS.dir
+D:/PROJECTS/Wheel_Leg_About/UP_Wheel_Leg_VScode/build/Debug/CMakeFiles/edit_cache.dir
+D:/PROJECTS/Wheel_Leg_About/UP_Wheel_Leg_VScode/build/Debug/CMakeFiles/rebuild_cache.dir
+D:/PROJECTS/Wheel_Leg_About/UP_Wheel_Leg_VScode/build/Debug/cmake/stm32cubemx/CMakeFiles/STM32_Drivers.dir
+D:/PROJECTS/Wheel_Leg_About/UP_Wheel_Leg_VScode/build/Debug/cmake/stm32cubemx/CMakeFiles/USB_Device_Library.dir
+D:/PROJECTS/Wheel_Leg_About/UP_Wheel_Leg_VScode/build/Debug/cmake/stm32cubemx/CMakeFiles/FreeRTOS.dir
+D:/PROJECTS/Wheel_Leg_About/UP_Wheel_Leg_VScode/build/Debug/cmake/stm32cubemx/CMakeFiles/edit_cache.dir
+D:/PROJECTS/Wheel_Leg_About/UP_Wheel_Leg_VScode/build/Debug/cmake/stm32cubemx/CMakeFiles/rebuild_cache.dir
+D:/PROJECTS/Wheel_Leg_About/UP_Wheel_Leg_VScode/build/Debug/bin_dsp/CMakeFiles/CMSISDSP.dir
+D:/PROJECTS/Wheel_Leg_About/UP_Wheel_Leg_VScode/build/Debug/bin_dsp/CMakeFiles/edit_cache.dir
+D:/PROJECTS/Wheel_Leg_About/UP_Wheel_Leg_VScode/build/Debug/bin_dsp/CMakeFiles/rebuild_cache.dir
