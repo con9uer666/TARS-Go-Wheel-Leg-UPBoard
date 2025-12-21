@@ -130,11 +130,11 @@ void OS_LedCallback(void const * argument)
   }                                 //无os_delay 最高优先级 
 }
 
-void StartDefaultTask(void const * argument)
-{
-  while(1)
-  {
-    osDelay(1000);
-  }
-}
+// void StartDefaultTask(void const * argument)
+// {
+//   while(1)
+//   {
+//     osDelay(1000);
+//   }
+// }
 
