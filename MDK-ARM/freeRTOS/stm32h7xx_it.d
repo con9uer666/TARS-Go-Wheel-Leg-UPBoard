@@ -43,7 +43,7 @@ freertos\stm32h7xx_it.o: ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_pcd.h
 freertos\stm32h7xx_it.o: ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_ll_usb.h
 freertos\stm32h7xx_it.o: ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_pcd_ex.h
 freertos\stm32h7xx_it.o: ../Core/Inc/stm32h7xx_it.h
-freertos\stm32h7xx_it.o: ..\UserMiddlewares\include\Rc.h
+freertos\stm32h7xx_it.o: ../UserMiddlewares/include/Rc.h
 freertos\stm32h7xx_it.o: ../Core/Inc/usart.h
 freertos\stm32h7xx_it.o: D:\Keil_MDK\Core\ARM\ARMCC\Bin\..\include\stdbool.h
-freertos\stm32h7xx_it.o: ..\UI\include\judge.h
+freertos\stm32h7xx_it.o: ../UI/include/judge.h

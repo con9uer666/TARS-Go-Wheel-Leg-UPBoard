@@ -36,11 +36,25 @@ void RS485_Init()
 	__HAL_DMA_DISABLE_IT(&hdma_usart2_rx, DMA_IT_HT);
 }
 
+int16_t temp555;
+
+extern float Foot_Target_Relative_Angle;
+extern float Foot_Target_Speed;
+
+uint8_t UP_Leg;
+
 void Rs485_Trans()
 {
 	usart2TxBuf[0] = 0xAA;
-	usart2TxBuf[25] = (int16_t)(gimbal.yaw.imuPID.output) & 0xFF;
-	usart2TxBuf[26] = (int16_t)(gimbal.yaw.imuPID.output) >> 8 & 0xFF;
+	usart2TxBuf[1] = ((int16_t)(Foot_Target_Relative_Angle * 1000));
+	usart2TxBuf[2] = (((int16_t)(Foot_Target_Relative_Angle * 1000))) >> 8;
+
+	usart2TxBuf[3] = ((int16_t)(Foot_Target_Speed * 1000));
+	usart2TxBuf[4] = ((int16_t)(Foot_Target_Speed * 1000)) >> 8;
+
+	temp555 = gimbal.yaw.imuPID.output * 1000;
+	usart2TxBuf[25] = (((int16_t)temp555)) & 0xFF;
+	usart2TxBuf[26] = (((int16_t)temp555) >> 8) & 0xFF;
 //	usart2TxBuf[25] = 0;
 //	usart2TxBuf[26] = 0;
 	usart2TxBuf[27] = (int16_t)(shooter.triggerMotor.anglePID.output) & 0xFF;
@@ -64,7 +78,15 @@ void Rs485_Trans()
 	
 	usart2TxBuf[40] = (uint8_t)cap.per_energy;
 	usart2TxBuf[41] = diagonal_enable << 7 | vision.exposure_time << 2 | Rune_direction << 1 | shooter.block.state ;	
-	usart2TxBuf[42] = rcInfo.left;
+	// usart2TxBuf[42] = rcInfo.left;
+
+	if(rcInfo.left == 1)
+		UP_Leg = 1;
+	else
+		UP_Leg = 0;
+	// else if(rcInfo.left == 0)
+	// 	UP_Leg = 2;
+	usart2TxBuf[42] = UP_Leg;
 	usart2TxBuf[63] = 0xFE;
 	HAL_UART_Transmit_DMA(&huart2, usart2TxBuf, sizeof(usart2TxBuf));
 }
@@ -72,7 +94,7 @@ void Rs485_Trans()
 int16_t remainHeat;
 float initialSpeed;
 uint16_t coolingValue;
-extern float total_turnPower;
+float temp1,temp2;
 
 void RS485_Rec()
 {
@@ -93,8 +115,12 @@ void RS485_Rec()
 		gimbal.yawMotor_M4005.angle = (int16_t)usart2RxBuf[25] | (int16_t)usart2RxBuf[26] << 8;
 		gimbal.yawMotor_M4005.speed = (int16_t)usart2RxBuf[27] | (int16_t)usart2RxBuf[28] << 8;
 
-		shooter.triggerMotor.angle = (int16_t)usart2RxBuf[29] | (int16_t)usart2RxBuf[30] << 8;
-		shooter.triggerMotor.speed = (int16_t)usart2RxBuf[31] | (int16_t)usart2RxBuf[32] << 8;
+		temp1 = (int16_t)(usart2RxBuf[29] | usart2RxBuf[30] << 8);
+
+		shooter.triggerMotor.Position = 180.0f + ((temp1 / 1000.0f)/PI) * 180.0f;//0-360бу
+
+		temp2 = (int16_t)(usart2RxBuf[31] | usart2RxBuf[32] << 8);
+		shooter.triggerMotor.speed = ((temp2/100.0f)/(2*PI)) * 60.0f * 25;
 
 		FEEDBACK = usart2RxBuf[33] >> 7 & 0x01;
 		YawLost = usart2RxBuf[33] >> 6 & 0x01;
@@ -147,8 +173,6 @@ void RS485_Rec()
 		PowerHeatData.chassis_power_buffer = usart2RxBuf[41] | (usart2RxBuf[42] << 8);
 		GameRobotStat.chassis_power_limit = usart2RxBuf[43] | (usart2RxBuf[44] << 8);
 		Judge_Data_TF = usart2RxBuf[45];
-		total_turnPower = (int8_t)usart2RxBuf[46];
-		total_turnPower = fmaxf(-120, fminf(120, total_turnPower));
 
 		cap.receive_data.cap_voltage = usart2RxBuf[47] | (usart2RxBuf[48] << 8);
 
@@ -172,7 +196,6 @@ void OS_Board2BoardCallback(void const *argument)
 	while (1)
 	{
 		frequent++;
-		Chassis_PowerCtrl();
 		Rs485_Trans();
 		osDelay(1);
 	}

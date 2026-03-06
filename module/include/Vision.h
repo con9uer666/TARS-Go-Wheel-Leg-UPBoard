@@ -51,14 +51,14 @@ typedef struct
 	uint16_t checksum;
 }VisionTransmit;
 
-typedef struct vision_sensor_info_struct {
+typedef  struct vision_sensor_info_struct {
 	float yaw;
 	float pitch;
 	uint8_t fire;
 	uint8_t found;
 } VisionSensorInfo;
 
-typedef struct vision_sensor_struct {
+typedef  struct vision_sensor_struct {
 	VisionReceive		*info;
 	VisionTransmit		*transmit_info;
 	VisionSensorInfo    *sent_info;
@@ -69,7 +69,7 @@ typedef struct vision_sensor_struct {
 } VisionSensor;
 
 
-typedef struct
+typedef  struct
 {	
 	float yaw;
 	float pitch;

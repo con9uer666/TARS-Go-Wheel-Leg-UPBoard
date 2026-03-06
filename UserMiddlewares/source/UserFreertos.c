@@ -93,6 +93,7 @@ void OS_LedCallback(void const * argument)
   vTaskSuspend(NULL); //第一次执行挂起自身 
   for(;;)
   {
+    Rs485_Trans();
     USER_CAN_SetMotorCurrent(&hfdcan3,0x200,0,0,0,0);//关断电机	
     // CLEAR_BIT(hfdcan1.Instance->CCCR, FDCAN_CCCR_INIT);
 		HAL_Delay(5);

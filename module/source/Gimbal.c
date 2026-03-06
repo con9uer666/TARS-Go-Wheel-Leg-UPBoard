@@ -77,12 +77,12 @@ void Gimbal_Init()
 void Gimbal_InitPID()
 {
 	/*pitchÓÉÍÓÂÝÒÇ¿ØÖÆ*/
-	PID_Init(&gimbal.pitch.imuPID.inner, 7.5, 0.03, 0.33, 500, 2048); // 100 0.018 12180,2.3,25
-	DEPID_Init(&gimbal.pitch.imuPID.deOuter, 35, 0.01, 0.015, 200, 1000, 0.9);
+	PID_Init(&gimbal.pitch.imuPID.inner, 1.5, 0.00, 0.01, 500, 2048); // 100 0.018 12180,2.3,25
+	DEPID_Init(&gimbal.pitch.imuPID.deOuter, 10, 0.00, 0.003, 200, 1000, 0.9);
 	
 	/*yawÓÉÍÓÂÝÒÇ¿ØÖÆ*/
-	PID_Init(&gimbal.yaw.imuPID.inner, 5.8, 0.02, 3.5, 1000, 2048);  
-	DEPID_Init(&gimbal.yaw.imuPID.deOuter, 24, 0.012, 0.15, 200, 1000, 0.45);  //20 0 2.5 0.4 1000
+	PID_Init(&gimbal.yaw.imuPID.inner, 0.005, 0, 0.0005, 1000, 7);  
+	DEPID_Init(&gimbal.yaw.imuPID.deOuter, 70, 0, 0.5, 200, 1000, 0.5);  //20 0 2.5 0.4 1000
 	
 	//Ò»Ì×ÈíµÄ
 //	PID_Init(&gimbal.yaw.imuPID.inner, 4.5, 0.03, 1.5, 1000, 2048);  
@@ -94,7 +94,7 @@ void Gimbal_InitPID()
 
 void PitchLimit()
 {
-    static uint16_t initPitch = 4700;//need change
+    static uint16_t initPitch = -21495;//need change
     float temp;
     temp = gimbal.pitchMotor.M4005.angle + (gimbal.pitch.targetAngle - gimbal.pitch.angle) / 360.f * 65536.f;
     if (temp > 65536)

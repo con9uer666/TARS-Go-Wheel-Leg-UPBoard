@@ -1,6 +1,6 @@
 freertos\bsp_delay.o: ..\IMU\source\bsp_delay.c
-freertos\bsp_delay.o: ..\IMU\include\bsp_delay.h
-freertos\bsp_delay.o: ..\IMU\include\struct_typedef.h
+freertos\bsp_delay.o: ../IMU/include/bsp_delay.h
+freertos\bsp_delay.o: ../IMU/include/struct_typedef.h
 freertos\bsp_delay.o: D:\Keil_MDK\Core\ARM\ARMCC\Bin\..\include\stdint.h
 freertos\bsp_delay.o: ../Core/Inc/main.h
 freertos\bsp_delay.o: ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal.h

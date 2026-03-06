@@ -11,6 +11,12 @@
 #define MOTOR_M2006_DGR2CODE(dgr) ((int32_t)((dgr) * 819.1f * 2.5f)) // 36*8191/360
 #define MOTOR_M2006_CODE2DGR(code) ((float)((code) / 819.1f / 2.5f))
 
+#define MOTOR_DM4310_DGR2CODE(dgr) ((int32_t)((dgr) * 819.1f * 2.5f)) // 36*8191/360
+#define MOTOR_DM4310_CODE2DGR(code) ((float)((code) / 819.1f / 2.5f))
+
+#define MOTOR_DM2325_DGR2CODE(dgr) ((int32_t)((dgr) * 819.1f * 2.5f)) // 36*8191/360
+#define MOTOR_DM2325_CODE2DGR(code) ((float)((code) / 819.1f / 2.5f))
+
 #define MOTOR_M6020_DGR2CODE(dgr) ((int32_t)((dgr) * 22.7528f)) // 8191/360
 #define MOTOR_M6020_CODE2DGR(code) ((float)((code) / 22.7528f))
 
@@ -18,6 +24,8 @@
 #define MOTOR_M4005_CODE2DGR(code) ((float)((code) / 182.04444f))
 
 #define MOTOR_MAX_CODE_TRUN (65535.f)
+
+#define MOTOR_DM_RAD2DGR(rad) ((float)((rad)/(2*PI)) * 360.0f)
 
 typedef struct _MOTOR
 {
@@ -38,6 +46,12 @@ typedef struct _MOTOR
 
 	uint8_t Is_Lost; // 0为在线
 	uint16_t LostCnt;
+
+
+	float Position; //单位为deg
+	float Last_Position; //单位为deg
+	float Total_Position; //单位为deg
+	float Target_Position; //单位为deg
 } SingleMotor;
 
 typedef struct

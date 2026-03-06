@@ -1,6 +1,6 @@
 freertos\bsp_imu_pwm.o: ..\IMU\source\bsp_imu_pwm.c
-freertos\bsp_imu_pwm.o: ..\IMU\include\bsp_imu_pwm.h
-freertos\bsp_imu_pwm.o: ..\IMU\include\struct_typedef.h
+freertos\bsp_imu_pwm.o: ../IMU/include/bsp_imu_pwm.h
+freertos\bsp_imu_pwm.o: ../IMU/include/struct_typedef.h
 freertos\bsp_imu_pwm.o: ../Core/Inc/tim.h
 freertos\bsp_imu_pwm.o: ../Core/Inc/main.h
 freertos\bsp_imu_pwm.o: ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal.h
@@ -45,4 +45,4 @@ freertos\bsp_imu_pwm.o: ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_uart_e
 freertos\bsp_imu_pwm.o: ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_pcd.h
 freertos\bsp_imu_pwm.o: ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_ll_usb.h
 freertos\bsp_imu_pwm.o: ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_pcd_ex.h
-freertos\bsp_imu_pwm.o: ..\math\include\pid.h
+freertos\bsp_imu_pwm.o: ../math/include/pid.h

@@ -1,5 +1,5 @@
 freertos\bmi088driver.o: ..\IMU\source\BMI088driver.c
-freertos\bmi088driver.o: ..\IMU\include\BMI088driver.h
+freertos\bmi088driver.o: ../IMU/include/BMI088driver.h
 freertos\bmi088driver.o: D:\Keil_MDK\Core\ARM\ARMCC\Bin\..\include\stdint.h
 freertos\bmi088driver.o: ../Core/Inc/main.h
 freertos\bmi088driver.o: ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal.h
@@ -43,6 +43,6 @@ freertos\bmi088driver.o: ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_uart_
 freertos\bmi088driver.o: ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_pcd.h
 freertos\bmi088driver.o: ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_ll_usb.h
 freertos\bmi088driver.o: ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_pcd_ex.h
-freertos\bmi088driver.o: ..\IMU\include\BMI088reg.h
-freertos\bmi088driver.o: ..\IMU\include\BMI088Middleware.h
-freertos\bmi088driver.o: ..\bsp\include\bsp_dwt.h
+freertos\bmi088driver.o: ../IMU/include/BMI088reg.h
+freertos\bmi088driver.o: ../IMU/include/BMI088Middleware.h
+freertos\bmi088driver.o: ../bsp/include/bsp_dwt.h

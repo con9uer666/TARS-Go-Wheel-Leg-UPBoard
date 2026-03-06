@@ -1,5 +1,5 @@
 freertos\bsp_dwt.o: ..\bsp\source\bsp_dwt.c
-freertos\bsp_dwt.o: ..\bsp\include\bsp_dwt.h
+freertos\bsp_dwt.o: ../bsp/include/bsp_dwt.h
 freertos\bsp_dwt.o: ../Core/Inc/main.h
 freertos\bsp_dwt.o: ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal.h
 freertos\bsp_dwt.o: ../Core/Inc/stm32h7xx_hal_conf.h

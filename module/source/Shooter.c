@@ -67,8 +67,8 @@ void Shooter_UI_Init()
 void Shooter_InitPID()
 {
 	Motor_StartCalcAngle(&shooter.triggerMotor);							 // 初始化电机角度累计
-	PID_Init(&shooter.triggerMotor.anglePID.inner, 6, 0.15, 8, 6000,10000); // 6 0.15 8//10000
-	PID_Init(&shooter.triggerMotor.anglePID.outer, 0.779, 0,0, 0, 8000); // 1.5 0 2.3   3.27 maxoutput 9000->7000
+	PID_Init(&shooter.triggerMotor.anglePID.inner, 15, 0, 0, 6000,30000); // 6 0.15 8//10000
+	PID_Init(&shooter.triggerMotor.anglePID.outer, 80, 0,1500, 0, 10000); // 1.5 0 2.3   3.27 maxoutput 9000->7000
 	
 	PID_Init(&shooter.triggerMotor.speedPID, 10, 0, 0, 7800,12000); // 6 0.15 8//10000
 
@@ -104,14 +104,14 @@ static void Shooter_state(_Bool openflag)
 	if(openflag == 1){
 		Slope_SetTarget(&shooter.fricSlope, shooter.fricSpd); // 摩擦轮斜坡
 		Slope_NextVal(&shooter.fricSlope);					  // 斜坡下一个值
-		shooter.fricMotor[0].targetSpeed = -Slope_GetVal(&shooter.fricSlope); // 摩擦轮速度
-		shooter.fricMotor[1].targetSpeed = Slope_GetVal(&shooter.fricSlope);
+		shooter.fricMotor[0].targetSpeed = Slope_GetVal(&shooter.fricSlope); // 摩擦轮速度
+		shooter.fricMotor[1].targetSpeed = -Slope_GetVal(&shooter.fricSlope);
 	}
 	else{
 		Slope_SetTarget(&shooter.fricSlope, 0);								  // 摩擦轮斜坡
 		Slope_NextVal(&shooter.fricSlope);									  // 斜坡下一个值
-		shooter.fricMotor[0].targetSpeed = -Slope_GetVal(&shooter.fricSlope); // 摩擦轮速度
-		shooter.fricMotor[1].targetSpeed = Slope_GetVal(&shooter.fricSlope);
+		shooter.fricMotor[0].targetSpeed = Slope_GetVal(&shooter.fricSlope); // 摩擦轮速度
+		shooter.fricMotor[1].targetSpeed = -Slope_GetVal(&shooter.fricSlope);
 	}
 }
 
@@ -270,6 +270,7 @@ bool Heat_Limit()
 // 射击任务回调
 float heat;
 extern float initialSpeed;
+
 void Task_Shooter_Callback()
 {
 	static uint8_t over_speed;
@@ -288,8 +289,8 @@ void Task_Shooter_Callback()
 				shooter.fricSpd -= 10;
 				Slope_SetTarget(&shooter.fricSlope, shooter.fricSpd); // 摩擦轮斜坡
 				Slope_NextVal(&shooter.fricSlope);					  // 斜坡下一个值
-				shooter.fricMotor[0].targetSpeed = -Slope_GetVal(&shooter.fricSlope); // 摩擦轮速度
-				shooter.fricMotor[1].targetSpeed = Slope_GetVal(&shooter.fricSlope);
+				shooter.fricMotor[0].targetSpeed = Slope_GetVal(&shooter.fricSlope); // 摩擦轮速度
+				shooter.fricMotor[1].targetSpeed = -Slope_GetVal(&shooter.fricSlope);
 			}
 		}
 		if (shooter.bullet_speed < shootMaxSpeed - 2.1)
@@ -303,8 +304,8 @@ void Task_Shooter_Callback()
 						shooter.fricSpd += 50;
 				Slope_SetTarget(&shooter.fricSlope, shooter.fricSpd);				  // 摩擦轮斜坡
 				Slope_NextVal(&shooter.fricSlope);									  // 斜坡下一个值
-				shooter.fricMotor[0].targetSpeed = -Slope_GetVal(&shooter.fricSlope); // 摩擦轮速度
-				shooter.fricMotor[1].targetSpeed = Slope_GetVal(&shooter.fricSlope);
+				shooter.fricMotor[0].targetSpeed = Slope_GetVal(&shooter.fricSlope); // 摩擦轮速度
+				shooter.fricMotor[1].targetSpeed = -Slope_GetVal(&shooter.fricSlope);
 			}
 		}
 	}
@@ -320,9 +321,9 @@ void Task_Shooter_Callback()
 	Shooter_state(shooter.fricOpenFlag);
 	// 堵转处理
 	// 电机角度与目标角度相差超过10度则进行堵转判定
-	if (ABS(shooter.triggerMotor.totalAngle - shooter.triggerMotor.targetAngle) > MOTOR_M2006_DGR2CODE(10) && shooter.workState != TRIGGER_REVERSE)
+	if (ABS(shooter.triggerMotor.Total_Position - shooter.triggerMotor.Target_Position) > 10 * 2.5 && shooter.workState != TRIGGER_REVERSE)
 	{
-		shooter.block.judgeCnt++;		  // 堵转判定计数器++
+		// shooter.block.judgeCnt++;		  // 堵转判定计数器++
 		if (shooter.block.judgeCnt > 100) // 计数器达到一定值，则判定为堵转，触发反转
 		{
 			shooter.block.judgeCnt = 0;
@@ -341,8 +342,6 @@ void Task_Shooter_Callback()
 		shooter.block.judgeCnt = 0;
 	}
 	
-	if(debugCnt > 10)
-	
 	Heat_Limit();
 
 	// 拨弹
@@ -352,9 +351,9 @@ void Task_Shooter_Callback()
 	{
 		if (JUDGE_IsValid() == false || Heat_Limit() && remainHeat > 20) // 未安装裁判系统 或 裁判系统剩余热量大于100 允许发射
 		{
-			if (shooter.triggerMotor.targetAngle - shooter.triggerMotor.totalAngle < MOTOR_M2006_DGR2CODE(8))
+			if (shooter.triggerMotor.Target_Position - shooter.triggerMotor.Total_Position > -8 * 2.5)
 			{
-				shooter.triggerMotor.targetAngle += MOTOR_M2006_DGR2CODE(360 * 1 / 9.0); // 每次转动1/9圈
+				shooter.triggerMotor.Target_Position -= (360 * 1 / 9.0) * 2.5; // 每次转动1/9圈
 				shooter.workState = IDLE;
 				shooter.number += 1;
 				osDelay(t);
@@ -372,9 +371,9 @@ void Task_Shooter_Callback()
 	{
 		if (JUDGE_IsValid() == false || Heat_Limit() && remainHeat > 20) // 未安装裁判系统 或 裁判系统剩余热量大于100 允许发射
 		{
-			if (shooter.triggerMotor.targetAngle - shooter.triggerMotor.totalAngle < MOTOR_M2006_DGR2CODE(8))
+			if (shooter.triggerMotor.Target_Position - shooter.triggerMotor.Total_Position > -8 * 2.5)
 			{
-				shooter.triggerMotor.targetAngle += MOTOR_M2006_DGR2CODE(360 * 1 / 9.0); // 每次转动1/9圈
+				shooter.triggerMotor.targetAngle -= (360 * 1 / 9.0) * 2.5; // 每次转动1/9圈
 				shooter.workState = IDLE;
 				shooter.number += 1;
 				osDelay(t);
@@ -387,9 +386,9 @@ void Task_Shooter_Callback()
 	case TRIGGER_CONTINUE:
 		if (JUDGE_IsValid() == false || Heat_Limit() && remainHeat > 20) // 未安装裁判系统 或 裁判系统剩余热量大于100 允许发射
 		{
-			if (shooter.triggerMotor.targetAngle - shooter.triggerMotor.totalAngle < MOTOR_M2006_DGR2CODE(8))
+			if (shooter.triggerMotor.Target_Position - shooter.triggerMotor.Total_Position > -8 * 2.5)
 			{
-				shooter.triggerMotor.targetAngle += MOTOR_M2006_DGR2CODE(360 * 1 / 9.0); // 每次转动1/9圈
+				shooter.triggerMotor.targetAngle -= (360 * 1 / 9.0) * 2.5; // 每次转动1/9圈
 				shooter.number += 1;
 				osDelay(t);
 			}
@@ -400,9 +399,9 @@ void Task_Shooter_Callback()
 	case TRIGGER_REVERSE:
 		// 嘀嘀嘀
 		Beep_PlayNotes((Note[]){{T_M1, D_Sixteenth}, {T_M1, D_Sixteenth}, {T_M1, D_Sixteenth}}, 3);
-		shooter.triggerMotor.targetAngle -= MOTOR_M2006_DGR2CODE(360 * 1.5 / 9.0); // 电机反向拨动0.5/9圈
+		shooter.triggerMotor.targetAngle += (360 * 1 / 9.0) * 2.5; // 电机反向拨动0.5/9圈
 		osDelay(500);
-		shooter.triggerMotor.targetAngle += MOTOR_M2006_DGR2CODE(360 * 0.5 / 9.0); // 正转0.5/9圈
+		shooter.triggerMotor.targetAngle -= (360 * 1 / 9.0) * 2.5; // 正转0.5/9圈
 		shooter.workState = IDLE;
 
 		break;

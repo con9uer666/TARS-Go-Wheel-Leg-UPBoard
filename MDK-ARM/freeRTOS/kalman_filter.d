@@ -1,5 +1,5 @@
 freertos\kalman_filter.o: ..\IMU\source\kalman_filter.c
-freertos\kalman_filter.o: ..\IMU\include\kalman_filter.h
+freertos\kalman_filter.o: ../IMU/include/kalman_filter.h
 freertos\kalman_filter.o: ../Drivers/CMSIS/Device/ST/STM32H7xx/Include/stm32h7xx.h
 freertos\kalman_filter.o: ../Drivers/CMSIS/Device/ST/STM32H7xx/Include/stm32h723xx.h
 freertos\kalman_filter.o: ../Drivers/CMSIS/Include/core_cm7.h

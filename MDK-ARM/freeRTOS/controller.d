@@ -1,5 +1,5 @@
 freertos\controller.o: ..\IMU\source\controller.c
-freertos\controller.o: ..\IMU\include\controller.h
+freertos\controller.o: ../IMU/include/controller.h
 freertos\controller.o: ../Core/Inc/main.h
 freertos\controller.o: ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal.h
 freertos\controller.o: ../Core/Inc/stm32h7xx_hal_conf.h
@@ -45,8 +45,8 @@ freertos\controller.o: ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_ll_usb.h
 freertos\controller.o: ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_pcd_ex.h
 freertos\controller.o: D:\Keil_MDK\Core\ARM\ARMCC\Bin\..\include\string.h
 freertos\controller.o: D:\Keil_MDK\Core\ARM\ARMCC\Bin\..\include\stdlib.h
-freertos\controller.o: ..\bsp\include\bsp_dwt.h
-freertos\controller.o: ..\IMU\include\user_lib.h
+freertos\controller.o: ../bsp/include/bsp_dwt.h
+freertos\controller.o: ../IMU/include/user_lib.h
 freertos\controller.o: ../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS/cmsis_os.h
 freertos\controller.o: ../Middlewares/Third_Party/FreeRTOS/Source/include/FreeRTOS.h
 freertos\controller.o: ../Core/Inc/FreeRTOSConfig.h

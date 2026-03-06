@@ -1,7 +1,7 @@
 freertos\ins_task.o: ..\IMU\source\ins_task.c
-freertos\ins_task.o: ..\IMU\include\ins_task.h
+freertos\ins_task.o: ../IMU/include/ins_task.h
 freertos\ins_task.o: D:\Keil_MDK\Core\ARM\ARMCC\Bin\..\include\stdint.h
-freertos\ins_task.o: ..\IMU\include\BMI088driver.h
+freertos\ins_task.o: ../IMU/include/BMI088driver.h
 freertos\ins_task.o: ../Core/Inc/main.h
 freertos\ins_task.o: ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal.h
 freertos\ins_task.o: ../Core/Inc/stm32h7xx_hal_conf.h
@@ -44,8 +44,8 @@ freertos\ins_task.o: ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_uart_ex.h
 freertos\ins_task.o: ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_pcd.h
 freertos\ins_task.o: ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_ll_usb.h
 freertos\ins_task.o: ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_pcd_ex.h
-freertos\ins_task.o: ..\IMU\include\QuaternionEKF.h
-freertos\ins_task.o: ..\IMU\include\kalman_filter.h
+freertos\ins_task.o: ../IMU/include/QuaternionEKF.h
+freertos\ins_task.o: ../IMU/include/kalman_filter.h
 freertos\ins_task.o: D:\Keil_MDK\Packs\ARM\CMSIS-DSP\1.16.2\Include\arm_math.h
 freertos\ins_task.o: D:\Keil_MDK\Packs\ARM\CMSIS-DSP\1.16.2\Include\arm_math_types.h
 freertos\ins_task.o: D:\Keil_MDK\Core\ARM\ARMCC\Bin\..\include\string.h
@@ -85,10 +85,10 @@ freertos\ins_task.o: ../Middlewares/Third_Party/FreeRTOS/Source/include/timers.h
 freertos\ins_task.o: ../Middlewares/Third_Party/FreeRTOS/Source/include/queue.h
 freertos\ins_task.o: ../Middlewares/Third_Party/FreeRTOS/Source/include/semphr.h
 freertos\ins_task.o: ../Middlewares/Third_Party/FreeRTOS/Source/include/event_groups.h
-freertos\ins_task.o: ..\bsp\include\bsp_dwt.h
-freertos\ins_task.o: ..\UI\include\detect.h
-freertos\ins_task.o: ..\IMU\include\controller.h
-freertos\ins_task.o: ..\IMU\include\user_lib.h
+freertos\ins_task.o: ../bsp/include/bsp_dwt.h
+freertos\ins_task.o: ../UI/include/detect.h
+freertos\ins_task.o: ../IMU/include/controller.h
+freertos\ins_task.o: ../IMU/include/user_lib.h
 freertos\ins_task.o: ../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS/cmsis_os.h
-freertos\ins_task.o: ..\bsp\include\bsp_PWM.h
+freertos\ins_task.o: ../bsp/include/bsp_PWM.h
 freertos\ins_task.o: ../Core/Inc/tim.h

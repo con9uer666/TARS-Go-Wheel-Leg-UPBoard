@@ -1,5 +1,5 @@
 freertos\bmi088middleware.o: ..\IMU\source\BMI088Middleware.c
-freertos\bmi088middleware.o: ..\IMU\include\BMI088Middleware.h
+freertos\bmi088middleware.o: ../IMU/include/BMI088Middleware.h
 freertos\bmi088middleware.o: ../Core/Inc/main.h
 freertos\bmi088middleware.o: ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal.h
 freertos\bmi088middleware.o: ../Core/Inc/stm32h7xx_hal_conf.h

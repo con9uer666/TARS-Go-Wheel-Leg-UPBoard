@@ -1,5 +1,5 @@
 freertos\beep.o: ..\bsp\source\Beep.c
-freertos\beep.o: ..\bsp\include\Beep.h
+freertos\beep.o: ../bsp/include/Beep.h
 freertos\beep.o: ../Core/Inc/main.h
 freertos\beep.o: ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal.h
 freertos\beep.o: ../Core/Inc/stm32h7xx_hal_conf.h
@@ -43,8 +43,8 @@ freertos\beep.o: ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_uart_ex.h
 freertos\beep.o: ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_pcd.h
 freertos\beep.o: ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_ll_usb.h
 freertos\beep.o: ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_pcd_ex.h
-freertos\beep.o: ..\math\include\myQueue.h
-freertos\beep.o: ..\UserMiddlewares\include\userFreertos.h
+freertos\beep.o: ../math/include/myQueue.h
+freertos\beep.o: ../UserMiddlewares/include/userFreertos.h
 freertos\beep.o: ../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS/cmsis_os.h
 freertos\beep.o: ../Middlewares/Third_Party/FreeRTOS/Source/include/FreeRTOS.h
 freertos\beep.o: ../Core/Inc/FreeRTOSConfig.h

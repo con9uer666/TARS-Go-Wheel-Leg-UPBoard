@@ -1,5 +1,5 @@
 freertos\slope.o: ..\math\source\Slope.c
-freertos\slope.o: ..\math\include\Slope.h
+freertos\slope.o: ../math/include/Slope.h
 freertos\slope.o: ../Core/Inc/main.h
 freertos\slope.o: ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal.h
 freertos\slope.o: ../Core/Inc/stm32h7xx_hal_conf.h

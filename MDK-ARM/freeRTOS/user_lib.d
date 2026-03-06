@@ -1,7 +1,7 @@
 freertos\user_lib.o: ..\IMU\source\user_lib.c
 freertos\user_lib.o: D:\Keil_MDK\Core\ARM\ARMCC\Bin\..\include\stdlib.h
 freertos\user_lib.o: D:\Keil_MDK\Core\ARM\ARMCC\Bin\..\include\string.h
-freertos\user_lib.o: ..\IMU\include\user_lib.h
+freertos\user_lib.o: ../IMU/include/user_lib.h
 freertos\user_lib.o: D:\Keil_MDK\Core\ARM\ARMCC\Bin\..\include\stdint.h
 freertos\user_lib.o: ../Core/Inc/main.h
 freertos\user_lib.o: ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal.h

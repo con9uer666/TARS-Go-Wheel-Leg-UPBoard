@@ -1,5 +1,5 @@
 freertos\super_cap.o: ..\bsp\source\super_cap.c
-freertos\super_cap.o: ..\bsp\include\super_cap.h
+freertos\super_cap.o: ../bsp/include/super_cap.h
 freertos\super_cap.o: ../Core/Inc/main.h
 freertos\super_cap.o: ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal.h
 freertos\super_cap.o: ../Core/Inc/stm32h7xx_hal_conf.h
@@ -43,7 +43,7 @@ freertos\super_cap.o: ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_uart_ex.
 freertos\super_cap.o: ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_pcd.h
 freertos\super_cap.o: ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_ll_usb.h
 freertos\super_cap.o: ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_pcd_ex.h
-freertos\super_cap.o: ..\UserMiddlewares\include\UserFreertos.h
+freertos\super_cap.o: ../UserMiddlewares/include/UserFreertos.h
 freertos\super_cap.o: ../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS/cmsis_os.h
 freertos\super_cap.o: ../Middlewares/Third_Party/FreeRTOS/Source/include/FreeRTOS.h
 freertos\super_cap.o: ../Core/Inc/FreeRTOSConfig.h
@@ -59,13 +59,13 @@ freertos\super_cap.o: ../Middlewares/Third_Party/FreeRTOS/Source/include/queue.h
 freertos\super_cap.o: ../Middlewares/Third_Party/FreeRTOS/Source/include/semphr.h
 freertos\super_cap.o: ../Middlewares/Third_Party/FreeRTOS/Source/include/event_groups.h
 freertos\super_cap.o: ../Core/Inc/spi.h
-freertos\super_cap.o: ..\UI\include\graphics.h
-freertos\super_cap.o: ..\module\include\chassis.h
-freertos\super_cap.o: ..\math\include\pid.h
-freertos\super_cap.o: ..\bsp\include\moto.h
-freertos\super_cap.o: ..\math\include\smc.h
-freertos\super_cap.o: ..\math\include\slope.h
+freertos\super_cap.o: ../UI/include/graphics.h
+freertos\super_cap.o: ../module/include/chassis.h
+freertos\super_cap.o: ../math/include/pid.h
+freertos\super_cap.o: ../bsp/include/moto.h
+freertos\super_cap.o: ../math/include/smc.h
+freertos\super_cap.o: ../math/include/slope.h
 freertos\super_cap.o: D:\Keil_MDK\Core\ARM\ARMCC\Bin\..\include\stdbool.h
-freertos\super_cap.o: ..\UI\include\judge.h
+freertos\super_cap.o: ../UI/include/judge.h
 freertos\super_cap.o: D:\Keil_MDK\Core\ARM\ARMCC\Bin\..\include\stdio.h
-freertos\super_cap.o: ..\UI\include\Detect.h
+freertos\super_cap.o: ../UI/include/Detect.h

@@ -149,13 +149,27 @@ void CAN1_Rx0Callback(FDCAN_RxHeaderTypeDef *rx_header, uint8_t *rxdata)
 		break;
 	}
 }
-
+uint8_t open = 0;
+uint8_t close = 0;
 // can2接收结束中断
 void CAN2_Rx0Callback(FDCAN_RxHeaderTypeDef *rx_header, uint8_t *rxdata)
 {
 //	uint8_t whichMotor;
 	switch (rx_header->Identifier)
 	{
+		case 0x141:
+			LKMotor_Update(&gimbal.pitchMotor.M4005,rxdata);
+			Detect_Update(DeviceID_PitchMotor);
+			if(rxdata[0] == 0x88){
+				open =1;
+				close = 0;
+			}
+			if(rxdata[0] == 0x80){
+				close = 1;
+				open = 0;
+			}
+		break;
+		
 
 //	case 0x141:
 //	case 0x143:
@@ -189,25 +203,12 @@ void CAN2_state_Callback(FDCAN_RxHeaderTypeDef *rx_header, uint8_t *rxdata)
 	}
 }
 
-uint8_t open = 0;
-uint8_t close = 0;
+
 void CAN3_Rx0Callback(FDCAN_RxHeaderTypeDef *rx_header, uint8_t *rxdata)
 {
 
 	switch (rx_header->Identifier)
 	{
-		case 0x141:
-			LKMotor_Update(&gimbal.pitchMotor.M4005,rxdata);
-			Detect_Update(DeviceID_PitchMotor);
-			if(rxdata[0] == 0x88){
-				open =1;
-				close = 0;
-			}
-			if(rxdata[0] == 0x80){
-				close = 1;
-				open = 0;
-			}
-		break;
 		
 		case 0x202:
 			Motor_Update(&shooter.fricMotor[0], (rxdata[0] << 8 | rxdata[1]), (rxdata[2] << 8 | rxdata[3]),

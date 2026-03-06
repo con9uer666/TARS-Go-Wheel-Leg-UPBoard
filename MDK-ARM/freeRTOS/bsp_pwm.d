@@ -1,5 +1,5 @@
 freertos\bsp_pwm.o: ..\IMU\source\bsp_PWM.c
-freertos\bsp_pwm.o: ..\bsp\include\bsp_PWM.h
+freertos\bsp_pwm.o: ../bsp/include/bsp_PWM.h
 freertos\bsp_pwm.o: D:\Keil_MDK\Core\ARM\ARMCC\Bin\..\include\stdint.h
 freertos\bsp_pwm.o: ../Core/Inc/tim.h
 freertos\bsp_pwm.o: ../Core/Inc/main.h

@@ -351,7 +351,6 @@ void Judge_UpdateKeys(void)
 #include "vision.h"
 // 遥控任务回调
 extern uint8_t Vision_Mode;
-extern uint16_t User_PowerLimit;
 uint8_t flagRC = 1;
 extern uint8_t fastMode; // 快速模式
 
@@ -396,19 +395,6 @@ void Task_RC_Callback()
 		osThreadResume(ErrorTaskHandle); // 恢复错误任务 饿死其他任务
 	}
 
-	if (rcInfo.right == 1 && flagRC == 1 && rcInfo.wheel > 600 && User_PowerLimit > 50)
-	{
-		User_PowerLimit -= 10;
-		flagRC = 0;
-		chassis.move.fastMode = 0;
-	}
-	if (rcInfo.right == 1 && flagRC == 1 && rcInfo.wheel < -600 && User_PowerLimit < 120)
-	{
-		User_PowerLimit += 10;
-		flagRC = 0;
-		chassis.move.fastMode = 1; // 快速模式
-		Vision_Mode = (Vision_Mode + 1) % 3;
-	}
 	if (rcInfo.wheel < 20 &&rcInfo.wheel > -20)
 	{
 		flagRC = 1;

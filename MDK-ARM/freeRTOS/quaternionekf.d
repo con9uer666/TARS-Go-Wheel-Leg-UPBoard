@@ -1,6 +1,6 @@
 freertos\quaternionekf.o: ..\IMU\source\QuaternionEKF.c
-freertos\quaternionekf.o: ..\IMU\include\QuaternionEKF.h
-freertos\quaternionekf.o: ..\IMU\include\kalman_filter.h
+freertos\quaternionekf.o: ../IMU/include/QuaternionEKF.h
+freertos\quaternionekf.o: ../IMU/include/kalman_filter.h
 freertos\quaternionekf.o: ../Drivers/CMSIS/Device/ST/STM32H7xx/Include/stm32h7xx.h
 freertos\quaternionekf.o: ../Drivers/CMSIS/Device/ST/STM32H7xx/Include/stm32h723xx.h
 freertos\quaternionekf.o: ../Drivers/CMSIS/Include/core_cm7.h

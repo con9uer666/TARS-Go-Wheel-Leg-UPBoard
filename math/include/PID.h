@@ -46,6 +46,7 @@ typedef struct _CascadePID
 void PID_Init(PID *pid,float p,float i,float d,float maxSum,float maxOut);
 void PID_SingleCalc(PID *pid,float reference,float feedback);
 void PID_CascadeCalc(CascadePID *pid,float angleRef,float angleFdb,float speedFdb);
+void PID_CascadeCalc_INT(CascadePID *pid, int32_t angleRef, int32_t angleFdb, int32_t speedFdb);
 void PID_Clear(PID *pid);
 void DEPID_Clear(DEPID *pid);
 void PID_SetMaxOutput(PID *pid,float maxOut);

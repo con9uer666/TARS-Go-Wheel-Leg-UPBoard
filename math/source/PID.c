@@ -66,11 +66,38 @@ void PID_SingleCalc(PID *pid, float reference, float feedback)
 	LIMIT(pid->output, -pid->maxOutput, pid->maxOutput);
 }
 
+void PID_SingleCalc_INT(PID *pid, int32_t reference, int32_t feedback)
+{
+	// 更新数据
+	pid->lastError = pid->error;
+	if (ABS(reference - feedback) < pid->deadzone) // 若误差在死区内则error直接置0
+		pid->error = 0;
+	else
+		pid->error = (int32_t)((int32_t)reference - (int32_t)feedback);
+	// 计算微分
+	pid->output = (pid->error - pid->lastError) * pid->kd;
+	// 计算比例
+	pid->output += pid->error * pid->kp;
+	// 计算积分
+	pid->integral += pid->error * pid->ki;
+	LIMIT(pid->integral, -pid->maxIntegral, pid->maxIntegral); // 积分限幅
+	pid->output += pid->integral;
+	// 输出限幅
+	LIMIT(pid->output, -pid->maxOutput, pid->maxOutput);
+}
+
 // 串级pid计算
 void PID_CascadeCalc(CascadePID *pid, float angleRef, float angleFdb, float speedFdb)
 {
 	PID_SingleCalc(&(pid->outer), angleRef, angleFdb);			// 计算外环(角度环)
 	PID_SingleCalc(&(pid->inner), pid->outer.output, speedFdb); // 计算内环(速度环)
+	pid->output = pid->inner.output;
+}
+
+void PID_CascadeCalc_INT(CascadePID *pid, int32_t angleRef, int32_t angleFdb, int32_t speedFdb)
+{
+	PID_SingleCalc_INT(&(pid->outer), angleRef, angleFdb);			// 计算外环(角度环)
+	PID_SingleCalc_INT(&(pid->inner), pid->outer.output, speedFdb); // 计算内环(速度环)
 	pid->output = pid->inner.output;
 }
 
