@@ -1,7 +1,5 @@
 freertos\board2board.o: ..\UserMiddlewares\Board2Board.c
-freertos\board2board.o: D:\Keil_MDK\Core\ARM\ARMCC\Bin\..\include\stdint.h
-freertos\board2board.o: ../UserMiddlewares/include/Board2Board.h
-freertos\board2board.o: ../module/include/chassis.h
+freertos\board2board.o: ../module/include/Chassis.h
 freertos\board2board.o: ../Core/Inc/main.h
 freertos\board2board.o: ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal.h
 freertos\board2board.o: ../Core/Inc/stm32h7xx_hal_conf.h
@@ -10,6 +8,7 @@ freertos\board2board.o: ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_def.h
 freertos\board2board.o: ../Drivers/CMSIS/Device/ST/STM32H7xx/Include/stm32h7xx.h
 freertos\board2board.o: ../Drivers/CMSIS/Device/ST/STM32H7xx/Include/stm32h723xx.h
 freertos\board2board.o: ../Drivers/CMSIS/Include/core_cm7.h
+freertos\board2board.o: D:\Keil_MDK\Core\ARM\ARMCC\Bin\..\include\stdint.h
 freertos\board2board.o: ../Drivers/CMSIS/Include/cmsis_version.h
 freertos\board2board.o: ../Drivers/CMSIS/Include/cmsis_compiler.h
 freertos\board2board.o: ../Drivers/CMSIS/Include/cmsis_armcc.h
@@ -51,6 +50,7 @@ freertos\board2board.o: ../math/include/slope.h
 freertos\board2board.o: D:\Keil_MDK\Core\ARM\ARMCC\Bin\..\include\stdbool.h
 freertos\board2board.o: ../UI/include/judge.h
 freertos\board2board.o: ../UI/include/graphics.h
+freertos\board2board.o: ../UserMiddlewares/include/Board2Board.h
 freertos\board2board.o: ../module/include/gimbal.h
 freertos\board2board.o: ../math/include/Filter.h
 freertos\board2board.o: ../IMU/include/ins_task.h

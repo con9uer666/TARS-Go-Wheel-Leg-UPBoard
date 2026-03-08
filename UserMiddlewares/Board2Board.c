@@ -1,3 +1,4 @@
+#include "Chassis.h"
 #include "stdint.h"
 #include "Board2Board.h"
 #include "chassis.h"
@@ -46,26 +47,26 @@ uint8_t UP_Leg;
 void Rs485_Trans()
 {
 	usart2TxBuf[0] = 0xAA;
-	usart2TxBuf[1] = ((int16_t)(Foot_Target_Relative_Angle * 1000));
-	usart2TxBuf[2] = (((int16_t)(Foot_Target_Relative_Angle * 1000))) >> 8;
+	usart2TxBuf[1] = ((int16_t)(Foot_Chassis.Target_Vx * 1000));
+	usart2TxBuf[2] = ((int16_t)(Foot_Chassis.Target_Vx * 1000)) >> 8;//1 2两位发送Vx
 
-	usart2TxBuf[3] = ((int16_t)(Foot_Target_Speed * 1000));
-	usart2TxBuf[4] = ((int16_t)(Foot_Target_Speed * 1000)) >> 8;
+	usart2TxBuf[3] = ((int16_t)(Foot_Chassis.Target_Vy * 1000));
+	usart2TxBuf[4] = ((int16_t)(Foot_Chassis.Target_Vy * 1000)) >> 8;//3 4两位发送Vy
 
 	temp555 = gimbal.yaw.imuPID.output * 1000;
 	usart2TxBuf[25] = (((int16_t)temp555)) & 0xFF;
-	usart2TxBuf[26] = (((int16_t)temp555) >> 8) & 0xFF;
+	usart2TxBuf[26] = (((int16_t)temp555) >> 8) & 0xFF;//25 26两位发送yaw pid输出
 //	usart2TxBuf[25] = 0;
 //	usart2TxBuf[26] = 0;
 	usart2TxBuf[27] = (int16_t)(shooter.triggerMotor.anglePID.output) & 0xFF;
-	usart2TxBuf[28] = (int16_t)(shooter.triggerMotor.anglePID.output) >> 8 & 0xFF;
+	usart2TxBuf[28] = (int16_t)(shooter.triggerMotor.anglePID.output) >> 8 & 0xFF;//27 28两位发送拨盘 pid输出
 	usart2TxBuf[29] = STOPFLAG << 7 | chassis.rotate.mode << 5 | (visionFindAver > 0.8) << 4 | Vision_Mode << 2 | chassis.move.fastMode <<1 | UIupdateState;
+	//29位发送状态信息，bit7停止标志，bit6底盘模式，bit5视觉识别成功标志，bit4视觉模式，bit3保留，bit2快速模式，bit1 UI更新状态
 	usart2TxBuf[30] = (int16_t)(ABS(shooter.fricMotor[0].speed) * 0.5f + ABS(shooter.fricMotor[1].speed) * 0.5f) & 0xff;
-	usart2TxBuf[31] = (int16_t)(ABS(shooter.fricMotor[0].speed) * 0.5f + ABS(shooter.fricMotor[1].speed) * 0.5f) >> 8 & 0xff;
+	usart2TxBuf[31] = (int16_t)(ABS(shooter.fricMotor[0].speed) * 0.5f + ABS(shooter.fricMotor[1].speed) * 0.5f) >> 8 & 0xff;//30 31两位发送平均摩擦轮速度
 	usart2TxBuf[32] = (int16_t)chassis.rotate.relativeAngle & 0xff;
-	usart2TxBuf[33] = (((int16_t)chassis.rotate.relativeAngle) >> 8) & 0xff;
+	usart2TxBuf[33] = (((int16_t)chassis.rotate.relativeAngle) >> 8) & 0xff;//32 33两位发送云台与底盘的偏离角
 
-	usart2TxBuf[34] = (int16_t)vision.distance & 0xff;
 	//TODO!!	
 //	usart2TxBuf[36] = (int32_t)(gimbal.yaw.imuPID.deOuter.output * 100) & 0xFF;
 //	usart2TxBuf[37] = (int32_t)(gimbal.yaw.imuPID.deOuter.output * 100) >> 8 & 0xFF;
@@ -73,20 +74,16 @@ void Rs485_Trans()
 //	usart2TxBuf[39] = (int32_t)(gimbal.yaw.imuPID.deOuter.output * 100) >> 24 & 0xFF;
 	usart2TxBuf[36] = shooter.number & 0xff ;
 	usart2TxBuf[37] = shooter.number >> 8 & 0xff;
-	usart2TxBuf[38] = shooter.number >> 16 & 0xff;
-	usart2TxBuf[39] = shooter.workState == TRIGGER_REVERSE;
+	usart2TxBuf[38] = shooter.number >> 16 & 0xff;//36 37 38三位发送射击子弹数
+	usart2TxBuf[39] = shooter.workState == TRIGGER_REVERSE;//39位发送拨盘状态，0正常 1反转
 	
-	usart2TxBuf[40] = (uint8_t)cap.per_energy;
+	usart2TxBuf[40] = (uint8_t)cap.per_energy;//40位发送超级电容剩余电量百分比
 	usart2TxBuf[41] = diagonal_enable << 7 | vision.exposure_time << 2 | Rune_direction << 1 | shooter.block.state ;	
+	//41位发送状态信息，bit7斜对称使能标志，bit6-2视觉曝光时间，bit1符文方向，bit0堵转状态
 	// usart2TxBuf[42] = rcInfo.left;
 
-	if(rcInfo.left == 1)
-		UP_Leg = 1;
-	else
-		UP_Leg = 0;
-	// else if(rcInfo.left == 0)
-	// 	UP_Leg = 2;
-	usart2TxBuf[42] = UP_Leg;
+	usart2TxBuf[42] = Foot_Chassis.Target_Leg_State;//42位发送目标腿状态，0短腿 1长腿
+	usart2TxBuf[43] = Foot_Chassis.Chassis_Mode;//43位发送底盘模式，0跟随 1小陀螺 2静止趴下
 	usart2TxBuf[63] = 0xFE;
 	HAL_UART_Transmit_DMA(&huart2, usart2TxBuf, sizeof(usart2TxBuf));
 }
