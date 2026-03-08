@@ -502,9 +502,10 @@ float Foot_Target_Speed;
 float Foot_Relative_Angle;
 float Foot_Target_Relative_Angle;
 
+Foot_Chassis_t Foot_Chassis = {0};
+int times;
 void Foot_CallBack(void)
 {
-	Foot_Relative_Angle = (gimbal.yawMotor_M4005.angle)/1000.0f;
 	if (rcInfo.wheel > 600) 
         chassis.rockerCtrl = true;
     else if (rcInfo.wheel < -600)
@@ -512,31 +513,25 @@ void Foot_CallBack(void)
 
 	if (chassis.rockerCtrl)
 	{
-		arm_atan2_f32(rcInfo.ch4, rcInfo.ch3, &Foot_Target_Relative_Angle);
-		Foot_Target_Relative_Angle -= PI/2.0f;
-		if(Foot_Target_Relative_Angle < -PI)
-			Foot_Target_Relative_Angle += 2.0f*PI;
-		if(Foot_Target_Relative_Angle <= -PI/2.0f)
-			Foot_Target_Relative_Angle += PI;
-		if(Foot_Target_Relative_Angle >= PI/2.0f)
-			Foot_Target_Relative_Angle -= PI;
-
-		int16_t temp = rcInfo.ch3;
-
-			temp = 0;
-
-		if(rcInfo.ch4 >= 0)
-		Foot_Target_Speed = sqrtf((float)((temp * 3.0 / 660.0f) * (temp * 3.0 / 660.0f) + (rcInfo.ch4 * 3.0 / 660.0f) * (rcInfo.ch4 * 3.0 / 660.0f)));
-		if(rcInfo.ch4 < 0)
-		Foot_Target_Speed = -sqrtf((float)((temp * 3.0 / 660.0f) * (temp * 3.0 / 660.0f) + (rcInfo.ch4 * 3.0 / 660.0f) * (rcInfo.ch4 * 3.0 / 660.0f)));
-		if(Foot_Target_Speed >= 2.7f)
-			Foot_Target_Speed =  2.7f;
-		if(Foot_Target_Speed <= -2.7f)
-			Foot_Target_Speed = -2.7f;
-		// if(Foot_Target_Speed == 0)
-		// {
-			Foot_Target_Relative_Angle = 0;
-		// }
+		if(times > 0)
+		{
+			times --;
+		}
+		Foot_Chassis.Target_Vx = (float)rcInfo.ch3 * 2.7 / 660;
+		Foot_Chassis.Target_Vy = (float)rcInfo.ch4 * 2.7 / 660;
+		if(rcInfo.left == 2)//????????
+			Foot_Chassis.Chassis_Mode = 1;
+		else if (rcInfo.left == 3)//???????
+			Foot_Chassis.Chassis_Mode = 0;
+		
+		if(rcInfo.left == 1 && rcInfo.right != 1 && times == 0) //?????????
+		{
+			times = 300;
+			if(Foot_Chassis.Target_Leg_State == 0)
+			Foot_Chassis.Target_Leg_State = 1;
+			else if (Foot_Chassis.Target_Leg_State == 1)
+			Foot_Chassis.Target_Leg_State = 0;
+		}
 	}
 	
 }	

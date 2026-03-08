@@ -73,7 +73,28 @@ typedef struct _Chassis
 
 } Chassis;
 
+typedef struct Leg_Info
+{
+	float Current_L0;//腿当前长度 单位m
+}Leg_Info_t;
+
+typedef struct Foot_Chassis_Info
+{
+	float Yaw_Motor_Angle;//Yaw电机角度
+	float Current_Speed;//底盘当前的速度 m/s
+	Leg_Info_t L_Leg, R_Leg;//腿信息
+}Foot_Chassis_Info_t;
+
+typedef struct Foot_Chassis
+{
+	float Target_Vx, Target_Vy;//云台坐标系下的目标速度 单位m/s
+	uint8_t Target_Leg_State;//目标腿长，0短腿 1长腿
+	uint8_t Chassis_Mode;//0跟随 1小陀螺 2静止趴下
+	Foot_Chassis_Info_t	Info;//底盘信息
+}Foot_Chassis_t;
+
 extern Chassis chassis;
+extern Foot_Chassis_t Foot_Chassis;
 extern char *Chassis_GetModeText(void);
 extern uint8_t power_flag_offset;
 void Chassis_Init(void);

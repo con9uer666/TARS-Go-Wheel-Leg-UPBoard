@@ -1,6 +1,6 @@
-set(CMAKE_HOST_SYSTEM "Windows-10.0.26100")
+set(CMAKE_HOST_SYSTEM "Windows-10.0.26200")
 set(CMAKE_HOST_SYSTEM_NAME "Windows")
-set(CMAKE_HOST_SYSTEM_VERSION "10.0.26100")
+set(CMAKE_HOST_SYSTEM_VERSION "10.0.26200")
 set(CMAKE_HOST_SYSTEM_PROCESSOR "AMD64")
 
 include("D:/PROJECTS/Wheel_Leg_About/UP_Wheel_Leg_VScode/cmake/gcc-arm-none-eabi.cmake")
