@@ -2,7 +2,7 @@ freertos\system_stm32h7xx.o: ../Core/Src/system_stm32h7xx.c
 freertos\system_stm32h7xx.o: ../Drivers/CMSIS/Device/ST/STM32H7xx/Include/stm32h7xx.h
 freertos\system_stm32h7xx.o: ../Drivers/CMSIS/Device/ST/STM32H7xx/Include/stm32h723xx.h
 freertos\system_stm32h7xx.o: ../Drivers/CMSIS/Include/core_cm7.h
-freertos\system_stm32h7xx.o: D:\Keil_MDK\Core\ARM\ARMCC\Bin\..\include\stdint.h
+freertos\system_stm32h7xx.o: C:\Users\WXR\AppData\Local\Keil_v5\ARM\ARMCC\Bin\..\include\stdint.h
 freertos\system_stm32h7xx.o: ../Drivers/CMSIS/Include/cmsis_version.h
 freertos\system_stm32h7xx.o: ../Drivers/CMSIS/Include/cmsis_compiler.h
 freertos\system_stm32h7xx.o: ../Drivers/CMSIS/Include/cmsis_armcc.h
@@ -14,8 +14,8 @@ freertos\system_stm32h7xx.o: ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_r
 freertos\system_stm32h7xx.o: ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_def.h
 freertos\system_stm32h7xx.o: ../Drivers/CMSIS/Device/ST/STM32H7xx/Include/stm32h7xx.h
 freertos\system_stm32h7xx.o: ../Drivers/STM32H7xx_HAL_Driver/Inc/Legacy/stm32_hal_legacy.h
-freertos\system_stm32h7xx.o: D:\Keil_MDK\Core\ARM\ARMCC\Bin\..\include\stddef.h
-freertos\system_stm32h7xx.o: D:\Keil_MDK\Core\ARM\ARMCC\Bin\..\include\math.h
+freertos\system_stm32h7xx.o: C:\Users\WXR\AppData\Local\Keil_v5\ARM\ARMCC\Bin\..\include\stddef.h
+freertos\system_stm32h7xx.o: C:\Users\WXR\AppData\Local\Keil_v5\ARM\ARMCC\Bin\..\include\math.h
 freertos\system_stm32h7xx.o: ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_rcc_ex.h
 freertos\system_stm32h7xx.o: ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_gpio.h
 freertos\system_stm32h7xx.o: ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_gpio_ex.h

@@ -59,10 +59,10 @@ extern uint8_t flagRC;
 /********************??????************************/
 void Chassis_Init()
 {
-	//??????????
+	// åˆå§‹åŒ–å¯¹è§’çº¿æ¨¡å¼
 	diagonal_enable = 1;
 	chassis.rockerCtrl = false;
-	// ?¡Á???????????¡§??????????????
+	// ?ï¿½ï¿½???????????ï¿½ï¿½??????????????
 	chassis.info.wheelbase = 316.57f;
 	chassis.info.wheeltrack = 322.70f;
 	chassis.info.wheelRadius = 60;
@@ -70,7 +70,7 @@ void Chassis_Init()
 	chassis.info.offsetY = 0; 
 	// ??????????????
 	chassis.move.cap_output = 0;
-	// ??¡Á???????????
+	// ??ï¿½ï¿½???????????
 	chassis.rotate.InitAngle = INIT_YAW_ANGLE - diagonal_enable * 8192 - 16384;	
 	if(chassis.rotate.InitAngle>=65536)
 		chassis.rotate.InitAngle-=65536;
@@ -78,22 +78,22 @@ void Chassis_Init()
 		chassis.rotate.InitAngle+=65536;
 	
 	chassis.rotate.InitpitchAngle = 1290;
-	// ?????¡Àyaw?¨¢???¨²?????¡§0-360??
+	// ?????ï¿½ï¿½yaw?ï¿½ï¿½???ï¿½ï¿½?????ï¿½ï¿½0-360??
 	chassis.motors[0].TurnOffset = 210.0750f - 180.0f  ;//102
 	chassis.motors[1].TurnOffset = 142;//UNUSED
 	chassis.motors[2].TurnOffset = 170;//UNUSED
 	chassis.motors[3].TurnOffset = 15.1391f+300.0f-60.0f;
 
 
-	// ?¡À????????????
+	// ?ï¿½ï¿½????????????
 	Slope_Init(&chassis.move.xSlope, 80, 0);
 	Slope_Init(&chassis.move.ySlope, 80, 0);
 	Slope_Init(&chassis.move.spinSlope, 0.1, 0);
 	Slope_Init(&chassis.move.outputSlope, 0.1, 0);
 	Slope_Init(&chassis.move.chargeSlope, 0.15, 0);
-	// 4005¡Á????	???
+	// 4005ï¿½ï¿½????	???
 	chassis.motors[0].turn_speed_limit = 12000; // 0-15000;
-	chassis.motors[1].turn_speed_limit = 12000; // ???¡ã??¡¤?????0?????????¨´
+	chassis.motors[1].turn_speed_limit = 12000; // ???ï¿½ï¿½??ï¿½ï¿½?????0?????????ï¿½ï¿½
 	chassis.motors[2].turn_speed_limit = 12000;
 	chassis.motors[3].turn_speed_limit = 12000;
 
@@ -103,7 +103,7 @@ void Chassis_Init()
 	Chassis_RegisterEvents();
 }
 
-/************?????¡è??????*****************/
+/************?????ï¿½ï¿½??????*****************/
 void Motor_StartCalcAngle_M4005(DoubleMotor *motor)
 {
 	motor->totalAngle = motor->TurnAngle;
@@ -176,7 +176,7 @@ void Chassis_InitPID()
 	PID_SetDeadzone(&chassis.rotate.pid, 0.1);
 }
 
-// ¡Á??¨¢?¨´??????
+// ï¿½ï¿½??ï¿½ï¿½?ï¿½ï¿½??????
 void Chassis_RegisterEvents()
 {
 	RC_Register(Key_W | Key_A | Key_S | Key_D, CombineKey_None, KeyEvent_OnDown, Chassis_Move_KeyCallback); // WASD??????????z?
@@ -184,7 +184,7 @@ void Chassis_RegisterEvents()
 	RC_Register(Key_Q | Key_E | Key_G, CombineKey_None, KeyEvent_OnDown, Chassis_SwitchMode_KeyCallback);	// QER???????g?
 	RC_Register(Key_V, CombineKey_None, KeyEvent_OnDown, Chassis_capOutputChange_KeyCallback);
 	RC_Register(Key_E | Key_R, CombineKey_Ctrl, KeyEvent_OnDown, Chassis_Return_KeyCallback);
-	//B ?????????¨¹??
+	//B ?????????ï¿½ï¿½??
 	RC_Register(Key_B, CombineKey_None, KeyEvent_OnDown, Chassis_ChangeDiagonal);
 	// SHIFT+B
 	RC_Register(Key_B, CombineKey_Shift, KeyEvent_OnDown, Chassis_Change_DebugTurn0);
@@ -195,7 +195,7 @@ void Chassis_RegisterEvents()
 
 }
 
-// ?¨¹????????¡Á??????¡ã????????????????
+// ?ï¿½ï¿½????????ï¿½ï¿½??????ï¿½ï¿½????????????????
 void Spin_SpeedUpdate() // TODO??????????????????
 {
 	chassis.move.maxVw = chassis.move.maxPower * 0.225f + 3.25f; // 0.065 2.8
@@ -218,7 +218,7 @@ void Spin_SpeedUpdate() // TODO??????????????????
 	}
 }
 
-// ?¨¹??????????
+// ?ï¿½ï¿½??????????
 void Chassis_UpdateSlope()
 {
 	Slope_NextVal(&chassis.move.xSlope);
@@ -243,19 +243,19 @@ void Chassis_UpdateSlope()
 	chassis.move.maxVy = chassis.move.maxVx;
 	chassis.move.maxVw = 6000 / rotateRatio / 60.0f / (268.f/17.f) * 2.0f * PI * chassis.info.wheelRadius * 1.0f/1.414f;
 }
-// ?????????¡Á??
+// ?????????ï¿½ï¿½??
 void Chassis_RockerCtrl()
 {
-	// ¡Á¨®??????????¡¤????????????????????????¨²??????
+	// ï¿½ï¿½ï¿½ï¿½??????????ï¿½ï¿½????????????????????????ï¿½ï¿½??????
 	if (chassis.rotate.mode != ChassisMode_Spin && rcInfo.left == 2 && rcInfo.right != 1)
 		Chassis_SwitchMode_KeyCallback(Key_Q, CombineKey_Ctrl, KeyEvent_OnDown); // g?????????????
 	else if (chassis.rotate.mode == ChassisMode_Spin && rcInfo.left == 3)
 		Chassis_SwitchMode_KeyCallback(Key_Q, CombineKey_Ctrl, KeyEvent_OnDown);
-	// ?¨¨?¡§????¡¤??¨°?¡ã????
+	// ?ï¿½ï¿½?ï¿½ï¿½????ï¿½ï¿½??ï¿½ï¿½?ï¿½ï¿½????
 	Slope_SetTarget(&chassis.move.xSlope, (float)rcInfo.ch3 * chassis.move.maxVx / 660); // ?????????
 	Slope_SetTarget(&chassis.move.ySlope, (float)rcInfo.ch4 * chassis.move.maxVy / 660);
 }	
-// ?????¡Á??????UI??¡Á?
+// ?????ï¿½ï¿½??????UI??ï¿½ï¿½?
 char *Chassis_GetModeText()
 {
 	switch (chassis.rotate.mode)
@@ -301,7 +301,7 @@ void UI_UPdate(KeyType key, KeyCombineType combine, KeyEventType event){
 			UIupdateState=0;
 }
 
-// ????????¡ã??¨¹???¡Â
+// ????????ï¿½ï¿½??ï¿½ï¿½???ï¿½ï¿½
 void Chassis_Stop_KeyCallback(KeyType key, KeyCombineType combine, KeyEventType event)
 {
 	switch (key)
@@ -377,7 +377,7 @@ void Chassis_Change_DebugTurn0(KeyType key, KeyCombineType combine, KeyEventType
 
 void Chassis_SwitchMode_KeyCallback(KeyType key, KeyCombineType combine, KeyEventType event)
 {
-	if (chassis.rotate.mode != ChassisMode_Follow || diagonal_enable==0) //  Q/E/R???g? ????????????g?
+	if (chassis.rotate.mode != ChassisMode_Follow || diagonal_enable==0)
 	{
 		chassis.rotate.mode = ChassisMode_Follow;
 	}
@@ -385,12 +385,12 @@ void Chassis_SwitchMode_KeyCallback(KeyType key, KeyCombineType combine, KeyEven
 	{
 		switch (key)
 		{
-		case Key_Q: // ??????????
+		case Key_Q:
 			PID_Clear(&chassis.rotate.pid);
 			chassis.rotate.mode = ChassisMode_Spin;
 			Slope_SetTarget(&chassis.move.spinSlope, chassis.move.maxVw);
 			break;
-		case Key_E: // ?¡¤?¨ª¡¤???
+		case Key_E:
 			if (chassis.rotate.pid.maxOutput == 0)
 			{
 				chassis.rotate.pid.maxOutput = 11;
@@ -419,30 +419,23 @@ void Chassis_Return_KeyCallback(KeyType key, KeyCombineType combine, KeyEventTyp
 	}
 }
 
-/************************freertos????**********************
-??????????freertos??¡Á¡Â?????¡Â??
-**********************************************************/
 uint8_t spin_switch = 0;
 
-// ?¡Á?????????¡Â????
 void Task_Chassis_Callback()
 {
 	chassis.rotate.nowAngle = gimbal.yawMotor_M4005.angle;
 	chassis.rotate.relativeAngle = ((chassis.rotate.nowAngle - chassis.rotate.InitAngle));
-    if (rcInfo.wheel > 600) // ?????¡Â????????????????/?¨¹??????
+    if (rcInfo.wheel > 600)
         chassis.rockerCtrl = true;
     else if (rcInfo.wheel < -600)
         chassis.rockerCtrl = false;
 
-    if (chassis.rockerCtrl) // ????????
+    if (chassis.rockerCtrl)
         Chassis_RockerCtrl();
 
     last_left_state = rcInfo.left;
 
-    /***?????¡Á??????????****/
-    Chassis_UpdateSlope(); // ?¨¹???????¡À??????????
-
-    // ?????¡§¡Á?¡À¨º???????????????????¡Á??????????(?¨´?????¡§??????)
+    Chassis_UpdateSlope();
 
     float gimbalAngleSin = arm_sin_f32(-(chassis.rotate.relativeAngle - diagonal_enable * 45.0f-90.0f) * PI / 180);
     float gimbalAngleCos = arm_cos_f32(-(chassis.rotate.relativeAngle - diagonal_enable * 45.0f-90.0f) * PI / 180);
@@ -450,8 +443,8 @@ void Task_Chassis_Callback()
     chassis.move.vx = (Slope_GetVal(&chassis.move.xSlope) * gimbalAngleCos + Slope_GetVal(&chassis.move.ySlope) * gimbalAngleSin);
 
     chassis.move.vy = (-Slope_GetVal(&chassis.move.xSlope) * gimbalAngleSin + Slope_GetVal(&chassis.move.ySlope) * gimbalAngleCos);
-    // ?¨²??
-    if (chassis.rotate.mode == ChassisMode_Follow) //????g?
+
+    if (chassis.rotate.mode == ChassisMode_Follow)
     {
         Slope_SetTarget(&chassis.move.spinSlope, 0);
         if (chassis.rotate.relativeAngle > 180)
@@ -471,7 +464,7 @@ void Task_Chassis_Callback()
 
         LIMIT(chassis.move.vw, -chassis.move.maxVw, chassis.move.maxVw);
     }
-    else if (chassis.rotate.mode == ChassisMode_Spin) //?????g?
+    else if (chassis.rotate.mode == ChassisMode_Spin) 
     {
         chassis.move.vw = -chassis.move.spinSlope.value;
 
@@ -504,42 +497,47 @@ float Foot_Target_Relative_Angle;
 
 Foot_Chassis_t Foot_Chassis = {0};
 int times;
+
+//æ§è…¿å‡½æ•°
 void Foot_CallBack(void)
 {
+	//è§£é”æ§åˆ¶
 	if (rcInfo.wheel > 600) 
         chassis.rockerCtrl = true;
     else if (rcInfo.wheel < -600)
         chassis.rockerCtrl = false;
 
-	if (chassis.rockerCtrl)
+	if (chassis.rockerCtrl)//è§£é”å
 	{
+		//æ§åˆ¶è…¿é•¿åˆ‡æ¢è®¡æ—¶å™¨
 		if(times > 0)
 		{
 			times --;
 		}
+
+		//ç›®æ ‡é€Ÿåº¦
 		Foot_Chassis.Target_Vx = (float)rcInfo.ch3 * 2.7 / 660;
 		Foot_Chassis.Target_Vy = (float)rcInfo.ch4 * 2.7 / 660;
-		if(rcInfo.left == 2)//????????
+
+		if(rcInfo.left == 2 && Foot_Chassis.Target_Leg_State == 0)//ä¸‹
 			Foot_Chassis.Chassis_Mode = 1;
-		else if (rcInfo.left == 3)//???????
+		else if (rcInfo.left == 3)//ä¸­
 			Foot_Chassis.Chassis_Mode = 0;
 		
-		if(rcInfo.left == 1 && rcInfo.right != 1 && times == 0) //?????????
+		//æ§åˆ¶è…¿é•¿
+		if(rcInfo.left == 1 && rcInfo.right != 1 && times == 0)//å·¦ä¸Šï¼Œå³ä¸æ€¥åœ
 		{
-			times = 300;
+			times = 300;//æ¯300mså…è®¸åˆ‡æ¢ä¸€æ¬¡è…¿é•¿
 			if(Foot_Chassis.Target_Leg_State == 0)
-			Foot_Chassis.Target_Leg_State = 1;
+				Foot_Chassis.Target_Leg_State = 1;
 			else if (Foot_Chassis.Target_Leg_State == 1)
-			Foot_Chassis.Target_Leg_State = 0;
+				Foot_Chassis.Target_Leg_State = 0;
 		}
 	}
 	
 }	
 
-/************************freertos????**********************
-??????????freertos??¡Á¡Â?????¡Â??
-**********************************************************/
-// ?¡Á?????????¡Â????
+//ä¸‹æ¿åº•ç›˜ä»»åŠ¡
 #ifdef EN_CHASSIS_TASK
 void OS_ChassisCallback(void const *argument)
 {

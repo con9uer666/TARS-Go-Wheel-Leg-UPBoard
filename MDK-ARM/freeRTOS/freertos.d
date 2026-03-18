@@ -1,7 +1,7 @@
 freertos\freertos.o: ../Core/Src/freertos.c
 freertos\freertos.o: ../Middlewares/Third_Party/FreeRTOS/Source/include/FreeRTOS.h
-freertos\freertos.o: D:\Keil_MDK\Core\ARM\ARMCC\Bin\..\include\stddef.h
-freertos\freertos.o: D:\Keil_MDK\Core\ARM\ARMCC\Bin\..\include\stdint.h
+freertos\freertos.o: C:\Users\WXR\AppData\Local\Keil_v5\ARM\ARMCC\Bin\..\include\stddef.h
+freertos\freertos.o: C:\Users\WXR\AppData\Local\Keil_v5\ARM\ARMCC\Bin\..\include\stdint.h
 freertos\freertos.o: ../Core/Inc/FreeRTOSConfig.h
 freertos\freertos.o: ../Middlewares/Third_Party/FreeRTOS/Source/include/projdefs.h
 freertos\freertos.o: ../Middlewares/Third_Party/FreeRTOS/Source/include/portable.h
@@ -25,7 +25,7 @@ freertos\freertos.o: ../Drivers/CMSIS/Include/mpu_armv7.h
 freertos\freertos.o: ../Drivers/CMSIS/Device/ST/STM32H7xx/Include/system_stm32h7xx.h
 freertos\freertos.o: ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal.h
 freertos\freertos.o: ../Drivers/STM32H7xx_HAL_Driver/Inc/Legacy/stm32_hal_legacy.h
-freertos\freertos.o: D:\Keil_MDK\Core\ARM\ARMCC\Bin\..\include\math.h
+freertos\freertos.o: C:\Users\WXR\AppData\Local\Keil_v5\ARM\ARMCC\Bin\..\include\math.h
 freertos\freertos.o: ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_rcc_ex.h
 freertos\freertos.o: ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_gpio.h
 freertos\freertos.o: ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_gpio_ex.h

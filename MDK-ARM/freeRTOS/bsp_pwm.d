@@ -1,6 +1,6 @@
 freertos\bsp_pwm.o: ..\IMU\source\bsp_PWM.c
 freertos\bsp_pwm.o: ../bsp/include/bsp_PWM.h
-freertos\bsp_pwm.o: D:\Keil_MDK\Core\ARM\ARMCC\Bin\..\include\stdint.h
+freertos\bsp_pwm.o: C:\Users\WXR\AppData\Local\Keil_v5\ARM\ARMCC\Bin\..\include\stdint.h
 freertos\bsp_pwm.o: ../Core/Inc/tim.h
 freertos\bsp_pwm.o: ../Core/Inc/main.h
 freertos\bsp_pwm.o: ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal.h
@@ -17,8 +17,8 @@ freertos\bsp_pwm.o: ../Drivers/CMSIS/Include/mpu_armv7.h
 freertos\bsp_pwm.o: ../Drivers/CMSIS/Device/ST/STM32H7xx/Include/system_stm32h7xx.h
 freertos\bsp_pwm.o: ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal.h
 freertos\bsp_pwm.o: ../Drivers/STM32H7xx_HAL_Driver/Inc/Legacy/stm32_hal_legacy.h
-freertos\bsp_pwm.o: D:\Keil_MDK\Core\ARM\ARMCC\Bin\..\include\stddef.h
-freertos\bsp_pwm.o: D:\Keil_MDK\Core\ARM\ARMCC\Bin\..\include\math.h
+freertos\bsp_pwm.o: C:\Users\WXR\AppData\Local\Keil_v5\ARM\ARMCC\Bin\..\include\stddef.h
+freertos\bsp_pwm.o: C:\Users\WXR\AppData\Local\Keil_v5\ARM\ARMCC\Bin\..\include\math.h
 freertos\bsp_pwm.o: ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_rcc_ex.h
 freertos\bsp_pwm.o: ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_gpio.h
 freertos\bsp_pwm.o: ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_gpio_ex.h

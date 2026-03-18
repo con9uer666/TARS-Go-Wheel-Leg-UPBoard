@@ -1,4 +1,4 @@
-# Install script for directory: D:/PROJECTS/Wheel_Leg_About/UP_Wheel_Leg_VScode
+# Install script for directory: C:/Users/WXR/Desktop/robomaster/Code/RM_missions/2025TARS-GO/Wheel_Leg/UP_Wheel_Leg_VScode20260316
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)
@@ -34,23 +34,23 @@ endif()
 
 # Set path to fallback-tool for dependency-resolution.
 if(NOT DEFINED CMAKE_OBJDUMP)
-  set(CMAKE_OBJDUMP "C:/Users/congq/AppData/Local/stm32cube/bundles/gnu-tools-for-stm32/14.3.1+st.2/bin/arm-none-eabi-objdump.exe")
+  set(CMAKE_OBJDUMP "C:/Users/WXR/AppData/Local/stm32cube/bundles/gnu-tools-for-stm32/14.3.1+st.2/bin/arm-none-eabi-objdump.exe")
 endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for the subdirectory.
-  include("D:/PROJECTS/Wheel_Leg_About/UP_Wheel_Leg_VScode/build/Debug/cmake/stm32cubemx/cmake_install.cmake")
+  include("C:/Users/WXR/Desktop/robomaster/Code/RM_missions/2025TARS-GO/Wheel_Leg/UP_Wheel_Leg_VScode20260316/build/Debug/cmake/stm32cubemx/cmake_install.cmake")
 endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for the subdirectory.
-  include("D:/PROJECTS/Wheel_Leg_About/UP_Wheel_Leg_VScode/build/Debug/bin_dsp/cmake_install.cmake")
+  include("C:/Users/WXR/Desktop/robomaster/Code/RM_missions/2025TARS-GO/Wheel_Leg/UP_Wheel_Leg_VScode20260316/build/Debug/bin_dsp/cmake_install.cmake")
 endif()
 
 string(REPLACE ";" "\n" CMAKE_INSTALL_MANIFEST_CONTENT
        "${CMAKE_INSTALL_MANIFEST_FILES}")
 if(CMAKE_INSTALL_LOCAL_ONLY)
-  file(WRITE "D:/PROJECTS/Wheel_Leg_About/UP_Wheel_Leg_VScode/build/Debug/install_local_manifest.txt"
+  file(WRITE "C:/Users/WXR/Desktop/robomaster/Code/RM_missions/2025TARS-GO/Wheel_Leg/UP_Wheel_Leg_VScode20260316/build/Debug/install_local_manifest.txt"
      "${CMAKE_INSTALL_MANIFEST_CONTENT}")
 endif()
 if(CMAKE_INSTALL_COMPONENT)
@@ -66,6 +66,6 @@ else()
 endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
-  file(WRITE "D:/PROJECTS/Wheel_Leg_About/UP_Wheel_Leg_VScode/build/Debug/${CMAKE_INSTALL_MANIFEST}"
+  file(WRITE "C:/Users/WXR/Desktop/robomaster/Code/RM_missions/2025TARS-GO/Wheel_Leg/UP_Wheel_Leg_VScode20260316/build/Debug/${CMAKE_INSTALL_MANIFEST}"
      "${CMAKE_INSTALL_MANIFEST_CONTENT}")
 endif()

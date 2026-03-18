@@ -25,6 +25,8 @@ Vision_Type vision;
 uint8_t Rune_direction;
 uint8_t Rune_stable = 0;
 uint8_t Change_exposure;
+uint8_t detect_color = 0;
+
 
 float UI_x, UI_y;
 
@@ -73,7 +75,7 @@ VisionSensor vision_sensor = {
 void Vision_Init(void)
 {
 	vision_transmit.header = VISION_FRAME_HEADER_TX;
-	vision_transmit.reset_tracker = 0;
+	//vision_transmit.reset_tracker = 0;
 	//	Slope_Init(&gimbal.yaw.visionslope,0.7,0.7);
 	//	Slope_Init(&gimbal.pitch.visionslope,0.5,0.5);
 	Vision_RegisterEvents();
@@ -91,12 +93,12 @@ void Vision_RegisterEvents()
 //	RC_Register(Key_W,CombineKey_Ctrl,KeyEvent_OnDown,Vision_Change_KeyCallback);
 }
 uint8_t cnt1 = 0;
-uint8_t cnt0 = 0;
+//uint8_t cnt0 = 0;
 // 切换视觉模式
 void Vision_Change_KeyCallback(KeyType key, KeyCombineType combine, KeyEventType event)
 {
 		Vision_Mode = (Vision_Mode + 1) % 3;
-		cnt0++;
+	//	cnt0++;
 //	if(combine == CombineKey_Ctrl && key == Key_W)
 //	{
 //		Rune_stable = 1;
@@ -163,24 +165,26 @@ void Vision_DataReceive(uint8_t *read_from_usart, uint32_t length)
 }
 
 // 对发送的数据更新
+
 void Vision_DataUpdate(void)
 {
-	vision_transmit.header = 0x5A;
-	vision_transmit.yaw = INS.Yaw * 1000.0f;
-	vision_transmit.pitch = INS.Pitch * 1000.0f;
-	vision_transmit.roll = INS.Roll * 1000.0f;
-	vision_transmit.detect_color = 1; // 打红0 打蓝1
-	vision_transmit.task_mode = Vision_Mode;
-	vision_transmit.rune_direction = Rune_direction; //0-anti-clockwise 1-clockwise
-	vision_transmit.rune_stable  = Rune_stable;	//0-unstable 1-stable 
-	vision_transmit.change_exposure =   Change_exposure ; //0-stay 1-add 2-sub
-	
-	if ((GameRobotHP.blue_outpost_HP > 0 && vision_transmit.detect_color == 1) || (GameRobotHP.red_outpost_HP > 0 && vision_transmit.detect_color == 0))
-		vision_transmit.vision_select = 0;
-	else
-		vision_transmit.vision_select = 1;
+    vision_transmit.header = 0x5A;
+    vision_transmit.task_mode = Vision_Mode;
+    vision_transmit.enemy_color = detect_color; // 打红0 打蓝1
+    vision_transmit.bullet_speed = 50;  //ShootData.initial_speed;
+    vision_transmit.roll = INS.Roll/180*PI;
+    vision_transmit.pitch = INS.Pitch/180*PI;
+    vision_transmit.pitch_vel = INS.Gyro[Y_axis];
+    vision_transmit.yaw = INS.Yaw/180*PI;
+    vision_transmit.yaw_vel = INS.Gyro[Z_axis];
+		//vision_transmit.bullet_id = 0;
+    
+//    if ((GameRobotHP.blue_outpost_HP > 0 && vision_transmit.detect_color == 1) || (GameRobotHP.red_outpost_HP > 0 && vision_transmit.detect_color == 0))
+//        vision_transmit.vision_select = 0;
+//    else
+//        vision_transmit.vision_select = 1;
 
-	Append_CRC16_Check_Sum((uint8_t *)&vision_transmit, sizeof(vision_transmit));
+    Append_CRC16_Check_Sum((uint8_t *)&vision_transmit, sizeof(vision_transmit));
 }
 
 void Vision_DataTransmit(void)
@@ -198,17 +202,16 @@ float test3 = 0.01f;
  // 将接收的数据进行解码
 void Vision_ParseData(void)
 {
-	vision.exposure_time = vision_receive.exposure_time;
-	vision.pitch = vision_receive.pitch / 1000.0f;
-	vision.yaw = vision_receive.yaw / 1000.0f;
-	vision.fire = vision_receive.fire/1000.0f;
-	vision.found = vision_receive.tracking;
-	vision.distance = vision_receive.distance;
-	vision.v_yaw = vision_receive.v_yaw;
-
-	fire_control_angle = vision.fire-INS.Yaw/180*PI;
-	gimbal_yaw_diff = vision.yaw / 180*PI-INS.Yaw /180*PI;
-	gimbal_pitch_diff=vision.pitch/180* PI-INS.Pitch/180*PI;
+//new version
+    vision.control = vision_receive.control;
+    vision.fire = vision_receive.fire;
+    vision.yaw = vision_receive.yaw/PI*180;
+    vision.yaw_vel = vision_receive.yaw_vel/PI*180;
+    vision.yaw_acc = vision_receive.yaw_acc/PI*180;
+    vision.pitch = vision_receive.pitch/PI*180;
+    vision.pitch_vel = vision.pitch_vel/PI*180;
+    vision.pitch_acc = vision_receive.pitch_acc/PI*180;
+    vision.bullet_id = vision_receive.bullet_id;
 
 	if (fire_control_angle > PI)
 		fire_control_angle -= 2 * PI;
@@ -220,15 +223,15 @@ void Vision_ParseData(void)
 	{
 		gimbal.visionEnable = true;
 
-		char spinFireflag = 0;
+//		char spinFireflag = 0;
 //		if (vision_receive.ispingyixuanzhuan == 1 && ABS(fire_control_angle) < test1 )//(0.0019*vision.distance*vision.distance-0.0221*vision.distance+0.0651)
 //			spinFireflag = 1;
-		if (ABS(fire_control_angle) < test1)
-			spinFireflag = 1;
-		else if (vision.distance > 6.0f && vision.distance < 8.0f && ABS(fire_control_angle) < 0.005)
-			spinFireflag = 1;
-		else if (vision.distance > 8.0f || vision.distance < 0.8f || ABS(fire_control_angle) > test1)
-			spinFireflag = 0;
+//		if (ABS(fire_control_angle) < test1)
+//			spinFireflag = 1;
+//		else if (vision.distance > 6.0f && vision.distance < 8.0f && ABS(fire_control_angle) < 0.005)
+//			spinFireflag = 1;
+//		else if (vision.distance > 8.0f || vision.distance < 0.8f || ABS(fire_control_angle) > test1)
+//			spinFireflag = 0;
 //		}
 //		if(GameRobotStat.robot_level >=5){
  //				test2 = 1.5f*0.015f;
@@ -237,7 +240,7 @@ void Vision_ParseData(void)
 			gimbal.fire = 1;
 		else
 			gimbal.fire = 0;
-		if (Vision_Mode == 0&&gimbal.fire == 1 && spinFireflag == 1 && shooter.fricOpenFlag == 1 && shooter.workState != TRIGGER_CONTINUE && shooter.workState != TRIGGER_CLICK)
+		if (Vision_Mode == 0&&gimbal.fire == 1 && shooter.fricOpenFlag == 1 && shooter.workState != TRIGGER_CONTINUE && shooter.workState != TRIGGER_CLICK)
 		{
 			shooter.workState = TRIGGER;
 		}
