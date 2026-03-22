@@ -521,7 +521,7 @@ void Foot_CallBack(void)
 
 		if(rcInfo.left == 2 && Foot_Chassis.Target_Leg_State == 0)//下
 			Foot_Chassis.Chassis_Mode = 1;
-		else if (rcInfo.left == 3)//中
+		else if (rcInfo.left == 3 || (rcInfo.left == 2 && Foot_Chassis.Target_Leg_State == 1))//中
 			Foot_Chassis.Chassis_Mode = 0;
 		
 		//控制腿长

@@ -75,12 +75,12 @@ void Gimbal_Init()
 void Gimbal_InitPID()
 {
 	/*pitch由陀螺仪控制*/
-	PID_Init(&gimbal.pitch.imuPID.inner, 1.5, 0.00, 0.01, 500, 2048); // 100 0.018 12180,2.3,25
-	DEPID_Init(&gimbal.pitch.imuPID.deOuter, 10, 0.00, 0.003, 200, 1000, 0.9);
+	PID_Init(&gimbal.pitch.imuPID.inner, 3, 0.04, 0.4, 500, 2048); // 100 0.018 12180,2.3,25
+	DEPID_Init(&gimbal.pitch.imuPID.deOuter, 20, 0.00, 0.015, 50, 1000, 0.9);
 	
 	/*yaw由陀螺仪控制*/
 	PID_Init(&gimbal.yaw.imuPID.inner, 0.005, 0, 0.0005, 1000, 7);  
-	DEPID_Init(&gimbal.yaw.imuPID.deOuter, 70, 0, 0.5, 200, 1000, 0.5);  //20 0 2.5 0.4 1000
+	DEPID_Init(&gimbal.yaw.imuPID.deOuter, 80, 0.0001, 0.5, 200, 1000, 0.5);  //20 0 2.5 0.4 1000
 	
 	//一套软的
 //	PID_Init(&gimbal.yaw.imuPID.inner, 4.5, 0.03, 1.5, 1000, 2048);  

@@ -1,9 +1,9 @@
 freertos\usbd_desc.o: ../USB_DEVICE/App/usbd_desc.c
 freertos\usbd_desc.o: ../Middlewares/ST/STM32_USB_Device_Library/Core/Inc/usbd_core.h
 freertos\usbd_desc.o: ../USB_DEVICE/Target/usbd_conf.h
-freertos\usbd_desc.o: C:\Users\WXR\AppData\Local\Keil_v5\ARM\ARMCC\Bin\..\include\stdio.h
-freertos\usbd_desc.o: C:\Users\WXR\AppData\Local\Keil_v5\ARM\ARMCC\Bin\..\include\stdlib.h
-freertos\usbd_desc.o: C:\Users\WXR\AppData\Local\Keil_v5\ARM\ARMCC\Bin\..\include\string.h
+freertos\usbd_desc.o: D:\Keil_MDK\Core\ARM\ARMCC\Bin\..\include\stdio.h
+freertos\usbd_desc.o: D:\Keil_MDK\Core\ARM\ARMCC\Bin\..\include\stdlib.h
+freertos\usbd_desc.o: D:\Keil_MDK\Core\ARM\ARMCC\Bin\..\include\string.h
 freertos\usbd_desc.o: ../Core/Inc/main.h
 freertos\usbd_desc.o: ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal.h
 freertos\usbd_desc.o: ../Core/Inc/stm32h7xx_hal_conf.h
@@ -12,7 +12,7 @@ freertos\usbd_desc.o: ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_def.h
 freertos\usbd_desc.o: ../Drivers/CMSIS/Device/ST/STM32H7xx/Include/stm32h7xx.h
 freertos\usbd_desc.o: ../Drivers/CMSIS/Device/ST/STM32H7xx/Include/stm32h723xx.h
 freertos\usbd_desc.o: ../Drivers/CMSIS/Include/core_cm7.h
-freertos\usbd_desc.o: C:\Users\WXR\AppData\Local\Keil_v5\ARM\ARMCC\Bin\..\include\stdint.h
+freertos\usbd_desc.o: D:\Keil_MDK\Core\ARM\ARMCC\Bin\..\include\stdint.h
 freertos\usbd_desc.o: ../Drivers/CMSIS/Include/cmsis_version.h
 freertos\usbd_desc.o: ../Drivers/CMSIS/Include/cmsis_compiler.h
 freertos\usbd_desc.o: ../Drivers/CMSIS/Include/cmsis_armcc.h
@@ -20,8 +20,8 @@ freertos\usbd_desc.o: ../Drivers/CMSIS/Include/mpu_armv7.h
 freertos\usbd_desc.o: ../Drivers/CMSIS/Device/ST/STM32H7xx/Include/system_stm32h7xx.h
 freertos\usbd_desc.o: ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal.h
 freertos\usbd_desc.o: ../Drivers/STM32H7xx_HAL_Driver/Inc/Legacy/stm32_hal_legacy.h
-freertos\usbd_desc.o: C:\Users\WXR\AppData\Local\Keil_v5\ARM\ARMCC\Bin\..\include\stddef.h
-freertos\usbd_desc.o: C:\Users\WXR\AppData\Local\Keil_v5\ARM\ARMCC\Bin\..\include\math.h
+freertos\usbd_desc.o: D:\Keil_MDK\Core\ARM\ARMCC\Bin\..\include\stddef.h
+freertos\usbd_desc.o: D:\Keil_MDK\Core\ARM\ARMCC\Bin\..\include\math.h
 freertos\usbd_desc.o: ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_rcc_ex.h
 freertos\usbd_desc.o: ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_gpio.h
 freertos\usbd_desc.o: ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_gpio_ex.h

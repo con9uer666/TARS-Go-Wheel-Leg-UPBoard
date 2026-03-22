@@ -16,7 +16,7 @@
 
 
 
-__attribute__((__packed__))typedef struct
+typedef __packed struct
 {
 //new version
   uint8_t header ;//0xA5
@@ -32,7 +32,7 @@ __attribute__((__packed__))typedef struct
   uint16_t checksum ;
 } VisionReceive;
 
-__attribute__((__packed__)) typedef struct
+typedef __packed struct
 {
     //new version
   uint8_t header;//0x5A
@@ -48,7 +48,7 @@ __attribute__((__packed__)) typedef struct
   uint16_t checksum ;
 }VisionTransmit;
 
-typedef __attribute__((__packed__)) struct vision_sensor_info_struct {
+typedef __packed struct vision_sensor_info_struct {
     float yaw;
     float pitch;
     uint8_t fire;

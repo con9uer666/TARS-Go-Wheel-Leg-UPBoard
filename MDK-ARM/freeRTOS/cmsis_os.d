@@ -1,9 +1,9 @@
 freertos\cmsis_os.o: ../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS/cmsis_os.c
-freertos\cmsis_os.o: C:\Users\WXR\AppData\Local\Keil_v5\ARM\ARMCC\Bin\..\include\string.h
+freertos\cmsis_os.o: D:\Keil_MDK\Core\ARM\ARMCC\Bin\..\include\string.h
 freertos\cmsis_os.o: ../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS/cmsis_os.h
 freertos\cmsis_os.o: ../Middlewares/Third_Party/FreeRTOS/Source/include/FreeRTOS.h
-freertos\cmsis_os.o: C:\Users\WXR\AppData\Local\Keil_v5\ARM\ARMCC\Bin\..\include\stddef.h
-freertos\cmsis_os.o: C:\Users\WXR\AppData\Local\Keil_v5\ARM\ARMCC\Bin\..\include\stdint.h
+freertos\cmsis_os.o: D:\Keil_MDK\Core\ARM\ARMCC\Bin\..\include\stddef.h
+freertos\cmsis_os.o: D:\Keil_MDK\Core\ARM\ARMCC\Bin\..\include\stdint.h
 freertos\cmsis_os.o: ../Core/Inc/FreeRTOSConfig.h
 freertos\cmsis_os.o: ../Middlewares/Third_Party/FreeRTOS/Source/include/projdefs.h
 freertos\cmsis_os.o: ../Middlewares/Third_Party/FreeRTOS/Source/include/portable.h

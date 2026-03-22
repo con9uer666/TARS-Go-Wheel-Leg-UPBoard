@@ -1281,12 +1281,11 @@ es/Third_Party/FreeRTOS/Source/include -I../Middlewares/Third_Party/FreeRTOS/So
 urce/CMSIS_RTOS -I../Middlewares/Third_Party/FreeRTOS/Source/portable/RVDS/ARM_
 CM4F -I../Middlewares/ST/STM32_USB_Device_Library/Core/Inc -I../Middlewares/ST/
 STM32_USB_Device_Library/Class/CDC/Inc -I../Drivers/CMSIS/Device/ST/STM32H7xx/I
-nclude -I../Drivers/CMSIS/Include -I.\RTE\_freeRTOS -IC:\Users\WXR\AppData\Loca
-l\Arm\Packs\ARM\CMSIS-DSP\1.16.2\Include -IC:\Users\WXR\AppData\Local\Arm\Packs
-\ARM\CMSIS-DSP\1.16.2\PrivateInclude -IC:\Users\WXR\AppData\Local\Arm\Packs\ARM
-\CMSIS\6.2.0\CMSIS\Core\Include --predefine="__UVISION_VERSION SETA 543" --pred
-efine="STM32H723xx SETA 1" --predefine="_RTE_ SETA 1" --list=startup_stm32h723x
-x.lst startup_stm32h723xx.s
+nclude -I../Drivers/CMSIS/Include -I.\RTE\_freeRTOS -ID:\Keil_MDK\Packs\ARM\CMS
+IS-DSP\1.16.2\Include -ID:\Keil_MDK\Packs\ARM\CMSIS-DSP\1.16.2\PrivateInclude -
+ID:\Keil_MDK\Packs\ARM\CMSIS\6.2.0\CMSIS\Core\Include --predefine="__UVISION_VE
+RSION SETA 541" --predefine="STM32H723xx SETA 1" --predefine="_RTE_ SETA 1" --l
+ist=startup_stm32h723xx.lst startup_stm32h723xx.s
 
 
 

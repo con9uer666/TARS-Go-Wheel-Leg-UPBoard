@@ -1,6 +1,6 @@
 freertos\bmi088driver.o: ..\IMU\source\BMI088driver.c
 freertos\bmi088driver.o: ../IMU/include/BMI088driver.h
-freertos\bmi088driver.o: C:\Users\WXR\AppData\Local\Keil_v5\ARM\ARMCC\Bin\..\include\stdint.h
+freertos\bmi088driver.o: D:\Keil_MDK\Core\ARM\ARMCC\Bin\..\include\stdint.h
 freertos\bmi088driver.o: ../Core/Inc/main.h
 freertos\bmi088driver.o: ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal.h
 freertos\bmi088driver.o: ../Core/Inc/stm32h7xx_hal_conf.h
@@ -16,8 +16,8 @@ freertos\bmi088driver.o: ../Drivers/CMSIS/Include/mpu_armv7.h
 freertos\bmi088driver.o: ../Drivers/CMSIS/Device/ST/STM32H7xx/Include/system_stm32h7xx.h
 freertos\bmi088driver.o: ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal.h
 freertos\bmi088driver.o: ../Drivers/STM32H7xx_HAL_Driver/Inc/Legacy/stm32_hal_legacy.h
-freertos\bmi088driver.o: C:\Users\WXR\AppData\Local\Keil_v5\ARM\ARMCC\Bin\..\include\stddef.h
-freertos\bmi088driver.o: C:\Users\WXR\AppData\Local\Keil_v5\ARM\ARMCC\Bin\..\include\math.h
+freertos\bmi088driver.o: D:\Keil_MDK\Core\ARM\ARMCC\Bin\..\include\stddef.h
+freertos\bmi088driver.o: D:\Keil_MDK\Core\ARM\ARMCC\Bin\..\include\math.h
 freertos\bmi088driver.o: ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_rcc_ex.h
 freertos\bmi088driver.o: ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_gpio.h
 freertos\bmi088driver.o: ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_gpio_ex.h

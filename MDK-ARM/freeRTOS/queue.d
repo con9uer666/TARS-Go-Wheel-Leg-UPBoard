@@ -1,9 +1,9 @@
 freertos\queue.o: ../Middlewares/Third_Party/FreeRTOS/Source/queue.c
-freertos\queue.o: C:\Users\WXR\AppData\Local\Keil_v5\ARM\ARMCC\Bin\..\include\stdlib.h
-freertos\queue.o: C:\Users\WXR\AppData\Local\Keil_v5\ARM\ARMCC\Bin\..\include\string.h
+freertos\queue.o: D:\Keil_MDK\Core\ARM\ARMCC\Bin\..\include\stdlib.h
+freertos\queue.o: D:\Keil_MDK\Core\ARM\ARMCC\Bin\..\include\string.h
 freertos\queue.o: ../Middlewares/Third_Party/FreeRTOS/Source/include/FreeRTOS.h
-freertos\queue.o: C:\Users\WXR\AppData\Local\Keil_v5\ARM\ARMCC\Bin\..\include\stddef.h
-freertos\queue.o: C:\Users\WXR\AppData\Local\Keil_v5\ARM\ARMCC\Bin\..\include\stdint.h
+freertos\queue.o: D:\Keil_MDK\Core\ARM\ARMCC\Bin\..\include\stddef.h
+freertos\queue.o: D:\Keil_MDK\Core\ARM\ARMCC\Bin\..\include\stdint.h
 freertos\queue.o: ../Core/Inc/FreeRTOSConfig.h
 freertos\queue.o: ../Middlewares/Third_Party/FreeRTOS/Source/include/projdefs.h
 freertos\queue.o: ../Middlewares/Third_Party/FreeRTOS/Source/include/portable.h
