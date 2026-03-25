@@ -27,7 +27,7 @@ float errorP=0;
 
 
 /********************初始化************************/
-// 初始化云台
+// 初始化云台函数vscode://lirentech.file-ref-tags?filePath=Gimbal.c&snippet=%2F%2F+%E5%88%9D%E5%A7%8B%E5%8C%96%E4%BA%91%E5%8F%B0%E5%87%BD%E6%95%B0
 void Gimbal_Init()
 {
 	// 设定pitch角度限幅
@@ -72,6 +72,7 @@ void Gimbal_Init()
 //	DEPID_Init(&gimbal.yaw.imuPID.deOuter, 20, 0, 2, 0, 1000, 0.4);  //20 0 2.5 0.4 1000
 //}
 
+//云台PID初始化函数vscode://lirentech.file-ref-tags?filePath=Gimbal.c&snippet=%2F%2F%E4%BA%91%E5%8F%B0PID%E5%88%9D%E5%A7%8B%E5%8C%96%E5%87%BD%E6%95%B0
 void Gimbal_InitPID()
 {
 	/*pitch由陀螺仪控制*/
@@ -95,20 +96,25 @@ void PitchLimit()
     static uint16_t initPitch = -21495;//need change
     float temp;
 
-    temp = gimbal.pitchMotor.M4005.angle + (gimbal.pitch.targetAngle - gimbal.pitch.angle) / 360.f * 65536.f;
+    temp = gimbal.pitchMotor.M4005.angle + (gimbal.pitch.targetAngle - gimbal.pitch.angle) / 360.f * 65536.f;//目标角度转换为电机单位
+	//目标原始值套圈
     if (temp > 65536)
         temp -= 65536;
     else if (temp < 0)
         temp += 65536;
 
+	//目标与initPitch套圈		//todo:为什么要与initPitch套圈？难道不是与电机当前角度套圈吗？因为目标角度是基于initPitch的绝对角度，而电机当前角度是基于initPitch的相对角度，所以需要与initPitch套圈来计算误差。
     if (temp - initPitch > 65536 / 2.0f)
         temp = temp - 65536;
     else if (temp - initPitch < -65536 / 2.0f)
         temp = temp + 65536;
-		errorP=temp - initPitch;
+
+	//计算误差
+	errorP=temp - initPitch;
     if ((temp - initPitch) >= gimbal.pitch.pitchMax / 360.f * 65536.f)
     {
         temp = initPitch + gimbal.pitch.pitchMax / 360.f * 65536.f;
+		//目标角度与电机角度套圈
         if (temp - gimbal.pitchMotor.M4005.angle > 65536 / 2.0f)
             temp = temp - 65536;
         else if (temp - gimbal.pitchMotor.M4005.angle < -65536 / 2.0f)
@@ -132,7 +138,7 @@ void PitchLimit()
 // 注册事件
 void Gimbal_RegisterEvents()
 {
-	 RC_Register(Key_R,CombineKey_Ctrl,KeyEvent_OnDown,Gimbal_Return_KeyCallback);//ctrl R 一键调头
+	//  RC_Register(Key_R,CombineKey_Ctrl,KeyEvent_OnDown,Gimbal_Return_KeyCallback);//ctrl R 一键调头
 }
 
 // 更新陀螺仪角度、累积yaw角度、处理套圈后totalAngle和targetAngle

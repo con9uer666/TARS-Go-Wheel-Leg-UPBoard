@@ -3,7 +3,7 @@ set(CMAKE_HOST_SYSTEM_NAME "Windows")
 set(CMAKE_HOST_SYSTEM_VERSION "10.0.26200")
 set(CMAKE_HOST_SYSTEM_PROCESSOR "AMD64")
 
-include("C:/Users/WXR/Desktop/robomaster/Code/RM_missions/2025TARS-GO/Wheel_Leg/UP_Wheel_Leg_VScode20260316/cmake/gcc-arm-none-eabi.cmake")
+include("C:/Users/WXR/Desktop/robomaster/Code/RM_missions/2025TARS-GO/Wheel_Leg/UP_Wheel_Leg_VScode20260320/cmake/gcc-arm-none-eabi.cmake")
 
 set(CMAKE_SYSTEM "Generic")
 set(CMAKE_SYSTEM_NAME "Generic")

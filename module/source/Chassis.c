@@ -1,19 +1,6 @@
 #include "Chassis.h"
-#include "RC.h"
-#include "arm_math.h"
-#include "rc.h"
-#include "UserFreertos.h"
-#include "gimbal.h"
-#include "super_cap.h"
-#include "detect.h"
-#include "Moto.h"
-#include "USER_CAN.h"
-#include "Beep.h"
-#include "struct_typedef.h"
-#include "math.h"
-#include "detect.h"
-#include "vision.h"
-#include "RLS.h"
+#include "Trigger_about.h"
+
 
 #define EN_CHASSIS_TASK
 // #define POWER_GENERATE
@@ -24,30 +11,11 @@ int8_t YawLost = 0;
 uint8_t UIupdateState=0;
 uint16_t SET_WHEELSPEED_MAX = 8000;
 static uint8_t last_left_state = 0;
+uint8_t upstair_flag = 0;//0：常态；1：上台阶的瞬间
+uint8_t leg_button_flag = 0;//0:按下的瞬间 1：按下后持续
 
-//680
 
-void Chassis_InitPID(void);
-void Chassis_RegisterEvents(void);
-char *Chassis_GetModeText(void);
-void Chassis_UpdateSlope(void);
-void Chassis_RockerCtrl(void);
-void Chassis_Move_KeyCallback(KeyType key, KeyCombineType combine, KeyEventType event);
-void Chassis_Stop_KeyCallback(KeyType key, KeyCombineType combine, KeyEventType event);
-void Chassis_SwitchMode_KeyCallback(KeyType key, KeyCombineType combine, KeyEventType event);
-void Chassis_Return_KeyCallback(KeyType key, KeyCombineType combine, KeyEventType event);
-void Chassis_Turn_KeyCallback(KeyType key, KeyCombineType combine, KeyEventType event);
-void Chassis_SwitchSpeed_KeyCallback(KeyType key, KeyCombineType combine, KeyEventType event);
-void Chassis_TurnSpeed_KeyCallback(KeyType key, KeyCombineType combine, KeyEventType event);
-void Chassis_capOutputChange_KeyCallback(KeyType key, KeyCombineType combine, KeyEventType event);
-void Chassis_capBurstChange_KeyCallback(KeyType key, KeyCombineType combine, KeyEventType event);
-void Chassis_ChangeDiagonal(KeyType key, KeyCombineType combine, KeyEventType event);
-void Chassis_Change_DebugTurn0(KeyType key, KeyCombineType combine, KeyEventType event);
-void UI_UPdate(KeyType key, KeyCombineType combine, KeyEventType event);
-void Cap_On_KeyCallback(KeyType key, KeyCombineType combine, KeyEventType event);
-void Cap_Off_KeyCallback(KeyType key, KeyCombineType combine, KeyEventType event);
-void Motor_StartCalcAngle_M4005(DoubleMotor *motor);
-void Motor_CalcAngle_M4005(DoubleMotor *motor);
+
 
 void Task_Chassis_Callback(void);
 
@@ -86,8 +54,8 @@ void Chassis_Init()
 
 
 	// ?��????????????
-	Slope_Init(&chassis.move.xSlope, 80, 0);
-	Slope_Init(&chassis.move.ySlope, 80, 0);
+	Slope_Init(&chassis.move.xSlope, 0.015, 0);
+	Slope_Init(&chassis.move.ySlope, 0.015, 0);
 	Slope_Init(&chassis.move.spinSlope, 0.1, 0);
 	Slope_Init(&chassis.move.outputSlope, 0.1, 0);
 	Slope_Init(&chassis.move.chargeSlope, 0.15, 0);
@@ -176,27 +144,34 @@ void Chassis_InitPID()
 	PID_SetDeadzone(&chassis.rotate.pid, 0.1);
 }
 
-// ��??��?��??????
+// 注册事件
+// TODO:wasd斜坡、小陀螺Q、抬腿E、上台阶R、
 void Chassis_RegisterEvents()
 {
-	RC_Register(Key_W | Key_A | Key_S | Key_D, CombineKey_None, KeyEvent_OnDown, Chassis_Move_KeyCallback); // WASD??????????z?
-	RC_Register(Key_W | Key_A | Key_S | Key_D, CombineKey_None, KeyEvent_OnUp, Chassis_Stop_KeyCallback);	// WASD????????????z?
-	RC_Register(Key_Q | Key_E | Key_G, CombineKey_None, KeyEvent_OnDown, Chassis_SwitchMode_KeyCallback);	// QER???????g?
-	RC_Register(Key_V, CombineKey_None, KeyEvent_OnDown, Chassis_capOutputChange_KeyCallback);
-	RC_Register(Key_E | Key_R, CombineKey_Ctrl, KeyEvent_OnDown, Chassis_Return_KeyCallback);
-	//B ?????????��??
-	RC_Register(Key_B, CombineKey_None, KeyEvent_OnDown, Chassis_ChangeDiagonal);
-	// SHIFT+B
-	RC_Register(Key_B, CombineKey_Shift, KeyEvent_OnDown, Chassis_Change_DebugTurn0);
-//  RC_Register(Key_V,CombineKey_Shift,KeyEvent_OnDown,Chassis_capBurstChange_KeyCallback);
-//	RC_Register(Key_Shift,CombineKey_None,KeyEvent_OnDown,Cap_On_KeyCallback);
-	RC_Register(Key_C,CombineKey_None,KeyEvent_OnDown,UI_UPdate);
-	RC_Register(Key_C,CombineKey_None,KeyEvent_OnUp,UI_UPdate);
+	RC_Register(Key_W | Key_A | Key_S | Key_D, CombineKey_None, KeyEvent_OnDown, Chassis_Move_KeyCallback); // WASD
+	RC_Register(Key_W | Key_A | Key_S | Key_D, CombineKey_None, KeyEvent_OnUp, Chassis_Stop_KeyCallback);	// WASD
+	//QR事件注册vscode://lirentech.file-ref-tags?filePath=Chassis.c&snippet=%2F%2FQR%E4%BA%8B%E4%BB%B6%E6%B3%A8%E5%86%8C
+	RC_Register(Key_Q, CombineKey_None, KeyEvent_OnDown, KeyCallback_Q_OnDown);//按Q
+	RC_Register(Key_R, CombineKey_None, KeyEvent_OnDown, KeyCallback_R_OnDown);//按R
+	RC_Register(Key_E, CombineKey_None, KeyEvent_OnDown, KeyCallback_E_OnDown);	//按E
+	RC_Register(Key_Q, CombineKey_None, KeyEvent_OnUp, KeyCallback_Q_OnUp);//按Q
+	RC_Register(Key_R, CombineKey_None, KeyEvent_OnUp, KeyCallback_R_OnUp);//按R
+	RC_Register(Key_E, CombineKey_None, KeyEvent_OnUp, KeyCallback_E_OnUp);//按E
+// 	RC_Register(Key_V, CombineKey_None, KeyEvent_OnDown, Chassis_capOutputChange_KeyCallback);//!已注释
+// 	// RC_Register(Key_E | Key_R, CombineKey_None, KeyEvent_OnDown, Chassis_Return_KeyCallback);//!已注释
+	
+// 	RC_Register(Key_B, CombineKey_None, KeyEvent_OnDown, Chassis_ChangeDiagonal);//!已注释
+// 	// SHIFT+B
+// 	RC_Register(Key_B, CombineKey_Shift, KeyEvent_OnDown, Chassis_Change_DebugTurn0);//!已注释
+// //  RC_Register(Key_V,CombineKey_Shift,KeyEvent_OnDown,Chassis_capBurstChange_KeyCallback);
+// //	RC_Register(Key_Shift,CombineKey_None,KeyEvent_OnDown,Cap_On_KeyCallback);
+// 	RC_Register(Key_C,CombineKey_None,KeyEvent_OnDown,UI_UPdate);//!已注释
+// 	RC_Register(Key_C,CombineKey_None,KeyEvent_OnUp,UI_UPdate);//!已注释
 
 }
 
-// ?��????????��??????��????????????????
-void Spin_SpeedUpdate() // TODO??????????????????
+
+void Spin_SpeedUpdate()
 {
 	chassis.move.maxVw = chassis.move.maxPower * 0.225f + 3.25f; // 0.065 2.8
 	if (chassis.move.maxVw <= 0.5f)
@@ -218,14 +193,16 @@ void Spin_SpeedUpdate() // TODO??????????????????
 	}
 }
 
-// ?��??????????
+float keyboard_speed_max = 2.7f;
+
+// 底盘目标解算
 void Chassis_UpdateSlope()
 {
 	Slope_NextVal(&chassis.move.xSlope);
 	Slope_NextVal(&chassis.move.ySlope);
 	Slope_NextVal(&chassis.move.spinSlope);
-	Slope_SetTarget(&chassis.move.ySlope, chassis.move.maxVy * (chassis.key.key_w + chassis.key.key_s)); // ?????????
-	Slope_SetTarget(&chassis.move.xSlope, chassis.move.maxVx * (chassis.key.key_d + chassis.key.key_a)); // ?????????
+	Slope_SetTarget(&chassis.move.ySlope, keyboard_speed_max * (chassis.key.key_w + chassis.key.key_s)); // 前后
+	Slope_SetTarget(&chassis.move.xSlope, keyboard_speed_max * (chassis.key.key_d + chassis.key.key_a)); // 左右
 	Spin_SpeedUpdate();
 	if (JUDGE_GetChassisPowerLimit() > 70)
 	{
@@ -243,18 +220,18 @@ void Chassis_UpdateSlope()
 	chassis.move.maxVy = chassis.move.maxVx;
 	chassis.move.maxVw = 6000 / rotateRatio / 60.0f / (268.f/17.f) * 2.0f * PI * chassis.info.wheelRadius * 1.0f/1.414f;
 }
-// ?????????��??
-void Chassis_RockerCtrl()
-{
-	// ����??????????��????????????????????????��??????
-	if (chassis.rotate.mode != ChassisMode_Spin && rcInfo.left == 2 && rcInfo.right != 1)
-		Chassis_SwitchMode_KeyCallback(Key_Q, CombineKey_Ctrl, KeyEvent_OnDown); // g?????????????
-	else if (chassis.rotate.mode == ChassisMode_Spin && rcInfo.left == 3)
-		Chassis_SwitchMode_KeyCallback(Key_Q, CombineKey_Ctrl, KeyEvent_OnDown);
-	// ?��?��????��??��?��????
-	Slope_SetTarget(&chassis.move.xSlope, (float)rcInfo.ch3 * chassis.move.maxVx / 660); // ?????????
-	Slope_SetTarget(&chassis.move.ySlope, (float)rcInfo.ch4 * chassis.move.maxVy / 660);
-}	
+// 遥控器回调
+// void Chassis_RockerCtrl()
+// {
+	
+// 	if (chassis.rotate.mode != ChassisMode_Spin && rcInfo.left == 2 && rcInfo.right != 1)
+// 		Chassis_SwitchMode_KeyCallback(Key_Q, CombineKey_Ctrl, KeyEvent_OnDown); // g?????????????
+// 	else if (chassis.rotate.mode == ChassisMode_Spin && rcInfo.left == 3)
+// 		Chassis_SwitchMode_KeyCallback(Key_Q, CombineKey_Ctrl, KeyEvent_OnDown);
+// 	// ?��?��????��??��?��????
+// 	Slope_SetTarget(&chassis.move.xSlope, (float)rcInfo.ch3 * chassis.move.maxVx / 660); // ?????????
+// 	Slope_SetTarget(&chassis.move.ySlope, (float)rcInfo.ch4 * chassis.move.maxVy / 660);
+// }	
 // ?????��??????UI??��?
 char *Chassis_GetModeText()
 {
@@ -269,71 +246,68 @@ char *Chassis_GetModeText()
 		return NULL;
 	}
 }
-/************????????*******************/
-/*************************RC???**************************
-?????????????event????
-*********************************************************/
-// WASD????
+// 
 void Chassis_Move_KeyCallback(KeyType key, KeyCombineType combine, KeyEventType event)
 {
 	switch (key)
 	{
 	case Key_W:
-		chassis.key.key_w = 1;
+		chassis.key.key_w = 1.0f;
 		break;
 	case Key_S:
-		chassis.key.key_s = -1;
+		chassis.key.key_s = -1.0f;
 		break;
 	case Key_D:
-		chassis.key.key_d = 1;
+		chassis.key.key_d = 1.0f;
 		break;
 	case Key_A:
-		chassis.key.key_a = -1;
+		chassis.key.key_a = -1.0f;
 		break;
 	default:
 		break;
 	}
 }
-void UI_UPdate(KeyType key, KeyCombineType combine, KeyEventType event){
-	if(event == KeyEvent_OnDown)
-			UIupdateState=1;
-	else
-			UIupdateState=0;
+void UI_UPdate(KeyType key, KeyCombineType combine, KeyEventType event)
+{
+	// if(event == KeyEvent_OnDown)
+	// 		UIupdateState=1;
+	// else
+	// 		UIupdateState=0;
 }
 
-// ????????��??��???��
+//
 void Chassis_Stop_KeyCallback(KeyType key, KeyCombineType combine, KeyEventType event)
 {
 	switch (key)
 	{
-	case Key_W:
-		chassis.key.key_w = 0;
-		break;
-	case Key_S:
-		chassis.key.key_s = 0;
-		break;
-	case Key_D:
-		chassis.key.key_d = 0;
-		break;
-	case Key_A:
-		chassis.key.key_a = 0;
-		break;
-	default:
-		break;
+		case Key_W:
+			chassis.key.key_w = 0;
+			break;
+		case Key_S:
+			chassis.key.key_s = 0;
+			break;
+		case Key_D:
+			chassis.key.key_d = 0;
+			break;
+		case Key_A:
+			chassis.key.key_a = 0;
+			break;
+		default:
+			break;
 	}
 }
 
 // ????????
 void Chassis_capOutputChange_KeyCallback(KeyType key, KeyCombineType combine, KeyEventType event)
 {
-	if (chassis.move.fastMode == 0 && cap.receive_data.max_power > 80)
-	{
-		chassis.move.fastMode = 1;
-		chassis.move.cap_output = 1;
-		return;
-	}
-	if (chassis.move.fastMode == 1)
-		chassis.move.fastMode = 0;
+	// if (chassis.move.fastMode == 0 && cap.receive_data.max_power > 80)
+	// {
+	// 	chassis.move.fastMode = 1;
+	// 	chassis.move.cap_output = 1;
+	// 	return;
+	// }
+	// if (chassis.move.fastMode == 1)
+	// 	chassis.move.fastMode = 0;
 }
 // ????????
 //  void Cap_On_KeyCallback(KeyType key,KeyCombineType combine,KeyEventType event)
@@ -352,144 +326,161 @@ void Chassis_capOutputChange_KeyCallback(KeyType key, KeyCombineType combine, Ke
 //		return;
 //	}
 //  }
-void Chassis_ChangeDiagonal(KeyType key, KeyCombineType combine, KeyEventType event){
-	if(key == Key_B)
-	{
-		if(diagonal_enable!=0)
-		{
-			diagonal_enable=0;
-			chassis.rotate.mode = ChassisMode_Follow;
-		}
-		else
-			diagonal_enable=1;
-	}
-	chassis.rotate.InitAngle = INIT_YAW_ANGLE - diagonal_enable * 8192-16384;	
-	if(chassis.rotate.InitAngle>=65536)
-		chassis.rotate.InitAngle-=65536;
-	if(chassis.rotate.InitAngle<0)
-		chassis.rotate.InitAngle+=65536;}
-
-void Chassis_Change_DebugTurn0(KeyType key, KeyCombineType combine, KeyEventType event){
-	if(chassis.motors[0].TurnOffset == 230.6964f)
-		chassis.motors[0].TurnOffset = 230.6964f + 38;
-	else chassis.motors[0].TurnOffset=230.6964f;
-}
-
-void Chassis_SwitchMode_KeyCallback(KeyType key, KeyCombineType combine, KeyEventType event)
+void Chassis_ChangeDiagonal(KeyType key, KeyCombineType combine, KeyEventType event)
 {
-	if (chassis.rotate.mode != ChassisMode_Follow || diagonal_enable==0)
-	{
-		chassis.rotate.mode = ChassisMode_Follow;
-	}
-	else if(diagonal_enable!=0)
-	{
-		switch (key)
-		{
-		case Key_Q:
-			PID_Clear(&chassis.rotate.pid);
-			chassis.rotate.mode = ChassisMode_Spin;
-			Slope_SetTarget(&chassis.move.spinSlope, chassis.move.maxVw);
-			break;
-		case Key_E:
-			if (chassis.rotate.pid.maxOutput == 0)
-			{
-				chassis.rotate.pid.maxOutput = 11;
-			}
-			else
-			{
-				chassis.rotate.pid.maxOutput = 0;
-			}
-			break;
-		default:
-			break;
-		}
-	}
+	// if(key == Key_B)
+	// {
+	// 	if(diagonal_enable!=0)
+	// 	{
+	// 		diagonal_enable=0;
+	// 		chassis.rotate.mode = ChassisMode_Follow;
+	// 	}
+	// 	else
+	// 		diagonal_enable=1;
+	// }
+	// chassis.rotate.InitAngle = INIT_YAW_ANGLE - diagonal_enable * 8192-16384;	
+	// if(chassis.rotate.InitAngle>=65536)
+	// 	chassis.rotate.InitAngle-=65536;
+	// if(chassis.rotate.InitAngle<0)
+	// 	chassis.rotate.InitAngle+=65536;
 }
+
+void Chassis_Change_DebugTurn0(KeyType key, KeyCombineType combine, KeyEventType event)
+{
+	// if(chassis.motors[0].TurnOffset == 230.6964f)
+	// 	chassis.motors[0].TurnOffset = 230.6964f + 38;
+	// else chassis.motors[0].TurnOffset=230.6964f;
+}
+
+
+KeyProtectSingleTrigger_Def Key_R_Protect = {0};
+//QR回调vscode://lirentech.file-ref-tags?filePath=Chassis.c&snippet=%2F%2FQR%E5%9B%9E%E8%B0%83
+		void KeyCallback_Q_OnDown(KeyType key, KeyCombineType combine, KeyEventType event)
+		{
+			Foot_Chassis.Chassis_Mode = 1;
+		}
+
+		void KeyCallback_R_OnDown(KeyType key, KeyCombineType combine, KeyEventType event)
+		{					
+			upstair_flag = KeyProtectSingleTrigger_Update(&Key_R_Protect, 1, 10);//10次 确保发出
+			Foot_Chassis.Target_Leg_State = 0;
+		}
+
+		void KeyCallback_Q_OnUp(KeyType key, KeyCombineType combine, KeyEventType event)
+		{
+			Foot_Chassis.Chassis_Mode = 0;
+		}
+
+		void KeyCallback_R_OnUp(KeyType key, KeyCombineType combine, KeyEventType event)
+		{
+			upstair_flag = KeyProtectSingleTrigger_Update(&Key_R_Protect, 0, 10);
+		}
+
+		void KeyCallback_E_OnDown(KeyType key, KeyCombineType combine, KeyEventType event)
+		{
+			if(leg_button_flag == 0)
+			{
+				if(Foot_Chassis.Target_Leg_State == 0)
+					Foot_Chassis.Target_Leg_State = 1;
+				else
+					Foot_Chassis.Target_Leg_State = 0;
+			}
+			leg_button_flag = 1;
+		}
+
+		void KeyCallback_E_OnUp(KeyType key, KeyCombineType combine, KeyEventType event)
+		{
+			leg_button_flag = 0;
+		}
+
+
+
 void Chassis_Return_KeyCallback(KeyType key, KeyCombineType combine, KeyEventType event)
 {
-	switch (key)
-	{
-	case Key_E:
-		gimbal.yaw.targetAngle += 180;
-		break;
-	case Key_R:
-		gimbal.yaw.targetAngle -= 180;
-	default:
-		break;
-	}
+	// switch (key)
+	// {
+	// case Key_E:
+	// 	gimbal.yaw.targetAngle += 180;
+	// 	break;
+	// case Key_R:
+	// 	gimbal.yaw.targetAngle -= 180;
+	// default:
+	// 	break;
+	// }
 }
 
 uint8_t spin_switch = 0;
 
-void Task_Chassis_Callback()
-{
-	chassis.rotate.nowAngle = gimbal.yawMotor_M4005.angle;
-	chassis.rotate.relativeAngle = ((chassis.rotate.nowAngle - chassis.rotate.InitAngle));
-    if (rcInfo.wheel > 600)
-        chassis.rockerCtrl = true;
-    else if (rcInfo.wheel < -600)
-        chassis.rockerCtrl = false;
+// //老代码，底盘回调
+// void Task_Chassis_Callback()
+// {
+// 	chassis.rotate.nowAngle = gimbal.yawMotor_M4005.angle;
+// 	chassis.rotate.relativeAngle = ((chassis.rotate.nowAngle - chassis.rotate.InitAngle));
+//     if (rcInfo.wheel > 600)
+//         chassis.rockerCtrl = true;
+//     else if (rcInfo.wheel < -600)
+//         chassis.rockerCtrl = false;
 
-    if (chassis.rockerCtrl)
-        Chassis_RockerCtrl();
+//     if (chassis.rockerCtrl)
+//         Chassis_RockerCtrl();
 
-    last_left_state = rcInfo.left;
+//     last_left_state = rcInfo.left;
 
-    Chassis_UpdateSlope();
+//     Chassis_UpdateSlope();
 
-    float gimbalAngleSin = arm_sin_f32(-(chassis.rotate.relativeAngle - diagonal_enable * 45.0f-90.0f) * PI / 180);
-    float gimbalAngleCos = arm_cos_f32(-(chassis.rotate.relativeAngle - diagonal_enable * 45.0f-90.0f) * PI / 180);
+//     float gimbalAngleSin = arm_sin_f32(-(chassis.rotate.relativeAngle - diagonal_enable * 45.0f-90.0f) * PI / 180);
+//     float gimbalAngleCos = arm_cos_f32(-(chassis.rotate.relativeAngle - diagonal_enable * 45.0f-90.0f) * PI / 180);
 
-    chassis.move.vx = (Slope_GetVal(&chassis.move.xSlope) * gimbalAngleCos + Slope_GetVal(&chassis.move.ySlope) * gimbalAngleSin);
+//     chassis.move.vx = (Slope_GetVal(&chassis.move.xSlope) * gimbalAngleCos + Slope_GetVal(&chassis.move.ySlope) * gimbalAngleSin);
 
-    chassis.move.vy = (-Slope_GetVal(&chassis.move.xSlope) * gimbalAngleSin + Slope_GetVal(&chassis.move.ySlope) * gimbalAngleCos);
+//     chassis.move.vy = (-Slope_GetVal(&chassis.move.xSlope) * gimbalAngleSin + Slope_GetVal(&chassis.move.ySlope) * gimbalAngleCos);
 
-    if (chassis.rotate.mode == ChassisMode_Follow)
-    {
-        Slope_SetTarget(&chassis.move.spinSlope, 0);
-        if (chassis.rotate.relativeAngle > 180)
-            chassis.rotate.relativeAngle -= 360;
-        if (chassis.rotate.relativeAngle < -180)
-            chassis.rotate.relativeAngle += 360;
-        if (YawLost == 0)
-        {
-            PID_SingleCalc(&chassis.rotate.pid, 0, chassis.rotate.relativeAngle);
-        }
-        else
-        {
-            chassis.rotate.relativeAngle = 0;
-            chassis.rotate.pid.output = 0;
-        }
-        chassis.move.vw = chassis.rotate.pid.output + chassis.move.spinSlope.value;
+//     if (chassis.rotate.mode == ChassisMode_Follow)
+//     {
+//         Slope_SetTarget(&chassis.move.spinSlope, 0);
+//         if (chassis.rotate.relativeAngle > 180)
+//             chassis.rotate.relativeAngle -= 360;
+//         if (chassis.rotate.relativeAngle < -180)
+//             chassis.rotate.relativeAngle += 360;
+//         if (YawLost == 0)
+//         {
+//             PID_SingleCalc(&chassis.rotate.pid, 0, chassis.rotate.relativeAngle);
+//         }
+//         else
+//         {
+//             chassis.rotate.relativeAngle = 0;
+//             chassis.rotate.pid.output = 0;
+//         }
+//         chassis.move.vw = chassis.rotate.pid.output + chassis.move.spinSlope.value;
 
-        LIMIT(chassis.move.vw, -chassis.move.maxVw, chassis.move.maxVw);
-    }
-    else if (chassis.rotate.mode == ChassisMode_Spin) 
-    {
-        chassis.move.vw = -chassis.move.spinSlope.value;
+//         LIMIT(chassis.move.vw, -chassis.move.maxVw, chassis.move.maxVw);
+//     }
+//     else if (chassis.rotate.mode == ChassisMode_Spin) 
+//     {
+//         chassis.move.vw = -chassis.move.spinSlope.value;
 
-        float ratio;
-        if (ABS(Slope_GetVal(&chassis.move.xSlope)) / chassis.move.maxVx + ABS(Slope_GetVal(&chassis.move.ySlope)) / chassis.move.maxVy > 0.05f)
-            ratio = 0.6;
-        else
-            ratio = 1.0f;
-        if (chassis.rockerCtrl)
-        {
-            if (rcInfo.left == 2 && rcInfo.wheel > 600 && flagRC == 1)
-            {
-                if (spin_switch == 0)
-                    Slope_SetTarget(&chassis.move.spinSlope, chassis.move.maxVw * ratio);
-                else if (spin_switch == 1)
-                    Slope_SetTarget(&chassis.move.spinSlope, -chassis.move.maxVw * ratio);
-                else
-                    Slope_SetTarget(&chassis.move.spinSlope, chassis.move.maxVw * ratio);
+//         float ratio;
+//         if (ABS(Slope_GetVal(&chassis.move.xSlope)) / chassis.move.maxVx + ABS(Slope_GetVal(&chassis.move.ySlope)) / chassis.move.maxVy > 0.05f)
+//             ratio = 0.6;
+//         else
+//             ratio = 1.0f;
+//         if (chassis.rockerCtrl)
+//         {
+//             if (rcInfo.left == 2 && rcInfo.wheel > 600 && flagRC == 1)
+//             {
+//                 if (spin_switch == 0)
+//                     Slope_SetTarget(&chassis.move.spinSlope, chassis.move.maxVw * ratio);
+//                 else if (spin_switch == 1)
+//                     Slope_SetTarget(&chassis.move.spinSlope, -chassis.move.maxVw * ratio);
+//                 else
+//                     Slope_SetTarget(&chassis.move.spinSlope, chassis.move.maxVw * ratio);
 
-                spin_switch++;
-                spin_switch = spin_switch % 2;
-            }
-        }
-    }
-}
+//                 spin_switch++;
+//                 spin_switch = spin_switch % 2;
+//             }
+//         }
+//     }
+// }
 
 float Foot_Target_Speed;
 float Foot_Relative_Angle;
@@ -498,30 +489,36 @@ float Foot_Target_Relative_Angle;
 Foot_Chassis_t Foot_Chassis = {0};
 int times;
 
+float sloped_Target_Vx = 0;
+float sloped_raw_Target_Vy = 0;
+
+// extern uint8_t upstair_flag_usable;
+KeyProtectSingleTrigger_Def upstair_flag_protect = {0};
+
 //控腿函数
 void Foot_CallBack(void)
 {
 	//解锁控制
-	if (rcInfo.wheel > 600) 
+	if (rcInfo.wheel > 600)
         chassis.rockerCtrl = true;
     else if (rcInfo.wheel < -600)
         chassis.rockerCtrl = false;
 
+	//控制腿长切换计时器
+	if(times > 0)
+	{
+		times --;
+	}
+
 	if (chassis.rockerCtrl)//解锁后
 	{
-		//控制腿长切换计时器
-		if(times > 0)
-		{
-			times --;
-		}
-
 		//目标速度
 		Foot_Chassis.Target_Vx = (float)rcInfo.ch3 * 2.7 / 660;
 		Foot_Chassis.Target_Vy = (float)rcInfo.ch4 * 2.7 / 660;
 
 		if(rcInfo.left == 2 && Foot_Chassis.Target_Leg_State == 0)//下
 			Foot_Chassis.Chassis_Mode = 1;
-		else if (rcInfo.left == 3 || (rcInfo.left == 2 && Foot_Chassis.Target_Leg_State == 1))//中
+		else if (rcInfo.left == 3 || (rcInfo.left == 2 && Foot_Chassis.Target_Leg_State == 1))//中或（下且长腿）
 			Foot_Chassis.Chassis_Mode = 0;
 		
 		//控制腿长
@@ -533,14 +530,36 @@ void Foot_CallBack(void)
 			else if (Foot_Chassis.Target_Leg_State == 1)
 				Foot_Chassis.Target_Leg_State = 0;
 		}
+
+		if(rcInfo.left == 2 && Foot_Chassis.Target_Leg_State == 1)
+		{
+			upstair_flag = KeyProtectSingleTrigger_Update(&upstair_flag_protect, 1, 10);//10次 确保发出
+			Foot_Chassis.Target_Leg_State = 0;
+		}
+		else 
+		{
+			upstair_flag = KeyProtectSingleTrigger_Update(&upstair_flag_protect, 0, 10);
+		}
+		// if(rcInfo.left == 3)
+		// {
+		// 	upstair_flag_usable = 1;
+		// }
 	}
-	
+	else
+	{
+		Chassis_UpdateSlope();
+
+		// Foot_Chassis.Target_Vx = chassis.move.xSlope.value;
+		Foot_Chassis.Target_Vy = chassis.move.ySlope.value;
+	}
 }	
 
 //下板底盘任务
 #ifdef EN_CHASSIS_TASK
 void OS_ChassisCallback(void const *argument)
 {
+	Chassis_RegisterEvents();
+
 	osDelay(500);
 	for (;;)
 	{

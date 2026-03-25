@@ -8,6 +8,7 @@
 #include "Com.h"
 #include "Chassis.h"
 #include "crc.h"
+#include <stdint.h>
 #define EN_RC_TASK		 // 使能任务
 uint8_t usart5RxBuf[36]; // 串口5缓冲区
 uint8_t Usart1RxBuf[200];// 串口1缓冲区 图传链路
@@ -154,6 +155,11 @@ void Image_Trans_Analysis(uint8_t *buff)
 	}
 }
 
+uint16_t RC_offline_cnt = 0;
+uint16_t pre_RC_offline_cnt = 0;
+uint8_t RC_time_cnt = 0;
+uint8_t RC_offline_flag = 0;
+
 // 串口5中断回调
 void HAL_UARTEx_RxEventCallback(UART_HandleTypeDef *huart, uint16_t Size)
 {
@@ -162,6 +168,8 @@ void HAL_UARTEx_RxEventCallback(UART_HandleTypeDef *huart, uint16_t Size)
 		RC_ParseUsart(usart5RxBuf);
 		Detect_Update(DeviceID_RC);
 		rc_true_flag = 0;
+
+		RC_offline_cnt++;
 	}
 	if (huart == &huart2)
 	{
@@ -421,6 +429,49 @@ void OS_RcCallback(void const *argument)
 		}
 		
 		Task_RC_Callback();
+
+		if(RC_time_cnt >=13)
+		{		
+			if(RC_offline_cnt == pre_RC_offline_cnt)
+			{
+				RC_offline_flag = 1;
+				// HAL_Delay(1);
+				// USER_CAN_SetMotorCurrent(&hfdcan3, 0x1FF, 0, 0, 0, 0);
+				// USER_CAN_SetMotorCurrent(&hfdcan3, 0x200, 0, 0, 0, 0); // 防止邮箱刚刚塞满
+				// USER_CAN_SetMotorCurrent(&hfdcan2, 0x200, 0, 0, 0, 0); // 关断电机
+				// HAL_Delay(1);
+				// USER_CAN_SetMotorCurrent(&hfdcan2, 0x141, 0x8000, 0,
+				// 						0, 0);
+				// USER_CAN_SetMotorCurrent(&hfdcan2, 0x142, 0x8000, 0,
+				// 						0, 0);
+				// HAL_Delay(1);
+				// USER_CAN_SetMotorCurrent(&hfdcan2, 0x143, 0x8000, 0,
+				// 						0, 0);
+				// USER_CAN_SetMotorCurrent(&hfdcan2, 0x144, 0x8000, 0,
+				// 						0, 0);
+				// HAL_Delay(1);
+				// USER_CAN_SetMotorCurrent(&hfdcan2, 0x200, 0, 0, 0, 0);
+
+				// USER_CAN_SetMotorCurrent(&hfdcan2, 0x141, 0x8000, 0,
+				// 						0, 0);
+				// USER_CAN_SetMotorCurrent(&hfdcan2, 0x142, 0x8000, 0,
+				// 						0, 0);
+				// HAL_Delay(1);
+				// USER_CAN_SetMotorCurrent(&hfdcan2, 0x143, 0x8000, 0,
+				// 						0, 0);
+				// USER_CAN_SetMotorCurrent(&hfdcan2, 0x144, 0x8000, 0,
+				// 						0, 0);
+				// STOPFLAG = 1;
+				// Rs485_Trans();
+
+				// osThreadResume(ErrorTaskHandle); // 恢复错误任务 饿死其他任务
+			}
+
+			RC_offline_cnt = pre_RC_offline_cnt;
+		}
+
+		RC_time_cnt++;
+
 		osDelay(15);
 	}
 }

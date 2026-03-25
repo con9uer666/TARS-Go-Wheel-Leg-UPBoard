@@ -56,6 +56,7 @@ file(GLOB_RECURSE THREAD
         "USB_DEVICE/*.c"
         "module/*.c"
         "UI/*.c" "UI/*.cpp"
+        "CommonLibs/*.c"
 )
 
 # Add sources to executable
@@ -74,6 +75,7 @@ target_include_directories(${CMAKE_PROJECT_NAME} PRIVATE
     ${CMAKE_CURRENT_LIST_DIR}/math/include
     ${CMAKE_CURRENT_LIST_DIR}/module/include
     ${CMAKE_CURRENT_LIST_DIR}/range/inc
+    ${CMAKE_CURRENT_LIST_DIR}/CommonLibs/inc
 )
 
 # Add project symbols (macros)

@@ -1,4 +1,4 @@
-# Install script for directory: C:/Users/WXR/Desktop/robomaster/Code/RM_missions/2025TARS-GO/Wheel_Leg/UP_Wheel_Leg_VScode20260316/Drivers/CMSIS-DSP-main/Source
+# Install script for directory: C:/Users/WXR/Desktop/robomaster/Code/RM_missions/2025TARS-GO/Wheel_Leg/UP_Wheel_Leg_VScode20260320/Drivers/CMSIS-DSP-main/Source
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)
@@ -40,6 +40,6 @@ endif()
 string(REPLACE ";" "\n" CMAKE_INSTALL_MANIFEST_CONTENT
        "${CMAKE_INSTALL_MANIFEST_FILES}")
 if(CMAKE_INSTALL_LOCAL_ONLY)
-  file(WRITE "C:/Users/WXR/Desktop/robomaster/Code/RM_missions/2025TARS-GO/Wheel_Leg/UP_Wheel_Leg_VScode20260316/build/Debug/bin_dsp/install_local_manifest.txt"
+  file(WRITE "C:/Users/WXR/Desktop/robomaster/Code/RM_missions/2025TARS-GO/Wheel_Leg/UP_Wheel_Leg_VScode20260320/build/Debug/bin_dsp/install_local_manifest.txt"
      "${CMAKE_INSTALL_MANIFEST_CONTENT}")
 endif()

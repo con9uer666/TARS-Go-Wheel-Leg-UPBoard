@@ -1,9 +1,9 @@
 {
 	"InstallScripts" : 
 	[
-		"C:/Users/WXR/Desktop/robomaster/Code/RM_missions/2025TARS-GO/Wheel_Leg/UP_Wheel_Leg_VScode20260316/build/Debug/cmake_install.cmake",
-		"C:/Users/WXR/Desktop/robomaster/Code/RM_missions/2025TARS-GO/Wheel_Leg/UP_Wheel_Leg_VScode20260316/build/Debug/cmake/stm32cubemx/cmake_install.cmake",
-		"C:/Users/WXR/Desktop/robomaster/Code/RM_missions/2025TARS-GO/Wheel_Leg/UP_Wheel_Leg_VScode20260316/build/Debug/bin_dsp/cmake_install.cmake"
+		"C:/Users/WXR/Desktop/robomaster/Code/RM_missions/2025TARS-GO/Wheel_Leg/UP_Wheel_Leg_VScode20260320/build/Debug/cmake_install.cmake",
+		"C:/Users/WXR/Desktop/robomaster/Code/RM_missions/2025TARS-GO/Wheel_Leg/UP_Wheel_Leg_VScode20260320/build/Debug/cmake/stm32cubemx/cmake_install.cmake",
+		"C:/Users/WXR/Desktop/robomaster/Code/RM_missions/2025TARS-GO/Wheel_Leg/UP_Wheel_Leg_VScode20260320/build/Debug/bin_dsp/cmake_install.cmake"
 	],
 	"Parallel" : false
 }

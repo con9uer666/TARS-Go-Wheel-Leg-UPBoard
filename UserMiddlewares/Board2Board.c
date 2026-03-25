@@ -1,7 +1,6 @@
 #include "Chassis.h"
 #include "stdint.h"
 #include "Board2Board.h"
-#include "chassis.h"
 #include "gimbal.h"
 #include "shooter.h"
 #include "usart.h"
@@ -10,6 +9,7 @@
 #include "super_cap.h"
 #include "vision.h"
 #include "RC.h"
+#include <stdbool.h>
 #include <stdint.h>
 
 #define EN_B2B_TASK // 使能任务
@@ -17,6 +17,7 @@ uint8_t usart2TxBuf[64];
 uint8_t usart2RxBuf[128];
 uint8_t STOPFLAG = 0;
 uint8_t FEEDBACK = 0;
+uint8_t start_mode = 0;
 extern int8_t YawLost;
 extern remote_control_t RemoteControl;
 extern ext_referee_warning_t RefereeWarning;
@@ -27,7 +28,7 @@ extern uint8_t UIupdateState;
 extern uint8_t Rune_direction;
 extern RC_TypeDef rcInfo;
 extern bool Judge_Data_TF; // 裁判数据是否可用,辅助函数调用
-uint8_t upstair_flag = 0;//0：常态；1：上台阶的瞬间
+
 
 extern DMA_HandleTypeDef hdma_usart2_rx;
 
@@ -96,6 +97,8 @@ float initialSpeed;
 uint16_t coolingValue;
 float temp1,temp2;
 
+uint8_t a = 0;
+
 void RS485_Rec()
 {
 	if (usart2RxBuf[0] == 0xAB && usart2RxBuf[63] == 0xFD)
@@ -113,6 +116,12 @@ void RS485_Rec()
 			chassis.motors[i].DriveSpeed = (int16_t)usart2RxBuf[17 + i * 2] | (int16_t)usart2RxBuf[17 + i * 2 + 1] << 8;
 		}
 		gimbal.yawMotor_M4005.angle = (int16_t)usart2RxBuf[25] | (int16_t)usart2RxBuf[26] << 8;
+		if(start_mode != 1)
+		{
+			gimbal.yaw.targetAngle = gimbal.yaw.angle;
+			PID_Clear(&gimbal.yaw.imuPID.inner);
+			DEPID_Clear(&gimbal.yaw.imuPID.deOuter);
+		}
 		gimbal.yawMotor_M4005.speed = (int16_t)usart2RxBuf[27] | (int16_t)usart2RxBuf[28] << 8;
 
 		temp1 = (int16_t)(usart2RxBuf[29] | usart2RxBuf[30] << 8);
@@ -174,18 +183,19 @@ void RS485_Rec()
 		GameRobotStat.chassis_power_limit = usart2RxBuf[43] | (usart2RxBuf[44] << 8);
 		Judge_Data_TF = usart2RxBuf[45];
 
-		cap.receive_data.cap_voltage = usart2RxBuf[47] | (usart2RxBuf[48] << 8);
+		start_mode = usart2RxBuf[46];
+
+		// cap.receive_data.cap_voltage = usart2RxBuf[47] | (usart2RxBuf[48] << 8);
 
 
-		cap.receive_data.bus_power = usart2RxBuf[49] | (usart2RxBuf[50] << 8);
+		// cap.receive_data.bus_power = usart2RxBuf[49] | (usart2RxBuf[50] << 8);
 
-		cap.receive_data.L_current = usart2RxBuf[51] | (usart2RxBuf[52] << 8);
-		cap.receive_data.L_current = cap.receive_data.L_current / 100;
+		// cap.receive_data.L_current = usart2RxBuf[51] | (usart2RxBuf[52] << 8);
+		// cap.receive_data.L_current = cap.receive_data.L_current / 100;
 
-		cap.receive_data.power_ctrl_mode = (usart2RxBuf[53] >> 2) & 0x03;
-		cap.receive_data.automode_stage = usart2RxBuf[53] & 0x03;
-		cap.receive_data.max_power = cap.receive_data.cap_voltage * 9;
-		
+		// cap.receive_data.power_ctrl_mode = (usart2RxBuf[53] >> 2) & 0x03;
+		// cap.receive_data.automode_stage = usart2RxBuf[53] & 0x03;
+		// cap.receive_data.max_power = cap.receive_data.cap_voltage * 9;
 		
 	}
 }
@@ -198,19 +208,22 @@ void OS_Board2BoardCallback(void const *argument)
 	{
 		frequent++;
 
-		if(rcInfo.left == 2 && Foot_Chassis.Target_Leg_State == 1 && upstair_flag == 0 &&upstair_flag_usable == 1)
+		if(chassis.rockerCtrl == true)
 		{
-			upstair_flag = 1;
-			upstair_flag_usable = 0;
-			Foot_Chassis.Target_Leg_State = 0;
-		}
-		else 
-		{
-			upstair_flag = 0;
-		}
-		if(rcInfo.left == 3)
-		{
-			upstair_flag_usable = 1;
+			// if(rcInfo.left == 2 && Foot_Chassis.Target_Leg_State == 1 && upstair_flag == 0 &&upstair_flag_usable == 1)
+			// {
+			// 	upstair_flag = 1;
+			// 	upstair_flag_usable = 0;
+			// 	Foot_Chassis.Target_Leg_State = 0;
+			// }
+			// else 
+			// {
+			// 	upstair_flag = 0;
+			// }
+			// if(rcInfo.left == 3)
+			// {
+			// 	upstair_flag_usable = 1;
+			// }
 		}
 
 		Rs485_Trans();

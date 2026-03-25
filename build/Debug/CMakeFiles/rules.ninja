@@ -45,7 +45,7 @@ rule CXX_COMPILER__freeRTOS_unscanned_Debug
 # Rule for linking CXX executable.
 
 rule CXX_EXECUTABLE_LINKER__freeRTOS_Debug
-  command = C:\WINDOWS\system32\cmd.exe /C "$PRE_LINK && C:\Users\WXR\AppData\Local\stm32cube\bundles\gnu-tools-for-stm32\14.3.1+st.2\bin\arm-none-eabi-g++.exe $FLAGS -mcpu=cortex-m7 -mfpu=fpv5-d16 -mfloat-abi=hard  -T "C:/Users/WXR/Desktop/robomaster/Code/RM_missions/2025TARS-GO/Wheel_Leg/UP_Wheel_Leg_VScode20260316/STM32H723XG_FLASH.ld" --specs=nano.specs -Wl,-Map=freeRTOS.map -Wl,--gc-sections -Wl,--start-group -lc -lm -Wl,--end-group -Wl,--print-memory-usage -Wl,--start-group -lstdc++ -lsupc++ -Wl,--end-group $LINK_FLAGS @$RSP_FILE -o $TARGET_FILE && $POST_BUILD"
+  command = C:\WINDOWS\system32\cmd.exe /C "$PRE_LINK && C:\Users\WXR\AppData\Local\stm32cube\bundles\gnu-tools-for-stm32\14.3.1+st.2\bin\arm-none-eabi-g++.exe $FLAGS -mcpu=cortex-m7 -mfpu=fpv5-d16 -mfloat-abi=hard  -T "C:/Users/WXR/Desktop/robomaster/Code/RM_missions/2025TARS-GO/Wheel_Leg/UP_Wheel_Leg_VScode20260320/STM32H723XG_FLASH.ld" --specs=nano.specs -Wl,-Map=freeRTOS.map -Wl,--gc-sections -Wl,--start-group -lc -lm -Wl,--end-group -Wl,--print-memory-usage -Wl,--start-group -lstdc++ -lsupc++ -Wl,--end-group $LINK_FLAGS @$RSP_FILE -o $TARGET_FILE && $POST_BUILD"
   description = Linking CXX executable $TARGET_FILE
   rspfile = $RSP_FILE
   rspfile_content = $in $LINK_PATH $LINK_LIBRARIES
@@ -115,7 +115,7 @@ rule C_STATIC_LIBRARY_LINKER__CMSISDSP_Debug
 # Rule for re-running cmake.
 
 rule RERUN_CMAKE
-  command = C:\Users\WXR\AppData\Local\stm32cube\bundles\cmake\4.0.1+st.3\bin\cmake.exe --regenerate-during-build -SC:\Users\WXR\Desktop\robomaster\Code\RM_missions\2025TARS-GO\Wheel_Leg\UP_Wheel_Leg_VScode20260316 -BC:\Users\WXR\Desktop\robomaster\Code\RM_missions\2025TARS-GO\Wheel_Leg\UP_Wheel_Leg_VScode20260316\build\Debug
+  command = C:\Users\WXR\AppData\Local\stm32cube\bundles\cmake\4.0.1+st.3\bin\cmake.exe --regenerate-during-build -SC:\Users\WXR\Desktop\robomaster\Code\RM_missions\2025TARS-GO\Wheel_Leg\UP_Wheel_Leg_VScode20260320 -BC:\Users\WXR\Desktop\robomaster\Code\RM_missions\2025TARS-GO\Wheel_Leg\UP_Wheel_Leg_VScode20260320\build\Debug
   description = Re-running CMake...
   generator = 1
 

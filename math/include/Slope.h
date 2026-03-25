@@ -20,5 +20,6 @@ void Slope_SetTarget(Slope *slope,float target);
 void Slope_SetStep(Slope *slope,float step);
 float Slope_NextVal(Slope *slope);
 float Slope_GetVal(Slope *slope);
+float easy_Slope(float target, float now, float step);
 
 #endif

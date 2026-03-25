@@ -89,6 +89,7 @@
 "freertos\bsp_imu_pwm.o"
 "freertos\bsp_pwm.o"
 "freertos\ins_task.o"
+"freertos\trigger_about.o"
 "freertos\basicmathfunctions.o"
 "freertos\basicmathfunctionsf16.o"
 "freertos\bayesfunctions.o"

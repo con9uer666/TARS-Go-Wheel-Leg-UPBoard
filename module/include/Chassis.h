@@ -8,6 +8,24 @@
 #include <stdbool.h>
 #include "judge.h"
 #include "graphics.h"
+#include "RC.h"
+#include "arm_math.h"
+#include "rc.h"
+#include "UserFreertos.h"
+#include "gimbal.h"
+#include "super_cap.h"
+#include "detect.h"
+#include "Moto.h"
+#include "USER_CAN.h"
+#include "Beep.h"
+#include "struct_typedef.h"
+#include "math.h"
+#include "detect.h"
+#include "vision.h"
+#include "RLS.h"
+#include <stdint.h>
+#include "Slope.h"
+#include "Trigger_about.h"
 
 typedef enum
 {
@@ -97,10 +115,37 @@ extern Chassis chassis;
 extern Foot_Chassis_t Foot_Chassis;
 extern char *Chassis_GetModeText(void);
 extern uint8_t power_flag_offset;
+extern uint8_t upstair_flag;
 void Chassis_Init(void);
 void Chassis_UI_Init(void);
 void Chassis_PowerCtrl(void);
 void Chassis_TurnRecovercallback(void);
 void Chassis_TurnLostcallback(void);
+
+void Chassis_InitPID(void);
+void Chassis_RegisterEvents(void);
+char *Chassis_GetModeText(void);
+void Chassis_UpdateSlope(void);
+void Chassis_RockerCtrl(void);
+void Chassis_Move_KeyCallback(KeyType key, KeyCombineType combine, KeyEventType event);
+void Chassis_Stop_KeyCallback(KeyType key, KeyCombineType combine, KeyEventType event);
+
+void Chassis_Return_KeyCallback(KeyType key, KeyCombineType combine, KeyEventType event);
+void Chassis_capOutputChange_KeyCallback(KeyType key, KeyCombineType combine, KeyEventType event);
+void Chassis_capBurstChange_KeyCallback(KeyType key, KeyCombineType combine, KeyEventType event);
+void Chassis_ChangeDiagonal(KeyType key, KeyCombineType combine, KeyEventType event);
+void Chassis_Change_DebugTurn0(KeyType key, KeyCombineType combine, KeyEventType event);
+void UI_UPdate(KeyType key, KeyCombineType combine, KeyEventType event);
+void Cap_On_KeyCallback(KeyType key, KeyCombineType combine, KeyEventType event);
+void Cap_Off_KeyCallback(KeyType key, KeyCombineType combine, KeyEventType event);
+void Motor_StartCalcAngle_M4005(DoubleMotor *motor);
+void Motor_CalcAngle_M4005(DoubleMotor *motor);
+//键位回调函数声明vscode://lirentech.file-ref-tags?filePath=Chassis.h&snippet=%2F%2F%E9%94%AE%E4%BD%8D%E5%9B%9E%E8%B0%83%E5%87%BD%E6%95%B0%E5%A3%B0%E6%98%8E
+void KeyCallback_Q_OnDown(KeyType key, KeyCombineType combine, KeyEventType event);
+void KeyCallback_R_OnDown(KeyType key, KeyCombineType combine, KeyEventType event);
+void KeyCallback_Q_OnUp(KeyType key, KeyCombineType combine, KeyEventType event);
+void KeyCallback_R_OnUp(KeyType key, KeyCombineType combine, KeyEventType event);
+void KeyCallback_E_OnDown(KeyType key, KeyCombineType combine, KeyEventType event);
+void KeyCallback_E_OnUp(KeyType key, KeyCombineType combine, KeyEventType event);
 
 #endif

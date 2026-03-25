@@ -35,27 +35,27 @@ extern ext_game_robot_status_t GameRobotStat;
 extern Gimbal gimbal;
 extern INS_t INS;
 extern ext_game_robot_HP_t GameRobotHP;
-uint8_t Vision_Mode = 0; // 0Îª×ÔÃé£¬1ÎªÐ¡·û£¬2Îª´ó·û
+uint8_t Vision_Mode = 0; // 0Îªï¿½ï¿½ï¿½é£¬1ÎªÐ¡ï¿½ï¿½ï¿½ï¿½2Îªï¿½ï¿½ï¿½
 void Vision_Change_KeyCallback(KeyType key, KeyCombineType combine, KeyEventType event);
 void Vision_RegisterEvents(void);
 void Vision_Reset_KeyCallback(KeyType key, KeyCombineType combine, KeyEventType event);
 void Vision_RuneDir_KeyCallback(KeyType key, KeyCombineType combine, KeyEventType event);
 void Vision_Expo_KeyCallback(KeyType key, KeyCombineType combine, KeyEventType event);
 
-// ×ÔÃéµ÷ÊÔ±äÁ¿
+// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ô±ï¿½ï¿½ï¿½
 
-char rotateflag = 0; // Õý·´±êÊ¶·û
+char rotateflag = 0; // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê¶ï¿½ï¿½
 
-float distance_weight = 0.0; // ¾àÀëÈ¨ÖØÏµÊý
-float X1 = 0.5;				 // ±ß½çÖµ1 ÓÉÐ¡±ä´ó
-float X2 = 1.5;				 // ±ß½çÖµ2
-float X3 = 2.5;				 // ±ß½çÖµ3
-float X4 = 3.5;				 // ±ß½çÖµ4
+float distance_weight = 0.0; // ï¿½ï¿½ï¿½ï¿½È¨ï¿½ï¿½Ïµï¿½ï¿½
+float X1 = 0.5;				 // ï¿½ß½ï¿½Öµ1 ï¿½ï¿½Ð¡ï¿½ï¿½ï¿½
+float X2 = 1.5;				 // ï¿½ß½ï¿½Öµ2
+float X3 = 2.5;				 // ï¿½ß½ï¿½Öµ3
+float X4 = 3.5;				 // ï¿½ß½ï¿½Öµ4
 
 float fire_control_angle = 0.0;
 float gimbal_yaw_diff = 0.0;
 float gimbal_pitch_diff = 0.0;
-// ×ÔÃéµ÷ÊÔ±äÁ¿
+// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ô±ï¿½ï¿½ï¿½
 
 VisionSensorInfo vision_sensor_info = {
 	.yaw = 0,
@@ -65,8 +65,8 @@ VisionSensorInfo vision_sensor_info = {
 };
 
 VisionSensor vision_sensor = {
-	.sent_info = &vision_sensor_info, // Êý¾Ý½á¹¹Ìå
-	.Init = Vision_Init,			  // ´«¸ÐÆ÷³õÊ¼»¯
+	.sent_info = &vision_sensor_info, // ï¿½ï¿½ï¿½Ý½á¹¹ï¿½ï¿½
+	.Init = Vision_Init,			  // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê¼ï¿½ï¿½
 	.Update = Vision_DataUpdate,
 	.DataReceive = Vision_DataReceive,
 	.Data_Transmit = Vision_DataTransmit,
@@ -82,19 +82,19 @@ void Vision_Init(void)
 	// HAL_GPIO_WritePin(GPIOH,GPIO_PIN_15,GPIO_PIN_RESET);
 }
 
-// ×¢²áÊÂ¼þ
+// ×¢ï¿½ï¿½ï¿½Â¼ï¿½
 void Vision_RegisterEvents()
 {
-	// R¼üÇÐ»»ÊÓ¾õÄ£Ê½
-	RC_Register(Key_R, CombineKey_None, KeyEvent_OnDown, Vision_Change_KeyCallback);
-	RC_Register(Key_X,CombineKey_None,KeyEvent_OnDown,Vision_RuneDir_KeyCallback);
-	RC_Register(Key_A,CombineKey_Ctrl,KeyEvent_OnDown,Vision_Expo_KeyCallback);
-	RC_Register(Key_D,CombineKey_Ctrl,KeyEvent_OnDown,Vision_Expo_KeyCallback);
+	// Rï¿½ï¿½ï¿½Ð»ï¿½ï¿½Ó¾ï¿½Ä£Ê½
+	// RC_Register(Key_R, CombineKey_None, KeyEvent_OnDown, Vision_Change_KeyCallback);
+	// RC_Register(Key_X,CombineKey_None,KeyEvent_OnDown,Vision_RuneDir_KeyCallback);
+	// RC_Register(Key_A,CombineKey_Ctrl,KeyEvent_OnDown,Vision_Expo_KeyCallback);
+	// RC_Register(Key_D,CombineKey_Ctrl,KeyEvent_OnDown,Vision_Expo_KeyCallback);
 //	RC_Register(Key_W,CombineKey_Ctrl,KeyEvent_OnDown,Vision_Change_KeyCallback);
 }
 uint8_t cnt1 = 0;
 //uint8_t cnt0 = 0;
-// ÇÐ»»ÊÓ¾õÄ£Ê½
+// ï¿½Ð»ï¿½ï¿½Ó¾ï¿½Ä£Ê½
 void Vision_Change_KeyCallback(KeyType key, KeyCombineType combine, KeyEventType event)
 {
 		Vision_Mode = (Vision_Mode + 1) % 3;
@@ -123,7 +123,7 @@ void Vision_Expo_KeyCallback(KeyType key, KeyCombineType combine, KeyEventType e
 }
 
 
-// ÖØÆôNUC
+// ï¿½ï¿½ï¿½ï¿½NUC
 void Vision_Reset_KeyCallback(KeyType key, KeyCombineType combine, KeyEventType event)
 {
 	HAL_GPIO_WritePin(GPIOE, GPIO_PIN_13, GPIO_PIN_SET);
@@ -131,16 +131,16 @@ void Vision_Reset_KeyCallback(KeyType key, KeyCombineType combine, KeyEventType 
 	HAL_GPIO_WritePin(GPIOE, GPIO_PIN_13, GPIO_PIN_RESET);
 }
 
-// ½ÓÊÕÀ´×ÔÊÓ¾õµÄÐÅÏ¢
+// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ó¾ï¿½ï¿½ï¿½ï¿½ï¿½Ï¢
 void Vision_DataReceive(uint8_t *read_from_usart, uint32_t length)
 {
-	// ÈôÎÞÊý¾Ý°ü£¬Ôò²»×÷ÈÎºÎ´¦Àí
+	// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ý°ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ÎºÎ´ï¿½ï¿½ï¿½
 	// memcpy(rxsssdata,read_from_usart,10);
 	if (read_from_usart == NULL)
 		return;
-	if (length > 50) // FIXME: ±£ÏÕ×÷ÓÃ
+	if (length > 50) // FIXME: ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 		return;
-	// ²éÕÒÖ¡Í·
+	// ï¿½ï¿½ï¿½ï¿½Ö¡Í·
 	while (length)
 	{
 		if (*read_from_usart != VISION_FRAME_HEADER_RX)
@@ -155,22 +155,22 @@ void Vision_DataReceive(uint8_t *read_from_usart, uint32_t length)
 	}
 	if (length == 0)
 		return;
-	// ÅÐ¶ÏÖ¡Í·Êý¾ÝÊÇ·ñÕýÈ·
+	// ï¿½Ð¶ï¿½Ö¡Í·ï¿½ï¿½ï¿½ï¿½ï¿½Ç·ï¿½ï¿½ï¿½È·
 	if (read_from_usart[0] == VISION_FRAME_HEADER_RX)
 	{
-		// ½«Êý¾Ý´æÈë½ÓÊÕbuffer
+		// ï¿½ï¿½ï¿½ï¿½ï¿½Ý´ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½buffer
 		memcpy(&vision_receive, read_from_usart, sizeof(vision_receive));
 		Vision_ParseData();
 	}
 }
 
-// ¶Ô·¢ËÍµÄÊý¾Ý¸üÐÂ
+// ï¿½Ô·ï¿½ï¿½Íµï¿½ï¿½ï¿½ï¿½Ý¸ï¿½ï¿½ï¿½
 
 void Vision_DataUpdate(void)
 {
     vision_transmit.header = 0x5A;
     vision_transmit.task_mode = Vision_Mode;
-    vision_transmit.enemy_color = detect_color; // ´òºì0 ´òÀ¶1
+    vision_transmit.enemy_color = detect_color; // ï¿½ï¿½ï¿½0 ï¿½ï¿½ï¿½ï¿½1
     vision_transmit.bullet_speed = 50;  //ShootData.initial_speed;
     vision_transmit.roll = INS.Roll/180*PI;
     vision_transmit.pitch = INS.Pitch/180*PI;
@@ -199,7 +199,7 @@ float test1 = 0.025f;
 float test2 = 0.02f; //2.9m 0.01 2.3m
 float test3 = 0.01f;
 
- // ½«½ÓÊÕµÄÊý¾Ý½øÐÐ½âÂë
+ // ï¿½ï¿½ï¿½ï¿½ï¿½Õµï¿½ï¿½ï¿½ï¿½Ý½ï¿½ï¿½Ð½ï¿½ï¿½ï¿½
 void Vision_ParseData(void)
 {
 //new version
@@ -217,7 +217,7 @@ void Vision_ParseData(void)
 		fire_control_angle -= 2 * PI;
 	if (fire_control_angle < -PI)
 		fire_control_angle += 2 * PI;
-	// ¹ýÁã´¦Àí
+	// ï¿½ï¿½ï¿½ã´¦ï¿½ï¿½
 
 	if ((rcInfo.left == 1||rcInfo.mouse.r == 1) &&visionFindAver>=0.5f)
 	{
@@ -236,7 +236,7 @@ void Vision_ParseData(void)
 //		if(GameRobotStat.robot_level >=5){
  //				test2 = 1.5f*0.015f;
 //		}
-		if (ABS(gimbal_yaw_diff) < test2&&ABS(gimbal_pitch_diff) < 0.5*test2) // ¸úËæ 0.015
+		if (ABS(gimbal_yaw_diff) < test2&&ABS(gimbal_pitch_diff) < 0.5*test2) // ï¿½ï¿½ï¿½ï¿½ 0.015
 			gimbal.fire = 1;
 		else
 			gimbal.fire = 0;

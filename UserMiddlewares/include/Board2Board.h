@@ -5,10 +5,12 @@
 
 extern uint8_t STOPFLAG;
 extern uint8_t FEEDBACK;
+extern uint8_t start_mode;
 
 void RS485_Init(void);
 void Rs485_Trans(void);
 void RS485_Rec(void);
+
 
 
 #endif
