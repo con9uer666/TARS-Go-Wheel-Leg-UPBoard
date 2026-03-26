@@ -97,8 +97,6 @@ float initialSpeed;
 uint16_t coolingValue;
 float temp1,temp2;
 
-uint8_t a = 0;
-
 void RS485_Rec()
 {
 	if (usart2RxBuf[0] == 0xAB && usart2RxBuf[63] == 0xFD)
@@ -116,9 +114,9 @@ void RS485_Rec()
 			chassis.motors[i].DriveSpeed = (int16_t)usart2RxBuf[17 + i * 2] | (int16_t)usart2RxBuf[17 + i * 2 + 1] << 8;
 		}
 		gimbal.yawMotor_M4005.angle = (int16_t)usart2RxBuf[25] | (int16_t)usart2RxBuf[26] << 8;
-		if(start_mode != 1)
+		if(start_mode == 0)
 		{
-			gimbal.yaw.targetAngle = gimbal.yaw.angle;
+			gimbal.yaw.targetAngle=gimbal.yaw.totalAngle;
 			PID_Clear(&gimbal.yaw.imuPID.inner);
 			DEPID_Clear(&gimbal.yaw.imuPID.deOuter);
 		}
