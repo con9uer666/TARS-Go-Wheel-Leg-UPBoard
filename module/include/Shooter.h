@@ -11,12 +11,12 @@
 
 enum
 {
-  IDLE=0,
-  TRIGGER,
-  TRIGGER_REVERSE,
-  TRIGGER_CONTINUE,
-	TRIGGER_DOUBLE,
-	TRIGGER_CLICK,
+  IDLE = 0,           // 空闲状态
+  TRIGGER,            // 触发
+  TRIGGER_REVERSE,    // 反向触发
+  TRIGGER_CONTINUE,   // 连续触发
+  TRIGGER_DOUBLE,     // 双击触发
+  TRIGGER_CLICK       // 单击触发
 };
 
 typedef struct{

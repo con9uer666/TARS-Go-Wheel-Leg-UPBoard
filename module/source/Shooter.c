@@ -10,12 +10,12 @@
 #include "USER_CAN.h"
 #include "vision.h"
 #include "Slope.h"
-#define EN_SHOOTER_TASK // ʹ������
+#define EN_SHOOTER_TASK
 
 Shooter shooter;
 uint8_t shootMaxSpeed = 25;
 // uint32_t shoot_interval = 0,Last_tick = 0;
-uint32_t t = 0;					// ���Ի����ʱ
+uint32_t t = 0;
 extern int16_t remainHeat;
 uint8_t debugCnt = 0;
 
@@ -29,44 +29,30 @@ void Shooter_ChangeLineIncHigh_KeyCallback(KeyType key, KeyCombineType combine, 
 void Shooter_IncFricSpeed_KeyCallback(KeyType key, KeyCombineType combine, KeyEventType event);
 void Shooter_DecFricSpeed_KeyCallback(KeyType key, KeyCombineType combine, KeyEventType event);
 void Shooter_InquireBulletState(void);
-// ���ϵͳ��ʼ��
 
+//摩擦轮初始化
+//
+//斜坡控制摩擦轮速度，遥控器相关事件注册
 void Shooter_Init()
 {
-	shooter.rockerCtrl = false;			   // ��ʼ״̬�������
-	shooter.fricSpd = 6500;				   //
-	Slope_Init(&shooter.fricSlope, 140, 0); // Ħ����б��
-	Shooter_InitPID();					   // m��ʼ�����pid
-	Shooter_RegisterEvents();			   // ע���¼�
+	shooter.rockerCtrl = false;
+	shooter.fricSpd = 6500;		
+	Slope_Init(&shooter.fricSlope, 140, 0);
+	Shooter_InitPID();
+	Shooter_RegisterEvents();
 	shooter.fricMotor[0].targetSpeed = -0;
 	shooter.fricMotor[1].targetSpeed = +0;
 	shooter.workState = IDLE;
-
 }
 
-// ��ʼ��shooter UI��״
-/*�ڷ���ʱ�뱣֤����ϵͳ�����ѿ��������ɹ�����*/
 void Shooter_UI_Init()
 {
-	/**************************��������� Լ 5.71�����/mm**************************************/
-	// 10�����һ���ǰ��ս�ߴ�
-	//      Graph_SetLine(&shooter.ui.auxiliaryLine,"AL0",Color_Orange,2,1,865,540,1045,540);  //������
-	//      Graph_DrawLine(&shooter.ui.auxiliaryLine,Operation_Add);
-	//        osDelay(3);
-	//      Graph_SetLine(&shooter.ui.auxiliaryLine,"AL5",Color_Orange,1,1,960,200,960,583);  //����
-	//      Graph_DrawLine(&shooter.ui.auxiliaryLine,Operation_Add);
-	//        osDelay(3);
-	////      Graph_SetText(&shooter.ui.fricClose,"FCS",Color_Orange,4,2,100,680,"Closed!!!",9,20);
-	////      Graph_DrawText(&shooter.ui.fricClose,Operation_Add);
-	//      Graph_SetText(&shooter.ui.bombBay,"Bay",Color_Orange,4,2,1400,680,"Reload",6,20);
-	//      Graph_DrawText(&shooter.ui.bombBay,Operation_Add);
 	osDelay(3);
 }
-/************�ڲ����ߺ���*****************/
-// ��ʼ��PID����
+
 void Shooter_InitPID()
 {
-	Motor_StartCalcAngle(&shooter.triggerMotor);							 // ��ʼ������Ƕ��ۼ�
+	Motor_StartCalcAngle(&shooter.triggerMotor);
 	PID_Init(&shooter.triggerMotor.anglePID.inner, 15, 0, 0, 6000,30000); // 6 0.15 8//10000
 	PID_Init(&shooter.triggerMotor.anglePID.outer, 80, 0,1500, 0, 10000); // 1.5 0 2.3   3.27 maxoutput 9000->7000
 	
@@ -77,60 +63,58 @@ void Shooter_InitPID()
 	//	PID_Init(&shooter.triggerMotor.anglePID.inner,15,0,4,7800,10000);
 	//	PID_Init(&shooter.triggerMotor.anglePID.outer,1.2,0,0.4,0,5000);
 
-	PID_Init(&shooter.fricMotor[0].speedPID, 25, 0, 5, 0, 16000); // Ħ����
+	PID_Init(&shooter.fricMotor[0].speedPID, 25, 0, 5, 0, 16000); 
 	PID_Init(&shooter.fricMotor[1].speedPID, 25, 0, 5, 0, 16000);
-	SMCInit(&shooter.fricMotor[0].FricSMC, 0.03682, 205.121796, 2.62, 27.417, 5.0); // ��
-	SMCInit(&shooter.fricMotor[1].FricSMC, 0.03682, 205.121796, 2.62, 27.417, 5.0); // ��
+	SMCInit(&shooter.fricMotor[0].FricSMC, 0.03682, 205.121796, 2.62, 27.417, 5.0); 
+	SMCInit(&shooter.fricMotor[1].FricSMC, 0.03682, 205.121796, 2.62, 27.417, 5.0);
 }
 
-// ע���¼�
+
 void Shooter_RegisterEvents()
 {
-	// �������̧�𿪹ز���
+
 	RC_Register(Key_Left, CombineKey_None, KeyEvent_OnClick, Shooter_SwitchState_KeyCallback);
 	RC_Register(Key_Left, CombineKey_None, KeyEvent_OnUp, Shooter_SwitchState_KeyCallback);
 	RC_Register(Key_Left, CombineKey_None, KeyEvent_OnLongPress, Shooter_SwitchState_KeyCallback);
-	// F����Ħ����
+
 	RC_Register(Key_F, CombineKey_None, KeyEvent_OnDown, Shooter_StartFric_KeyCallback);
 
-	// SHIFT+Q���100Ħ����ת��
 	RC_Register(Key_Q, CombineKey_Shift, KeyEvent_OnDown, Shooter_IncFricSpeed_KeyCallback);
-	// SHIFT+E��С100Ħ����ת��
+
 	RC_Register(Key_E, CombineKey_Shift, KeyEvent_OnDown, Shooter_DecFricSpeed_KeyCallback);
 }
 //Shooter fricopen openflag
 static void Shooter_state(_Bool openflag)
 {
 	if(openflag == 1){
-		Slope_SetTarget(&shooter.fricSlope, shooter.fricSpd); // Ħ����б��
-		Slope_NextVal(&shooter.fricSlope);					  // б����һ��ֵ
-		shooter.fricMotor[0].targetSpeed = Slope_GetVal(&shooter.fricSlope); // Ħ�����ٶ�
+		Slope_SetTarget(&shooter.fricSlope, shooter.fricSpd); 
+		Slope_NextVal(&shooter.fricSlope);	
+		shooter.fricMotor[0].targetSpeed = Slope_GetVal(&shooter.fricSlope); 
 		shooter.fricMotor[1].targetSpeed = -Slope_GetVal(&shooter.fricSlope);
 	}
 	else{
-		Slope_SetTarget(&shooter.fricSlope, 0);								  // Ħ����б��
-		Slope_NextVal(&shooter.fricSlope);									  // б����һ��ֵ
-		shooter.fricMotor[0].targetSpeed = Slope_GetVal(&shooter.fricSlope); // Ħ�����ٶ�
+		Slope_SetTarget(&shooter.fricSlope, 0);	
+		Slope_NextVal(&shooter.fricSlope);	
+		shooter.fricMotor[0].targetSpeed = Slope_GetVal(&shooter.fricSlope); 
 		shooter.fricMotor[1].targetSpeed = -Slope_GetVal(&shooter.fricSlope);
 	}
 }
 
-// ң�п���
 void Shooter_RockerCtrl()
 {
-	if (rcInfo.right == 1) // �Ҳ����������Ħ����
+	if (rcInfo.right == 1)
 	{
 		shooter.fricOpenFlag = 1; 
 	}
-	else // ����ر�Ħ����
+	else
 	{
 		shooter.fricOpenFlag = 0; 
 	}
-	// �󲦸�����(������)��������
+
 	static uint8_t triggerFlag = 0;
 	if (rcInfo.left == 1 && triggerFlag == 0)
 	{
-		if (shooter.fricOpenFlag == 1) // Ħ���ֿ��� ��������
+		if (shooter.fricOpenFlag == 1) 
 		{
 			shooter.workState = TRIGGER;
 			triggerFlag = 1;
@@ -143,30 +127,26 @@ void Shooter_RockerCtrl()
 	}
 }
 
-/*************************RC�¼�**************************
-���������ܼ���event����
-*********************************************************/
-// ����/ֹͣ��������
 void Shooter_SwitchState_KeyCallback(KeyType key, KeyCombineType combine, KeyEventType event)
 {
 	switch (event)
 	{
-	case KeyEvent_OnClick:			   // ��������
-		if (shooter.fricOpenFlag == 1) // Ħ���ֿ��� ��������
+	case KeyEvent_OnClick:	
+		if (shooter.fricOpenFlag == 1)
 		{
 			shooter.workState = TRIGGER_CLICK;
 		}
 		break;
 
-	case KeyEvent_OnLongPress:		   // ��������
-		if (shooter.fricOpenFlag == 1) // Ħ���ֿ��� ��������
+	case KeyEvent_OnLongPress:		  
+		if (shooter.fricOpenFlag == 1)
 		{
 			shooter.workState = TRIGGER_CONTINUE;
 		}
 		break;
 
-	case KeyEvent_OnUp:				   // ������̧��
-		if (shooter.fricOpenFlag == 1) // Ħ���ֿ��� ������������
+	case KeyEvent_OnUp:				  
+		if (shooter.fricOpenFlag == 1)
 		{
 			shooter.workState = IDLE;
 		}
@@ -176,7 +156,6 @@ void Shooter_SwitchState_KeyCallback(KeyType key, KeyCombineType combine, KeyEve
 	}
 }
 
-// �ֶ���/�ر�Ħ����
 void Shooter_StartFric_KeyCallback(KeyType key, KeyCombineType combine, KeyEventType event)
 {
 	shooter.fricOpenFlag = !shooter.fricOpenFlag;
@@ -187,8 +166,8 @@ void Shooter_StartFric_KeyCallback(KeyType key, KeyCombineType combine, KeyEvent
 void Shooter_IncFricSpeed_KeyCallback(KeyType key, KeyCombineType combine, KeyEventType event)
 {
 	shooter.fricSpd += 100;
-	Slope_SetTarget(&shooter.fricSlope, shooter.fricSpd); // Ħ����б��
-	Slope_NextVal(&shooter.fricSlope);					  // б����һ��ֵ
+	Slope_SetTarget(&shooter.fricSlope, shooter.fricSpd);
+	Slope_NextVal(&shooter.fricSlope);
 	shooter.fricMotor[0].targetSpeed = -Slope_GetVal(&shooter.fricSlope);
 	shooter.fricMotor[1].targetSpeed = +Slope_GetVal(&shooter.fricSlope);
 }
@@ -196,8 +175,8 @@ void Shooter_IncFricSpeed_KeyCallback(KeyType key, KeyCombineType combine, KeyEv
 void Shooter_DecFricSpeed_KeyCallback(KeyType key, KeyCombineType combine, KeyEventType event)
 {
 	shooter.fricSpd -= 100;
-	Slope_SetTarget(&shooter.fricSlope, shooter.fricSpd); // Ħ����б��
-	Slope_NextVal(&shooter.fricSlope);					  // б����һ��ֵ
+	Slope_SetTarget(&shooter.fricSlope, shooter.fricSpd);
+	Slope_NextVal(&shooter.fricSlope);
 	shooter.fricMotor[0].targetSpeed = -Slope_GetVal(&shooter.fricSlope);
 	shooter.fricMotor[1].targetSpeed = +Slope_GetVal(&shooter.fricSlope);
 }
@@ -224,12 +203,11 @@ uint32_t getCurrentMicros(void)
 	return (m * 1000 + ((tms - v) * 1000) / tms);
 }
 
-// ��������
 bool Heat_Limit()
 {
-	float d = 0.6; // ��ֵ
-	(void)d;	   // ��ֵ
-	float k = 1;   // ��ֹ�˷�δʹ������,������ȴ����ϵ��
+	float d = 0.6;
+	(void)d;	 
+	float k = 1; 
 	if (JUDGE_GetRemainHeat() < 20)
 	{
 		k = 5;
@@ -264,10 +242,7 @@ bool Heat_Limit()
 		return true;
 	}
 }
-/************************freertos����**********************
-����������freertos����ϵͳ����
-**********************************************************/
-// �������ص�
+
 float heat;
 extern float initialSpeed;
 
@@ -287,9 +262,9 @@ void Task_Shooter_Callback()
 			{
 				over_speed = 0;
 				shooter.fricSpd -= 10;
-				Slope_SetTarget(&shooter.fricSlope, shooter.fricSpd); // Ħ����б��
-				Slope_NextVal(&shooter.fricSlope);					  // б����һ��ֵ
-				shooter.fricMotor[0].targetSpeed = Slope_GetVal(&shooter.fricSlope); // Ħ�����ٶ�
+				Slope_SetTarget(&shooter.fricSlope, shooter.fricSpd); 
+				Slope_NextVal(&shooter.fricSlope);					  
+				shooter.fricMotor[0].targetSpeed = Slope_GetVal(&shooter.fricSlope);
 				shooter.fricMotor[1].targetSpeed = -Slope_GetVal(&shooter.fricSlope);
 			}
 		}
@@ -302,15 +277,15 @@ void Task_Shooter_Callback()
 				shooter.fricSpd += 10;
 				if(shooter.bullet_speed<22.0)
 						shooter.fricSpd += 50;
-				Slope_SetTarget(&shooter.fricSlope, shooter.fricSpd);				  // Ħ����б��
-				Slope_NextVal(&shooter.fricSlope);									  // б����һ��ֵ
-				shooter.fricMotor[0].targetSpeed = Slope_GetVal(&shooter.fricSlope); // Ħ�����ٶ�
+				Slope_SetTarget(&shooter.fricSlope, shooter.fricSpd);				
+				Slope_NextVal(&shooter.fricSlope);									
+				shooter.fricMotor[0].targetSpeed = Slope_GetVal(&shooter.fricSlope);
 				shooter.fricMotor[1].targetSpeed = -Slope_GetVal(&shooter.fricSlope);
 			}
 		}
 	}
 	shooter.last_bullet_speed = shooter.bullet_speed;
-	if (rcInfo.wheel > 600) // ң���������л�ҡ�˿��ƻ���������
+	if (rcInfo.wheel > 600)
 		shooter.rockerCtrl = true;
 	else if (rcInfo.wheel < -600)
 		shooter.rockerCtrl = false;
@@ -319,12 +294,10 @@ void Task_Shooter_Callback()
 		Shooter_RockerCtrl();
 	
 	Shooter_state(shooter.fricOpenFlag);
-	// ��ת����
-	// ����Ƕ���Ŀ��Ƕ�����10������ж�ת�ж�
 	if (ABS(shooter.triggerMotor.Total_Position - shooter.triggerMotor.Target_Position) > 10 * 2.5 && shooter.workState != TRIGGER_REVERSE)
 	{
-		// shooter.block.judgeCnt++;		  // ��ת�ж�������++
-		if (shooter.block.judgeCnt > 100) // �������ﵽһ��ֵ�����ж�Ϊ��ת��������ת
+		// shooter.block.judgeCnt++;
+		if (shooter.block.judgeCnt > 100) 
 		{
 			shooter.block.judgeCnt = 0;
 			shooter.block.reverseCnt++;
@@ -337,28 +310,27 @@ void Task_Shooter_Callback()
 				shooter.block.state = 0;
 		}
 	}
-	else // ��Ŀ��ֵ���С��10�ȣ�����״̬����������ת�ж�����������
+	else
 	{
 		shooter.block.judgeCnt = 0;
 	}
 	
 	Heat_Limit();
 
-	// ����
 	switch (shooter.workState)
 	{
 	case TRIGGER:
 	{
-		if (JUDGE_IsValid() == false || Heat_Limit() && remainHeat > 20) // δ��װ����ϵͳ �� ����ϵͳʣ����������100 ��������
+		if (JUDGE_IsValid() == false || Heat_Limit() && remainHeat > 20) 
 		{
 			if (shooter.triggerMotor.Target_Position - shooter.triggerMotor.Total_Position > -8 * 2.5)
 			{
-				shooter.triggerMotor.Target_Position -= (360 * 1 / 9.0) * 2.5; // ÿ��ת��1/9Ȧ
+				shooter.triggerMotor.Target_Position -= (360 * 1 / 9.0) * 2.5; 
 				shooter.workState = IDLE;
 				shooter.number += 1;
 				osDelay(t);
 				vision_transmit.bullet_id = vision_receive.bullet_id;
-				//						shoot_interval = getCurrentMicros() - Last_tick;//���Է����ӳ�
+				//						shoot_interval = getCurrentMicros() - Last_tick;
 				//						Last_tick = getCurrentMicros();
 			}
 		}
@@ -369,11 +341,11 @@ void Task_Shooter_Callback()
 	break;
 	case TRIGGER_CLICK:
 	{
-		if (JUDGE_IsValid() == false || (Heat_Limit() && remainHeat > 20))// δ��װ����ϵͳ �� ����ϵͳʣ����������100 ��������
+		if (JUDGE_IsValid() == false || (Heat_Limit() && remainHeat > 20))
 		{
 			if (shooter.triggerMotor.Target_Position - shooter.triggerMotor.Total_Position > -8 * 2.5)
 			{
-				shooter.triggerMotor.targetAngle -= (360 * 1 / 9.0) * 2.5; // ÿ��ת��1/9Ȧ
+				shooter.triggerMotor.targetAngle -= (360 * 1 / 9.0) * 2.5; 
 				shooter.workState = IDLE;
 				shooter.number += 1;
 				osDelay(t);
@@ -385,11 +357,11 @@ void Task_Shooter_Callback()
 	}
 	break;
 	case TRIGGER_CONTINUE:
-		if (JUDGE_IsValid() == false || (Heat_Limit() && remainHeat > 20)) // δ��װ����ϵͳ �� ����ϵͳʣ����������100 ��������
+		if (JUDGE_IsValid() == false || (Heat_Limit() && remainHeat > 20)) 
 		{
 			if (shooter.triggerMotor.Target_Position - shooter.triggerMotor.Total_Position > -8 * 2.5)
 			{
-				shooter.triggerMotor.targetAngle -= (360 * 1 / 9.0) * 2.5; // ÿ��ת��1/9Ȧ
+				shooter.triggerMotor.targetAngle -= (360 * 1 / 9.0) * 2.5; 
 				shooter.number += 1;
 				osDelay(t);
 				vision_transmit.bullet_id = vision_receive.bullet_id;
@@ -399,11 +371,10 @@ void Task_Shooter_Callback()
 			shooter.workState = IDLE;
 		break;
 	case TRIGGER_REVERSE:
-		// ������
 		Beep_PlayNotes((Note[]){{T_M1, D_Sixteenth}, {T_M1, D_Sixteenth}, {T_M1, D_Sixteenth}}, 3);
-		shooter.triggerMotor.targetAngle += (360 * 1 / 9.0) * 2.5; // ������򲦶�0.5/9Ȧ
+		shooter.triggerMotor.targetAngle += (360 * 1 / 9.0) * 2.5; 
 		osDelay(500);
-		shooter.triggerMotor.targetAngle -= (360 * 1 / 9.0) * 2.5; // ��ת0.5/9Ȧ
+		shooter.triggerMotor.targetAngle -= (360 * 1 / 9.0) * 2.5;
 		shooter.workState = IDLE;
 
 		break;
@@ -417,6 +388,7 @@ void OS_ShooterCallback(void const *argument)
 {
 	osDelay(100);
 	Shooter_Init();
+	//初始化时清除PID积分，防止初始过大输出
 	PID_Clear(&shooter.triggerMotor.anglePID.inner);
 	PID_Clear(&shooter.triggerMotor.anglePID.outer);
 	osDelay(100);

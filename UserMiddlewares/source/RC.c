@@ -15,7 +15,7 @@ uint8_t Usart1RxBuf[200];// 串口1缓冲区 图传链路
 RC_TypeDef rcInfo = {0}; // 遥控器信息
 Image_Trans_TypeDef itInfo = {0}; // 图传链路信息
 Key keyList[KEY_NUM];	 // 按键列表(包含所有可用键盘按键和鼠标左右键)
-int rc_true_flag;
+int rc_true_flag;//收到就归零，掉线就累加
 uint8_t flag_rc_vision = 1;
 uint8_t stop_flag_t = 1;
 extern remote_control_t RemoteControl;
@@ -416,10 +416,10 @@ void OS_RcCallback(void const *argument)
 {
 	for (;;)
 	{
-		rc_true_flag++;
+		rc_true_flag++;//?何意味
 		if(rc_true_flag > 50)
 		{
-			HAL_UARTEx_ReceiveToIdle_DMA(&huart5, usart5RxBuf, sizeof(usart5RxBuf));
+			HAL_UARTEx_ReceiveToIdle_DMA(&huart5, usart5RxBuf, sizeof(usart5RxBuf));//防死
 			__HAL_DMA_DISABLE_IT(&hdma_uart5_rx, DMA_IT_HT);
 		}
 

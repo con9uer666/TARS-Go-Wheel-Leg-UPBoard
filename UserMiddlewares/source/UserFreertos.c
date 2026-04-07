@@ -83,12 +83,7 @@ void OS_LedCallback(void const * argument)
 //    osDelay(500);
   }
 }
-
-//错误处理(急停)任务 vscode://lirentech.file-ref-tags?filePath=UserFreertos.c&snippet=%2F%2F%E9%94%99%E8%AF%AF%E5%A4%84%E7%90%86%28%E6%80%A5%E5%81%9C%29%E4%BB%BB%E5%8A%A1+
-/*
- 无os_delay最高优先级 在程序正常运行时不应该被调用 
- 在恢复执行时占据全部时间片饿死其他任务
-*/
+//急停任务
  void OS_ErrorCallback(void const * argument)
 {
   vTaskSuspend(NULL); //第一次执行挂起自身 

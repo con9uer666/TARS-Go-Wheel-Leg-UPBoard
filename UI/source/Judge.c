@@ -16,11 +16,11 @@
 extern int16_t remainHeat;
 extern float initialSpeed;
 extern uint16_t coolingValue;
-bool Judge_Data_TF = FALSE; // ²ÃÅĞÊı¾İÊÇ·ñ¿ÉÓÃ,¸¨Öúº¯Êıµ÷ÓÃ
+bool Judge_Data_TF = FALSE; // è£åˆ¤æ•°æ®æ˜¯å¦å¯ç”¨,è¾…åŠ©å‡½æ•°è°ƒç”¨
 
 void JUDGE_GraphTest_KeyCallback(KeyType key, KeyCombineType combine, KeyEventType event);
 
-/*****************ÏµÍ³Êı¾İ¶¨Òå**********************/
+/*****************ç³»ç»Ÿæ•°æ®å®šä¹‰**********************/
 ext_game_status_t GameState;						   // 0x0001
 ext_game_result_t GameResult;						   // 0x0002
 ext_game_robot_HP_t GameRobotHP;					   // 0x0003
@@ -41,53 +41,53 @@ ext_dart_client_cmd_t DartClientCmd;				   // 0x020A
 
 remote_control_t RemoteControl; // 0x0304
 
-xFrameHeader FrameHeader; // ·¢ËÍÖ¡Í·ĞÅÏ¢
+xFrameHeader FrameHeader; // å‘é€å¸§å¤´ä¿¡æ¯
 /****************************************************/
 
-// ´®¿Ú½ÓÊÕ»º³åÇø
+// ä¸²å£æ¥æ”¶ç¼“å†²åŒº
 uint8_t usart6RxBuf[JUDGE_MAX_RX_LENGTH];
 
-uint16_t shootNum = 0; // Í³¼Æ·¢µ¯Á¿
+uint16_t shootNum = 0; // ç»Ÿè®¡å‘å¼¹é‡
 
-// »ñÈ¡¼º·½ÑÕÉ«
+// è·å–å·±æ–¹é¢œè‰²
 RobotColor JUDGE_GetSelfColor()
 {
-	if (JUDGE_GetSelfID() > 10) // À¶·½
+	if (JUDGE_GetSelfID() > 10) // è“æ–¹
 	{
 		return RobotColor_Blue;
 	}
-	else // ºì·½
+	else // çº¢æ–¹
 	{
 		return RobotColor_Red;
 	}
 }
 
-// »ñÈ¡×ÔÉíID
+// è·å–è‡ªèº«ID
 uint8_t JUDGE_GetSelfID()
 {
 	return GameRobotStat.robot_id;
 }
 
-// »ñÈ¡¿Í»§¶ËID
+// è·å–å®¢æˆ·ç«¯ID
 uint16_t JUDGE_GetClientID()
 {
 	return 0x100 + GameRobotStat.robot_id;
 }
 
-// »ñÈ¡»úÆ÷ÈË×ø±ê
+// è·å–æœºå™¨äººåæ ‡
 void JUDGE_GetPosition(float *x, float *y)
 {
 	*x = GameRobotPos.x;
 	*y = GameRobotPos.y;
 }
 
-// »ñÈ¡µ×ÅÌ¹¦ÂÊÏŞÖÆ
+// è·å–åº•ç›˜åŠŸç‡é™åˆ¶
 uint8_t JUDGE_GetChassisPowerLimit()
 {
 	return GameRobotStat.chassis_power_limit;
 }
 
-// ÅĞ¶Ï·¢ÉäµçÔ´ÊÇ·ñÊä³ö
+// åˆ¤æ–­å‘å°„ç”µæºæ˜¯å¦è¾“å‡º
 bool JUDGE_GetShooterOutputState()
 {
 	return GameRobotStat.power_management_shooter_output;
@@ -98,42 +98,42 @@ bool JUDGE_GetGimbalOutputState()
 	return GameRobotStat.power_management_gimbal_output;
 }
 
-// »ñÈ¡Ç¹¿ÚÈÈÁ¿ÏŞÖÆ
+// è·å–æªå£çƒ­é‡é™åˆ¶
 uint16_t JUDGE_GetHeatLimit()
 {
 	return GameRobotStat.shooter_barrel_heat_limit;
 }
 
-// »ñÈ¡ÉäËÙÏŞÖÆ
+// è·å–å°„é€Ÿé™åˆ¶
 uint16_t JUDGE_GetShootSpeedLimit()
 {
 	return 25;
 }
 
-// »ñÈ¡µ×ÅÌ»º³åÄÜÁ¿
+// è·å–åº•ç›˜ç¼“å†²èƒ½é‡
 uint16_t JUDGE_GetPowerBuffer()
 {
 	return PowerHeatData.chassis_power_buffer;
 }
-// »ñÈ¡Ê£ÓàÇ¹¿ÚÈÈÁ¿
+// è·å–å‰©ä½™æªå£çƒ­é‡
 int16_t JUDGE_GetRemainHeat()
 {
 	return remainHeat;
 }
 
-// Ê£Óà17·¢µ¯Êı
+// å‰©ä½™17å‘å¼¹æ•°
 uint16_t JUDGE_GetRemain_42_Num()
 {
 	return BulletRemaining.projectile_allowance_42mm;
 }
 
-// ¶ÁÈ¡µ±Ç°ÑªÁ¿
+// è¯»å–å½“å‰è¡€é‡
 uint16_t JUDGE_GetHP()
 {
 	return GameRobotStat.current_HP;
 }
 
-// »ñÈ¡ÀäÈ´ËÙ¶È
+// è·å–å†·å´é€Ÿåº¦
 uint16_t JUDGE_GetCoolingValue()
 {
 	GameRobotStat.shooter_barrel_cooling_value = coolingValue;
@@ -145,12 +145,12 @@ bool JUDGE_IsValid(void)
 }
 
 
-/**********************freertosÈÎÎñ*********************************/
+/**********************freertosä»»åŠ¡*********************************/
 
 #ifdef EN_JUDGE_TASK
 void OS_JudgeCallback(void const *argument)
 {
-	osDelay(1000); // ÈÎÎñÆ«ÒÆÊ±¼ä
+	osDelay(1000); // ä»»åŠ¡åç§»æ—¶é—´
 
 
 	osDelay(500);

@@ -160,14 +160,12 @@ void Task_CANMotors_Callback()
 {
 	
 	Motor_CalcAngle(&shooter.triggerMotor);
-	//拨盘电机双环
+	//pitch电机双环
 	PID_CascadeCalc_INT(&shooter.triggerMotor.anglePID, shooter.triggerMotor.Target_Position, shooter.triggerMotor.Total_Position, shooter.triggerMotor.speed);
-//	PID_SingleCalc(&shooter.triggerMotor.speedPID,shooter.triggerMotor.targetSpeed, shooter.triggerMotor.speed);
 
     //摩擦轮pid
 	PID_SingleCalc(&shooter.fricMotor[0].speedPID, shooter.fricMotor[0].targetSpeed, shooter.fricMotor[0].speed);
 	PID_SingleCalc(&shooter.fricMotor[1].speedPID, shooter.fricMotor[1].targetSpeed, shooter.fricMotor[1].speed);
-
 
 	//	Init_delay();
 	// Chassis_PowerCtrl();

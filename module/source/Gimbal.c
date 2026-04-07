@@ -27,7 +27,7 @@ float errorP=0;
 
 
 /********************初始化************************/
-// 初始化云台函数vscode://lirentech.file-ref-tags?filePath=Gimbal.c&snippet=%2F%2F+%E5%88%9D%E5%A7%8B%E5%8C%96%E4%BA%91%E5%8F%B0%E5%87%BD%E6%95%B0
+// 初始化云台函数
 void Gimbal_Init()
 {
 	// 设定pitch角度限幅
@@ -246,12 +246,9 @@ void Gimbal_Return_KeyCallback(KeyType key, KeyCombineType combine, KeyEventType
 以下任务受freertos操作系统调度
 **********************************************************/
 // 云台控制任务
-
-
-
 void Task_Gimbal_Callback()
 {
-	// 电管不给电后云台电机把各项变量清零，防止电管重启后云台乱转vscode://lirentech.file-ref-tags?filePath=Gimbal.c&snippet=%2F%2F+%E7%94%B5%E7%AE%A1%E4%B8%8D%E7%BB%99%E7%94%B5%E5%90%8E%E4%BA%91%E5%8F%B0%E7%94%B5%E6%9C%BA%E6%8A%8A%E5%90%84%E9%A1%B9%E5%8F%98%E9%87%8F%E6%B8%85%E9%9B%B6%EF%BC%8C%E9%98%B2%E6%AD%A2%E7%94%B5%E7%AE%A1%E9%87%8D%E5%90%AF%E5%90%8E%E4%BA%91%E5%8F%B0%E4%B9%B1%E8%BD%AC
+	// 电管不给电后云台电机把各项变量清零，防止电管重启后云台乱转
 	if (GameRobotStat.power_management_gimbal_output == 0) // 7.17
 	{
 		//PID变量清零
@@ -263,7 +260,7 @@ void Task_Gimbal_Callback()
 		gimbal.yaw.imuPID.output = 0;	//陀螺仪温控输出清零
 	}
 
-	// 遥控器拨轮切换摇杆控制还是鼠标控制，以及开启自瞄vscode://lirentech.file-ref-tags?filePath=Gimbal.c&snippet=%2F%2F+%E9%81%A5%E6%8E%A7%E5%99%A8%E6%8B%A8%E8%BD%AE%E5%88%87%E6%8D%A2%E6%91%87%E6%9D%86%E6%8E%A7%E5%88%B6%E8%BF%98%E6%98%AF%E9%BC%A0%E6%A0%87%E6%8E%A7%E5%88%B6%EF%BC%8C%E4%BB%A5%E5%8F%8A%E5%BC%80%E5%90%AF%E8%87%AA%E7%9E%84
+	// 遥控器拨轮切换摇杆控制还是鼠标控制，以及开启自瞄
 	if (rcInfo.wheel > 600) // 遥控器拨轮切换摇杆控制还是鼠标控制
 		gimbal.rockerCtrl = true;
 	else if (rcInfo.wheel < -600)
@@ -273,9 +270,8 @@ void Task_Gimbal_Callback()
 	else if ((rcInfo.wheel < 600 && gimbal.rockerCtrl) || rcInfo.mouse.r != 1) // 遥控器模式下拨轮不在底端关闭自瞄
 		gimbal.visionEnable = false;
 
-	// 对识别状态进行滤波，防止偶尔的误识别vscode://lirentech.file-ref-tags?filePath=Gimbal.c&snippet=%2F%2F+%E5%AF%B9%E8%AF%86%E5%88%AB%E7%8A%B6%E6%80%81%E8%BF%9B%E8%A1%8C%E6%BB%A4%E6%B3%A2%EF%BC%8C%E9%98%B2%E6%AD%A2%E5%81%B6%E5%B0%94%E7%9A%84%E8%AF%AF%E8%AF%86%E5%88%AB
+	// 对识别状态进行滤波，防止偶尔的误识别
 	visionFindAver = Filter_AverCalc(&gimbal.visionFilter.find, vision.control);
-
 
 	if (gimbal.visionEnable && visionFindAver >= 0.5f && vision.yaw != 0) // 自瞄开启并识别成功，且能跑
 	{
@@ -288,16 +284,6 @@ void Task_Gimbal_Callback()
 		else
 			Gimbal_MouseCtrl();
 	}
-//			if(rcInfo.left==2)
-//					gimbal.yaw.targetAngle = gimbal.yaw.targetAngle + 0.1f;
-//			if(rcInfo.left==3)
-//				gimbal.yaw.targetAngle=0;
-//			if(rcInfo.left==1)
-//				gimbal.yaw.targetAngle=10;
-//			if(rcInfo.left==3)
-//				gimbal.pitch.targetAngle=0;
-//			if(rcInfo.left==1)
-//				gimbal.pitch.targetAngle=5;
 	// 更新陀螺仪角度
 	Gimbal_UpdataAngle();
 	PitchLimit();
@@ -306,16 +292,6 @@ void Task_Gimbal_Callback()
 		gimbal.yaw.targetAngle=gimbal.yaw.totalAngle;
 		gimbal.yaw.gyro=0;
 	}
-	// 计算yaw电机输出
-			//临时积分分离
-//	if(fabs(gimbal.yaw.imuPID.deOuter.error) < 2)
-//	{gimbal.yaw.imuPID.inner.ki = 0.2;
-//		gimbal.yaw.imuPID.deOuter.ki =0;
-//	}
-//	else 
-//	{gimbal.yaw.imuPID.inner.ki = 0.02;
-//	gimbal.yaw.imuPID.deOuter.ki = 0;
-//	}
 	DEPID_CascadeCalc(&gimbal.yaw.imuPID, gimbal.yaw.targetAngle, gimbal.yaw.totalAngle, gimbal.yaw.gyro);
 	// 计算pitch电输出
 	DEPID_CascadeCalc(&gimbal.pitch.imuPID, gimbal.pitch.targetAngle, gimbal.pitch.angle, gimbal.pitch.gyro);

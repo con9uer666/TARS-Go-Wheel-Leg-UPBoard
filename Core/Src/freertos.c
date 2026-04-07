@@ -266,7 +266,7 @@ __weak void OS_LedCallback(void const * argument)
 
 /* USER CODE BEGIN Header_OS_MotorCallback */
 /**
-* @brief Function implementing the MotorTask thread.
+* @brief pitch电机
 * @param argument: Not used
 * @retval None
 */
@@ -284,7 +284,7 @@ __weak void OS_MotorCallback(void const * argument)
 
 /* USER CODE BEGIN Header_OS_ChassisCallback */
 /**
-* @brief Function implementing the ChassisTask thread.
+* @brief 下板底盘上位机任务
 * @param argument: Not used
 * @retval None
 */
@@ -302,7 +302,7 @@ __weak void OS_ChassisCallback(void const * argument)
 
 /* USER CODE BEGIN Header_OS_RcCallback */
 /**
-* @brief Function implementing the RcTask thread.
+* @brief 遥控器任务，//!但是没理解
 * @param argument: Not used
 * @retval None
 */
@@ -320,7 +320,7 @@ __weak void OS_RcCallback(void const * argument)
 
 /* USER CODE BEGIN Header_OS_ErrorCallback */
 /**
-* @brief Function implementing the ErrorTask thread.
+* @brief 急停任务
 * @param argument: Not used
 * @retval None
 */
@@ -338,7 +338,7 @@ __weak void OS_ErrorCallback(void const * argument)
 
 /* USER CODE BEGIN Header_OS_GimbalCallback */
 /**
-* @brief Function implementing the GimbalTask thread.
+* @brief 云台相关，包含yaw电机pid、自瞄相关、云台遥控器
 * @param argument: Not used
 * @retval None
 */

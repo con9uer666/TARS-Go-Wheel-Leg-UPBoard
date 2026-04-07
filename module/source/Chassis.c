@@ -554,7 +554,7 @@ void Foot_CallBack(void)
 	}
 }	
 
-//下板底盘任务
+//下板底盘上位机任务
 #ifdef EN_CHASSIS_TASK
 void OS_ChassisCallback(void const *argument)
 {
