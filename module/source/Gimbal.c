@@ -292,6 +292,7 @@ void Task_Gimbal_Callback()
 		gimbal.yaw.targetAngle=gimbal.yaw.totalAngle;
 		gimbal.yaw.gyro=0;
 	}
+	//虽然算了角度速度环，但是为了使用达妙mit速度环，所以yaw电机的输出还是用的外环微分先行的输出
 	DEPID_CascadeCalc(&gimbal.yaw.imuPID, gimbal.yaw.targetAngle, gimbal.yaw.totalAngle, gimbal.yaw.gyro);
 	// 计算pitch电输出
 	DEPID_CascadeCalc(&gimbal.pitch.imuPID, gimbal.pitch.targetAngle, gimbal.pitch.angle, gimbal.pitch.gyro);
