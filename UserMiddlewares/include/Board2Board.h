@@ -5,7 +5,7 @@
 
 extern uint8_t STOPFLAG;
 extern uint8_t FEEDBACK;
-extern uint8_t start_mode;
+extern uint8_t gimbal_follow_flag;
 
 void RS485_Init(void);
 void Rs485_Trans(void);

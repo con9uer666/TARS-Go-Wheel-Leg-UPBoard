@@ -2366,7 +2366,7 @@ Section Cross References
     board2board.o(i.RS485_Rec) refers to board2board.o(.bss) for usart2RxBuf
     board2board.o(i.RS485_Rec) refers to chassis.o(.bss) for chassis
     board2board.o(i.RS485_Rec) refers to gimbal.o(.bss) for gimbal
-    board2board.o(i.RS485_Rec) refers to board2board.o(.data) for start_mode
+    board2board.o(i.RS485_Rec) refers to board2board.o(.data) for gimbal_follow_flag
     board2board.o(i.RS485_Rec) refers to shooter.o(.bss) for shooter
     board2board.o(i.RS485_Rec) refers to chassis.o(.data) for YawLost
     board2board.o(i.RS485_Rec) refers to detect.o(.bss) for detectList
@@ -7871,7 +7871,7 @@ Image Symbol Table
     RC_Register                              0x08010371   Thumb Code   608  rc.o(i.RC_Register)
     RC_UpdateKeys                            0x080105d5   Thumb Code   980  rc.o(i.RC_UpdateKeys)
     RS485_Init                               0x080109b5   Thumb Code   236  board2board.o(i.RS485_Init)
-    RS485_Rec                                0x08010ab5   Thumb Code   846  board2board.o(i.RS485_Rec)
+    RS485_Rec                                0x08010ab5   Thumb Code   848  board2board.o(i.RS485_Rec)
     Rs485_Trans                              0x08010e5d   Thumb Code   634  board2board.o(i.Rs485_Trans)
     SMCInit                                  0x08011125   Thumb Code    22  smc.o(i.SMCInit)
     SPI2_IRQHandler                          0x0801113d   Thumb Code    10  stm32h7xx_it.o(i.SPI2_IRQHandler)
@@ -8200,7 +8200,7 @@ Image Symbol Table
     shootNum                                 0x2400066a   Data           2  judge.o(.data)
     STOPFLAG                                 0x2400066c   Data           1  board2board.o(.data)
     FEEDBACK                                 0x2400066d   Data           1  board2board.o(.data)
-    start_mode                               0x2400066e   Data           1  board2board.o(.data)
+    gimbal_follow_flag                       0x2400066e   Data           1  board2board.o(.data)
     temp555                                  0x24000670   Data           2  board2board.o(.data)
     UP_Leg                                   0x24000672   Data           1  board2board.o(.data)
     remainHeat                               0x24000674   Data           2  board2board.o(.data)
@@ -9136,7 +9136,7 @@ Image component sizes
        132         30         20          0        220       3288   beep.o
       2890        182          0         72         64      10717   bmi088driver.o
        116         30          0          4          0       3580   bmi088middleware.o
-      1932        192          0         31        192       5274   board2board.o
+      1932        190          0         31        192       5290   board2board.o
        580        112          0         64          0       5062   bsp_dwt.o
         58          0          0          0          0       1002   bsp_pwm.o
       2170        354          0         48       1652      14668   chassis.o
@@ -9211,7 +9211,7 @@ Image component sizes
        890        114          0         96        114      13887   vision.o
 
     ----------------------------------------------------------------------
-     98896       5546       5456       1852     150084    2036688   Object Totals
+     98896       5544       5456       1852     150084    2036704   Object Totals
          0          0         32          0          0          0   (incl. Generated)
         82          0          2         16          8          0   (incl. Padding)
 
@@ -9290,9 +9290,9 @@ Image component sizes
 
       Code (inc. data)   RO Data    RW Data    ZI Data      Debug   
 
-    101880       5850       5456       1852     150180    1981316   Grand Totals
-    101880       5850       5456        444     150180    1981316   ELF Image Totals (compressed)
-    101880       5850       5456        444          0          0   ROM Totals
+    101880       5848       5456       1852     150180    1981332   Grand Totals
+    101880       5848       5456        444     150180    1981332   ELF Image Totals (compressed)
+    101880       5848       5456        444          0          0   ROM Totals
 
 ==============================================================================
 

@@ -17,7 +17,7 @@ uint8_t usart2TxBuf[64];
 uint8_t usart2RxBuf[128];
 uint8_t STOPFLAG = 0;
 uint8_t FEEDBACK = 0;
-uint8_t start_mode = 0;
+uint8_t gimbal_follow_flag = 0;
 extern int8_t YawLost;
 extern remote_control_t RemoteControl;
 extern ext_referee_warning_t RefereeWarning;
@@ -114,7 +114,7 @@ void RS485_Rec()
 			chassis.motors[i].DriveSpeed = (int16_t)usart2RxBuf[17 + i * 2] | (int16_t)usart2RxBuf[17 + i * 2 + 1] << 8;
 		}
 		gimbal.yawMotor_M4005.angle = (int16_t)usart2RxBuf[25] | (int16_t)usart2RxBuf[26] << 8;
-		if(start_mode == 0)
+		if(gimbal_follow_flag == 1)
 		{
 			gimbal.yaw.targetAngle=gimbal.yaw.totalAngle;
 			PID_Clear(&gimbal.yaw.imuPID.inner);
@@ -181,7 +181,7 @@ void RS485_Rec()
 		GameRobotStat.chassis_power_limit = usart2RxBuf[43] | (usart2RxBuf[44] << 8);
 		Judge_Data_TF = usart2RxBuf[45];
 
-		start_mode = usart2RxBuf[46];
+		gimbal_follow_flag = usart2RxBuf[46];
 
 		// cap.receive_data.cap_voltage = usart2RxBuf[47] | (usart2RxBuf[48] << 8);
 
