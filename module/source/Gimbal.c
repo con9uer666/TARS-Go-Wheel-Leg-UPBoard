@@ -81,7 +81,7 @@ void Gimbal_InitPID()
 	
 	/*yaw由陀螺仪控制*/
 	PID_Init(&gimbal.yaw.imuPID.inner, 0.005, 0, 0.0005, 1000, 7);  
-	DEPID_Init(&gimbal.yaw.imuPID.deOuter, 80, 0.0001, 0.5, 200, 1000, 0.5);  //20 0 2.5 0.4 1000
+	DEPID_Init(&gimbal.yaw.imuPID.deOuter, 3, 0.002, 100, 80, 150, 0.5);  //20 0 2.5 0.4 1000
 	
 	//一套软的
 //	PID_Init(&gimbal.yaw.imuPID.inner, 4.5, 0.03, 1.5, 1000, 2048);  
@@ -286,7 +286,7 @@ void Task_Gimbal_Callback()
 	}
 	// 更新陀螺仪角度
 	Gimbal_UpdataAngle();
-	PitchLimit();
+	// PitchLimit();
 	if (GameRobotStat.power_management_gimbal_output == 0 ) // 7.17
 	{
 		gimbal.yaw.targetAngle=gimbal.yaw.totalAngle;

@@ -56,9 +56,9 @@ void Rs485_Trans()
 	usart2TxBuf[3] = ((int16_t)(Foot_Chassis.Target_Vy * 1000));
 	usart2TxBuf[4] = ((int16_t)(Foot_Chassis.Target_Vy * 1000)) >> 8;//3 4两位发送Vy
 
-	temp555 = gimbal.yaw.imuPID.output * 1000;//yaw陀螺仪PID输出，放大1000倍以保留小数部分
+	temp555 = gimbal.yaw.imuPID.deOuter.output * 1000;//yaw电机的PID输出，放大1000倍以保留小数部分//!速度环输出，目的是改用达妙的mit速度环  
 	usart2TxBuf[25] = (((int16_t)temp555)) & 0xFF;
-	usart2TxBuf[26] = (((int16_t)temp555) >> 8) & 0xFF;//25 26两位发送yaw pid输出
+	usart2TxBuf[26] = (((int16_t)temp555) >> 8) & 0xFF;//25 26两位发送yaw pid  //!速度环输出，目的是改用达妙的mit速度环
 //	usart2TxBuf[25] = 0;
 //	usart2TxBuf[26] = 0;
 	usart2TxBuf[27] = (int16_t)(shooter.triggerMotor.anglePID.output) & 0xFF;	//27 28两位发送拨盘 pid输出
