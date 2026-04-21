@@ -409,6 +409,11 @@ typedef __packed struct
 	uint8_t layer;
 } ext_client_custom_graphic_delete_t;
 
+typedef enum{
+	DetectColor_Red,
+	DetectColor_Blue,
+}DetectColor;
+
 //绘制一个图形 data_cmd_id=0x0101
 typedef __packed struct
 {

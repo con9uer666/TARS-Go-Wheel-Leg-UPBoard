@@ -144,6 +144,19 @@ bool JUDGE_IsValid(void)
 	return Judge_Data_TF;
 }
 
+bool JUDGE_GetBullet_type ()
+{
+	return ShootData.bullet_type;
+}
+
+DetectColor JUDGE_GetEnemyColor()
+{
+	if (JUDGE_GetSelfColor() > 10)
+		return DetectColor_Red;
+	else
+		return DetectColor_Blue;
+}
+
 
 /**********************freertos任务*********************************/
 
