@@ -81,7 +81,7 @@ void Gimbal_InitPID()
 	
 	/*yaw由陀螺仪控制*/
 	PID_Init(&gimbal.yaw.imuPID.inner, 0.005, 0, 0.0005, 1000, 7);  
-	DEPID_Init(&gimbal.yaw.imuPID.deOuter, 1.3, 0.001, 0.02, 10, 10, 0.5);  //20 0 2.5 0.4 1000
+	DEPID_Init(&gimbal.yaw.imuPID.deOuter, 1.1, 0.001, 0.02, 10, 10, 0.5);  //20 0 2.5 0.4 1000
 
 //	一套软的
 //	PID_Init(&gimbal.yaw.imuPID.inner, 4.5, 0.03, 1.5, 1000, 2048);  
