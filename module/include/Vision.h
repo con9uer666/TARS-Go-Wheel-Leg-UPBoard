@@ -11,73 +11,92 @@
 #define    VISION_CONTROL_TIME      2
 
 #ifndef PI
-#define PI 3.1415926535f
+#define PI 3.14159265358979323846f
 #endif
 
-typedef __packed struct
+__packed typedef struct
 {
-//new version
-  uint8_t header ;//0xA5
-  uint8_t control; // è‡ªç„æ˜¯å¦æ§åˆ¶äº‘å° 0 ä¸æ§åˆ¶ 1 æ§åˆ¶
-  uint8_t fire;    // æ˜¯å¦å¼€ç« 0 ä¸å¼€ç« 1 å¼€ç«
-  float yaw;       // äº‘å°pyè§’ã€é€Ÿåº¦ã€åŠ é€Ÿåº¦(å¼§åº¦åˆ¶,ç›´æ¥å‘,ä¸è¦ä¹˜1000)
+  uint8_t header ;
+  uint8_t control;      // ×ÔÃéÊÇ·ñ¿ØÖÆÔÆÌ¨ 0 ²»¿ØÖÆ 1 ¿ØÖÆ
+  float fire_thres_yaw; // »ğ¿ØãĞÖµ
+  float fire_thres_pitch;
+  float target_yaw;
+  float target_pitch;
+  float yaw; // ÔÆÌ¨½Ç¶È¡¢ËÙ¶È¡¢¼ÓËÙ¶È(»¡¶ÈÖÆ,Ö±½Ó·¢,²»Òª³Ë1000)
   float yaw_vel;
   float yaw_acc;
   float pitch;
   float pitch_vel;
   float pitch_acc;
-  uint32_t bullet_id; // è‡ªå¢çš„å­å¼¹ID
+  uint32_t bullet_id; // ×ÔÔöµÄ×Óµ¯ID
   uint16_t checksum ;
-} VisionReceive;
 
-typedef __packed struct
+}VisionReceive;
+
+__packed typedef struct
 {
-    //new version
-  uint8_t header;//0x5A
-  uint8_t task_mode;   // å½“å‰è‡ªç„æ¨¡å¼ 0 ç©ºé—² 1 æ‰“è£…ç”²æ¿ 2 å°ç¬¦ 3 å¤§ç¬¦
-  uint8_t enemy_color; // æ•Œäººé¢œè‰² 0 çº¢è‰² 1 è“è‰²
-  float bullet_speed;  // å¼¹é€Ÿ
-  float roll;          // äº‘å°çš„å¤–æ—‹rpyè§’å’Œè§’é€Ÿåº¦(å¼§åº¦åˆ¶ï¼Œç›´æ¥å‘ï¼Œä¸è¦ä¹˜1000)
+	//new version
+	uint8_t header;//0x5A
+  uint8_t task_mode;   // µ±Ç°×ÔÃéÄ£Ê½ 0 ¿ÕÏĞ 1 ´ò×°¼×°å 2 Ğ¡·û 3 ´ó·û
+  uint8_t enemy_color; // µĞÈËÑÕÉ« 0 ºìÉ« 1 À¶É«
+  float bullet_speed;  // µ¯ËÙ
+  float roll;          // ÔÆÌ¨µÄÍâĞırpy½ÇºÍ½ÇËÙ¶È(»¡¶ÈÖÆ£¬Ö±½Ó·¢£¬²»Òª³Ë1000)
   float pitch;
   float pitch_vel;
   float yaw;
   float yaw_vel;
-  uint32_t bullet_id; // æ‰“å‡ºå­å¼¹æ—¶åˆ»è¿”å›çš„å­å¼¹IDï¼ˆç›®å‰æ²¡ç”¨ä¸Šï¼‰
+  uint32_t bullet_id; // ´ò³ö×Óµ¯Ê±¿Ì·µ»ØµÄ×Óµ¯ID£¨Ä¿Ç°Ã»ÓÃÉÏ£©
   uint16_t checksum ;
 }VisionTransmit;
 
 typedef __packed struct vision_sensor_info_struct {
-    float yaw;
-    float pitch;
-    uint8_t fire;
-    uint8_t found;
+	float yaw;
+	float pitch;
+	uint8_t fire;
+	uint8_t found;
 } VisionSensorInfo;
 
 typedef struct vision_sensor_struct {
-    VisionReceive        *info;
-    VisionTransmit        *transmit_info;
-    VisionSensorInfo    *sent_info;
-    void                (*Init)(void);
-    void                (*Update)(void);
+	VisionReceive		*info;
+	VisionTransmit		*transmit_info;
+	VisionSensorInfo    *sent_info;
+	void				(*Init)(void);
+	void				(*Update)(void);
     void                (*DataReceive)(uint8_t *read_from_usart, uint32_t length);
-    void                (*Data_Transmit)(void);
+	void                (*Data_Transmit)(void);
 } VisionSensor;
 
 
 typedef struct
-{    
-    //new version
-  uint8_t control; // è‡ªç„æ˜¯å¦æ§åˆ¶äº‘å° 0 ä¸æ§åˆ¶ 1 æ§åˆ¶
-  uint8_t fire;    // æ˜¯å¦å¼€ç« 0 ä¸å¼€ç« 1 å¼€ç«
-  float yaw;       // äº‘å°pyè§’ã€é€Ÿåº¦ã€åŠ é€Ÿåº¦(å¼§åº¦åˆ¶,ç›´æ¥å‘,ä¸è¦ä¹˜1000)
+{	
+//	float yaw;
+//	float pitch;
+//	uint8_t mode;
+//	unsigned char found;
+//	float fire;
+//	float v_yaw;
+//	float distance;//Á½³µÖĞĞÄ¾àÀë
+//	float distance_to_center;//ÔÆÌ¨ÖĞĞÄµ½Ëø¶¨×°¼×°åÖĞĞÄ¾àÀë
+//	float yaw_slope;
+//	float pitch_slope;
+//	uint8_t exposure_time;
+	
+	//new version
+	uint8_t control; // ×ÔÃéÊÇ·ñ¿ØÖÆÔÆÌ¨ 0 ²»¿ØÖÆ 1 ¿ØÖÆ
+  float fire_thres_yaw; // »ğ¿ØãĞÖµ
+  float fire_thres_pitch;
+  float target_yaw;
+  float target_pitch;
+  float yaw;       // ÔÆÌ¨py½Ç¡¢ËÙ¶È¡¢¼ÓËÙ¶È(»¡¶ÈÖÆ,Ö±½Ó·¢,²»Òª³Ë1000)
   float yaw_vel;
   float yaw_acc;
   float pitch;
   float pitch_vel;
   float pitch_acc;
-  uint32_t bullet_id; // è‡ªå¢çš„å­å¼¹ID
+  uint32_t bullet_id; // ×ÔÔöµÄ×Óµ¯ID
   uint16_t checksum ;
-    uint8_t mode;
+	uint8_t mode;
+
 }Vision_Type;
 
 extern VisionReceive vision_receive;
@@ -86,6 +105,7 @@ extern VisionSensor vision_sensor;
 extern uint8_t Vision_Mode;
 extern Vision_Type vision;
 extern uint8_t Rune_stable;
+extern uint8_t cmd_fire;
 
 
 void Vision_DataReceive(uint8_t *read_from_usart, uint32_t length);

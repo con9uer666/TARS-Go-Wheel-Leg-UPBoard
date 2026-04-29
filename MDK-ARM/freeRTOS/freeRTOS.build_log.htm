@@ -1,9 +1,9 @@
 <html>
 <body>
 <pre>
-<h1>µVision Build Log</h1>
+<h1>ï¿½Vision Build Log</h1>
 <h2>Tool Versions:</h2>
-IDE-Version: ¦ÌVision V5.43.1.0
+IDE-Version: ï¿½ï¿½Vision V5.43.1.0
 Copyright (C) 2025 ARM Ltd and ARM Germany GmbH. All rights reserved.
 License Information: 1 WXR, 1, LIC=PE7DL-0TAPJ-45TT5-GYSPQ-F18VS-68PYQ
  
@@ -21,13 +21,32 @@ Target DLL:      CMSIS_AGDI.dll V1.33.24.0
 Dialog DLL:      TCM.DLL V1.56.6.0
  
 <h2>Project:</h2>
-C:\Users\WXR\Desktop\robomaster\Code\RM_missions\2025TARS-GO\Wheel_Leg\UP_Wheel_Leg_VScode20260320\MDK-ARM\freeRTOS.uvprojx
-Project File Date:  03/24/2026
+C:\Users\WXR\Desktop\robomaster\Code\RM_missions\2025TARS-GO\Wheel_Leg\TARS-Go-Wheel-Leg-UPBoard\MDK-ARM\freeRTOS.uvprojx
+Project File Date:  04/07/2026
 
 <h2>Output:</h2>
 *** Using Compiler 'V5.06 update 6 (build 750)', folder: 'C:\Users\WXR\AppData\Local\Keil_v5\ARM\ARMCC\Bin'
 Build target 'freeRTOS'
-"freeRTOS\freeRTOS.axf" - 0 Error(s), 0 Warning(s).
+compiling Board2Board.c...
+../module/include/RLS.h(4): warning:  #1295-D: Deprecated declaration PowerControl_AutoUpdateParamInit - give arg types
+  void PowerControl_AutoUpdateParamInit();
+..\CommonLibs\inc\Trigger_about.h(14): warning:  #1-D: last line of file ends without a newline
+  #endif
+..\UserMiddlewares\Board2Board.c(66): warning:  #1035-D: single-precision operand implicitly converted to double-precision
+  	usart2TxBuf[29] = STOPFLAG << 7 | chassis.rotate.mode << 5 | (visionFindAver > 0.8) << 4 | Vision_Mode << 2 | chassis.move.fastMode <<1 | UIupdateState;
+..\UserMiddlewares\Board2Board.c: 3 warnings, 0 errors
+compiling Gimbal.c...
+../module/include/RLS.h(4): warning:  #1295-D: Deprecated declaration PowerControl_AutoUpdateParamInit - give arg types
+  void PowerControl_AutoUpdateParamInit();
+..\CommonLibs\inc\Trigger_about.h(14): warning:  #1-D: last line of file ends without a newline
+  #endif
+..\module\source\Gimbal.c(96): warning:  #68-D: integer conversion resulted in a change of sign
+      static uint16_t initPitch = -8500;//need change
+..\module\source\Gimbal.c: 3 warnings, 0 errors
+linking...
+Program Size: Code=101536 RO-data=5456 RW-data=1860 ZI-data=150212  
+FromELF: creating hex file...
+"freeRTOS\freeRTOS.axf" - 0 Error(s), 6 Warning(s).
 
 <h2>Software Packages used:</h2>
 
@@ -60,42 +79,42 @@ Package Vendor: Keil
       Include file:  CMSIS/Core/Include/tz_context.h
 
    * Component: ARM::CMSIS:DSP&Source@1.16.2
-      Include file:  Include/arm_math.h
-      Include file:  Include/arm_const_structs_f16.h
-      Source file:   Source/BasicMathFunctions/BasicMathFunctions.c
-      Source file:   Source/QuaternionMathFunctions/QuaternionMathFunctions.c
-      Source file:   Source/CommonTables/CommonTables.c
       Source file:   Source/BayesFunctions/BayesFunctions.c
-      Source file:   Source/ComplexMathFunctions/ComplexMathFunctions.c
+      Include file:  Include/arm_math_f16.h
+      Include file:  Include/arm_common_tables_f16.h
+      Source file:   Source/CommonTables/CommonTables.c
       Source file:   Source/ControllerFunctions/ControllerFunctions.c
       Source file:   Source/FastMathFunctions/FastMathFunctions.c
-      Source file:   Source/FilteringFunctions/FilteringFunctions.c
-      Source file:   Source/StatisticsFunctions/StatisticsFunctions.c
-      Source file:   Source/SupportFunctions/SupportFunctions.c
-      Include file:  Include/arm_math_f16.h
+      Include file:  Include/arm_common_tables.h
       Source file:   Source/DistanceFunctions/DistanceFunctions.c
+      Include file:  Include/arm_const_structs_f16.h
+      Source file:   Source/QuaternionMathFunctions/QuaternionMathFunctions.c
       Source file:   Source/MatrixFunctions/MatrixFunctions.c
       Source file:   Source/SVMFunctions/SVMFunctions.c
-      Include file:  Include/arm_common_tables_f16.h
-      Include file:  Include/arm_common_tables.h
       Include file:  Include/arm_const_structs.h
+      Source file:   Source/FilteringFunctions/FilteringFunctions.c
+      Source file:   Source/BasicMathFunctions/BasicMathFunctions.c
+      Include file:  Include/arm_math.h
+      Source file:   Source/ComplexMathFunctions/ComplexMathFunctions.c
+      Source file:   Source/StatisticsFunctions/StatisticsFunctions.c
+      Source file:   Source/SupportFunctions/SupportFunctions.c
       Source file:   Source/TransformFunctions/TransformFunctions.c
-      Source file:   Source/BasicMathFunctions/BasicMathFunctionsF16.c
-      Source file:   Source/SVMFunctions/SVMFunctionsF16.c
-      Source file:   Source/StatisticsFunctions/StatisticsFunctionsF16.c
       Source file:   Source/InterpolationFunctions/InterpolationFunctions.c
-      Source file:   Source/BayesFunctions/BayesFunctionsF16.c
-      Source file:   Source/TransformFunctions/TransformFunctionsF16.c
-      Source file:   Source/FilteringFunctions/FilteringFunctionsF16.c
-      Source file:   Source/InterpolationFunctions/InterpolationFunctionsF16.c
-      Source file:   Source/WindowFunctions/WindowFunctions.c
-      Source file:   Source/SupportFunctions/SupportFunctionsF16.c
-      Source file:   Source/FastMathFunctions/FastMathFunctionsF16.c
-      Source file:   Source/DistanceFunctions/DistanceFunctionsF16.c
+      Source file:   Source/BasicMathFunctions/BasicMathFunctionsF16.c
       Source file:   Source/ComplexMathFunctions/ComplexMathFunctionsF16.c
-      Source file:   Source/MatrixFunctions/MatrixFunctionsF16.c
+      Source file:   Source/WindowFunctions/WindowFunctions.c
+      Source file:   Source/FilteringFunctions/FilteringFunctionsF16.c
       Source file:   Source/CommonTables/CommonTablesF16.c
-Build Time Elapsed:  00:00:02
+      Source file:   Source/SVMFunctions/SVMFunctionsF16.c
+      Source file:   Source/DistanceFunctions/DistanceFunctionsF16.c
+      Source file:   Source/MatrixFunctions/MatrixFunctionsF16.c
+      Source file:   Source/BayesFunctions/BayesFunctionsF16.c
+      Source file:   Source/FastMathFunctions/FastMathFunctionsF16.c
+      Source file:   Source/StatisticsFunctions/StatisticsFunctionsF16.c
+      Source file:   Source/TransformFunctions/TransformFunctionsF16.c
+      Source file:   Source/InterpolationFunctions/InterpolationFunctionsF16.c
+      Source file:   Source/SupportFunctions/SupportFunctionsF16.c
+Build Time Elapsed:  00:00:07
 </pre>
 </body>
 </html>

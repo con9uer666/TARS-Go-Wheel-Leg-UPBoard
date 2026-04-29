@@ -207,7 +207,7 @@ void Task_CANMotors_Callback()
 void OS_MotorCallback(void const *argument)
 {
 	osDelay(300);
-	lk_motor_init(&hfdcan2, 0x141);
+	lk_motor_init(&hfdcan2, 0x141);	
 	for (;;)
 	{
 		Task_CANMotors_Callback();

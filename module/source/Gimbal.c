@@ -78,22 +78,22 @@ void Gimbal_InitPID()
 	/*pitch由陀螺仪控制*/
 	PID_Init(&gimbal.pitch.imuPID.inner, 3, 0.04, 0.4, 500, 2048); // 100 0.018 12180,2.3,25
 	DEPID_Init(&gimbal.pitch.imuPID.deOuter, 20, 0.00, 0.015, 50, 1000, 0.9);
-	
+
 	/*yaw由陀螺仪控制*/
-	PID_Init(&gimbal.yaw.imuPID.inner, 0.005, 0, 0.0005, 1000, 7);  
-	DEPID_Init(&gimbal.yaw.imuPID.deOuter, 80, 0.0001, 0.5, 200, 1000, 0.5);  //20 0 2.5 0.4 1000
-	
-	//一套软的
+	PID_Init(&gimbal.yaw.imuPID.inner, 0.005, 0, 0.0005, 1000, 7);
+	DEPID_Init(&gimbal.yaw.imuPID.deOuter, 0.7, 0.001, 0.02, 20, 20, 0.5);  //20 0 2.5 0.4 1000
+
+//	一套软的
 //	PID_Init(&gimbal.yaw.imuPID.inner, 4.5, 0.03, 1.5, 1000, 2048);  
 //	DEPID_Init(&gimbal.yaw.imuPID.deOuter, 14, 0.05, 0.1, 400, 1000, 0.4);  //20 0 2.5 0.4 1000	
-	
+
 //		PID_Init(&gimbal.yaw.imuPID.inner, 10, 0.02, 2, 1000, 2048); 
 //		DEPID_Init(&gimbal.yaw.imuPID.deOuter, 27, 0.01, 0, 100, 500, 1);  //20 0 2.5 0.4 1000	
 }
 
 void PitchLimit()
 {
-    static uint16_t initPitch = -21495;//need change
+    static uint16_t initPitch = -8500;//need change
     float temp;
 
     temp = gimbal.pitchMotor.M4005.angle + (gimbal.pitch.targetAngle - gimbal.pitch.angle) / 360.f * 65536.f;//目标角度转换为电机单位
@@ -286,7 +286,7 @@ void Task_Gimbal_Callback()
 	}
 	// 更新陀螺仪角度
 	Gimbal_UpdataAngle();
-	PitchLimit();
+	// PitchLimit();
 	if (GameRobotStat.power_management_gimbal_output == 0 ) // 7.17
 	{
 		gimbal.yaw.targetAngle=gimbal.yaw.totalAngle;
@@ -296,7 +296,6 @@ void Task_Gimbal_Callback()
 	DEPID_CascadeCalc(&gimbal.yaw.imuPID, gimbal.yaw.targetAngle, gimbal.yaw.totalAngle, gimbal.yaw.gyro);
 	// 计算pitch电输出
 	DEPID_CascadeCalc(&gimbal.pitch.imuPID, gimbal.pitch.targetAngle, gimbal.pitch.angle, gimbal.pitch.gyro);
-	
 }
 
 #ifdef EN_GIMBAL_TASK
