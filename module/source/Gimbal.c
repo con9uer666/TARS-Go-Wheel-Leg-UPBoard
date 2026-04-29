@@ -295,7 +295,6 @@ void Task_Gimbal_Callback()
 	DEPID_CascadeCalc(&gimbal.yaw.imuPID, gimbal.yaw.targetAngle, gimbal.yaw.totalAngle, gimbal.yaw.gyro);
 	// 计算pitch电输出
 	DEPID_CascadeCalc(&gimbal.pitch.imuPID, gimbal.pitch.targetAngle, gimbal.pitch.angle, gimbal.pitch.gyro);
-	
 }
 
 #ifdef EN_GIMBAL_TASK

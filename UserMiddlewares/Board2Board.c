@@ -119,6 +119,10 @@ void RS485_Rec()
 			gimbal.yaw.targetAngle=gimbal.yaw.totalAngle;
 			PID_Clear(&gimbal.yaw.imuPID.inner);
 			DEPID_Clear(&gimbal.yaw.imuPID.deOuter);
+
+			gimbal.pitch.targetAngle=gimbal.pitch.angle;
+			PID_Clear(&gimbal.pitch.imuPID.inner);
+			DEPID_Clear(&gimbal.pitch.imuPID.deOuter);
 		}
 		gimbal.yawMotor_M4005.speed = (int16_t)usart2RxBuf[27] | (int16_t)usart2RxBuf[28] << 8;
 
