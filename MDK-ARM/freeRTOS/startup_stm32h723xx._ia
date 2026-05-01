@@ -1,0 +1,7 @@
+--cpu Cortex-M7.fp.dp -g --apcs=interwork -I ../Core/Inc -I ../USB_DEVICE/App -I ../USB_DEVICE/Target -I ../Drivers/STM32H7xx_HAL_Driver/Inc -I ../Drivers/STM32H7xx_HAL_Driver/Inc/Legacy -I ../Middlewares/Third_Party/FreeRTOS/Source/include -I ../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS -I ../Middlewares/Third_Party/FreeRTOS/Source/portable/RVDS/ARM_CM4F -I ../Middlewares/ST/STM32_USB_Device_Library/Core/Inc -I ../Middlewares/ST/STM32_USB_Device_Library/Class/CDC/Inc -I ../Drivers/CMSIS/Device/ST/STM32H7xx/Include -I ../Drivers/CMSIS/Include
+-I.\RTE\_freeRTOS
+-IC:\Users\WXR\AppData\Local\Arm\Packs\ARM\CMSIS-DSP\1.16.2\Include
+-IC:\Users\WXR\AppData\Local\Arm\Packs\ARM\CMSIS-DSP\1.16.2\PrivateInclude
+-IC:\Users\WXR\AppData\Local\Arm\Packs\ARM\CMSIS\6.2.0\CMSIS\Core\Include
+--pd "__UVISION_VERSION SETA 543" --pd "STM32H723xx SETA 1" --pd "_RTE_ SETA 1"
+--list startup_stm32h723xx.lst --xref -o freertos\startup_stm32h723xx.o --depend freertos\startup_stm32h723xx.d "startup_stm32h723xx.s"

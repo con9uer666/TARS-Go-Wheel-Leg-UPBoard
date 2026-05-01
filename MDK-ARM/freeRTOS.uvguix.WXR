@@ -3678,7 +3678,7 @@
       </Doc>
       <Doc>
         <Name>..\module\source\Gimbal.c</Name>
-        <ColumnNumber>1</ColumnNumber>
+        <ColumnNumber>2</ColumnNumber>
         <TopLine>141</TopLine>
         <CurrentLine>142</CurrentLine>
         <Folding>1</Folding>
@@ -3696,9 +3696,9 @@
       </Doc>
       <Doc>
         <Name>..\bsp\source\Moto.c</Name>
-        <ColumnNumber>3</ColumnNumber>
+        <ColumnNumber>2</ColumnNumber>
         <TopLine>174</TopLine>
-        <CurrentLine>198</CurrentLine>
+        <CurrentLine>199</CurrentLine>
         <Folding>1</Folding>
         <ContractedFolders></ContractedFolders>
         <PaneID>0</PaneID>
