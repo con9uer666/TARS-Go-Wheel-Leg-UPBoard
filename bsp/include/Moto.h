@@ -11,11 +11,22 @@
 #define MOTOR_M2006_DGR2CODE(dgr) ((int32_t)((dgr) * 819.1f * 2.5f)) // 36*8191/360
 #define MOTOR_M2006_CODE2DGR(code) ((float)((code) / 819.1f / 2.5f))
 
-#define MOTOR_DM4310_DGR2CODE(dgr) ((int32_t)((dgr) * 819.1f * 2.5f)) // 36*8191/360
-#define MOTOR_DM4310_CODE2DGR(code) ((float)((code) / 819.1f / 2.5f))
-
 #define MOTOR_DM2325_DGR2CODE(dgr) ((int32_t)((dgr) * 819.1f * 2.5f)) // 36*8191/360
 #define MOTOR_DM2325_CODE2DGR(code) ((float)((code) / 819.1f / 2.5f))
+
+/********************* DM4310 (达妙) MIT 模式参数 *********************
+ *  以下宏 *必须* 与上位机调试助手中写入电机的参数一致，否则角度/速度/扭矩
+ *  解码会出错。这是用户需要根据实际配置自行调整的部分。
+ ***********************************************************************/
+// MIT 模式三个量程（与电机内 P_MAX / V_MAX / T_MAX 寄存器一致）
+#define DM4310_PMAX (12.5f)   // 位置最大值，单位 rad
+#define DM4310_VMAX (30.0f)   // 速度最大值，单位 rad/s
+#define DM4310_TMAX (10.0f)   // 扭矩最大值，单位 N·m
+
+// DM 电机的 CAN ID（手册里的 CAN_ID）—— 发送 MIT 帧时使用
+#define DM_PITCH_MOTOR_CAN_ID  (0x01)
+// DM 电机反馈帧的 Master ID（手册里的 MST_ID）—— 接收解析时匹配
+#define DM_PITCH_MASTER_ID     (0x011)
 
 #define MOTOR_M6020_DGR2CODE(dgr) ((int32_t)((dgr) * 22.7528f)) // 8191/360
 #define MOTOR_M6020_CODE2DGR(code) ((float)((code) / 22.7528f))
@@ -65,8 +76,28 @@ typedef struct
 	int32_t targetAngle; // 目标角度(编码器值)
 	int16_t targetCurrent;
 	uint16_t speed_limit;
-	
+
 } LKMotor;
+
+// 达妙 DM4310（MIT模式）电机数据
+typedef struct _DMMotor
+{
+	uint8_t  id;          // 反馈帧低 4 位
+	uint8_t  err;         // 反馈帧高 4 位：0关使能 1正常 8~F故障
+	// 原始量化值（来自 CAN 反馈，调试用）
+	uint16_t pos_raw;     // 16bit
+	uint16_t vel_raw;     // 12bit
+	uint16_t tor_raw;     // 12bit
+	// 解码后的物理量
+	float    pos;         // rad
+	float    vel;         // rad/s
+	float    torque;      // N·m
+	int8_t   t_mos;       // 驱动板温度 ℃
+	int8_t   t_rotor;     // 线圈温度  ℃
+
+	uint8_t  Is_Lost;     // 0 在线
+	uint16_t LostCnt;
+} DMMotor;
 
 typedef struct _M7010
 {
@@ -117,6 +148,8 @@ void Motor_CalcAngle(SingleMotor *motor);
 // 更新电机数据(可能进行滤波)
 void Motor_Update(SingleMotor *motor, int16_t angle, int16_t speed, int16_t torque, int8_t temp);
 void LKMotor_Update(LKMotor *motor, uint8_t *rxdata);
+// 达妙 DM4310 MIT 反馈解析
+void DMMotor_Update(DMMotor *motor, uint8_t *rxdata);
 void record_state(motor_state *state, int8_t temperature, uint8_t error_state);
 void data_from_above(int16_t vx, int16_t vy, int16_t vw, uint8_t stop_flag, uint8_t power_limit);
 // 7010电机带底盘3508数据更新

@@ -142,25 +142,14 @@ void CAN1_Rx0Callback(FDCAN_RxHeaderTypeDef *rx_header, uint8_t *rxdata)
 			break;
 	}
 }
-uint8_t open = 0;
-uint8_t close = 0;
 // can2接收结束中断
 void CAN2_Rx0Callback(FDCAN_RxHeaderTypeDef *rx_header, uint8_t *rxdata)
 {
-//	uint8_t whichMotor;
 	switch (rx_header->Identifier)
 	{
-		case 0x141:
-			LKMotor_Update(&gimbal.pitchMotor.M4005,rxdata);
+		case DM_PITCH_MASTER_ID:
+			DMMotor_Update(&gimbal.pitchMotor.DM4310, rxdata);
 			Detect_Update(DeviceID_PitchMotor);
-			if(rxdata[0] == 0x88){
-				open =1;
-				close = 0;
-			}
-			if(rxdata[0] == 0x80){
-				close = 1;
-				open = 0;
-			}
 			break;
 		default:
 			break;
@@ -319,24 +308,6 @@ void read_motorstate(FDCAN_HandleTypeDef *hfdcan, int16_t StdId)
 
 }
 
-void start_lk_motor(FDCAN_HandleTypeDef *hfdcan, int16_t StdId)
-{
-	
-	uint8_t tx_data[8] = {0x88, 0, 0, 0, 0, 0, 0, 0};
-
-	USER_CAN_Send(hfdcan,StdId,tx_data);
-	
-}
-
-void read_lk_state2(FDCAN_HandleTypeDef *hfdcan, int16_t StdId)
-{
-	
-	uint8_t tx_data[8] = {0x9C, 0, 0, 0, 0, 0, 0, 0};
-
-	USER_CAN_Send(hfdcan,StdId,tx_data);
-	
-}
-
 void clear_error_state(FDCAN_HandleTypeDef *hfdcan, int16_t StdId)
 {
 
@@ -345,6 +316,67 @@ void clear_error_state(FDCAN_HandleTypeDef *hfdcan, int16_t StdId)
 	USER_CAN_Send(hfdcan,StdId,tx_data);
 
 }
+/********************* 达妙 DM4310 MIT 模式 *********************/
+
+// float -> uint，按 [x_min, x_max] 线性映射到 bits 位无符号整数
+static uint16_t float_to_uint(float x, float x_min, float x_max, uint8_t bits)
+{
+    float span = x_max - x_min;
+    if (x < x_min) x = x_min;
+    else if (x > x_max) x = x_max;
+    return (uint16_t)((x - x_min) * (float)((1 << bits) - 1) / span);
+}
+
+// MIT 控制帧
+void DM_MIT_Ctrl(FDCAN_HandleTypeDef *hfdcan, uint16_t can_id,
+                 float p_des, float v_des, float kp, float kd, float t_ff)
+{
+    uint16_t p_int  = float_to_uint(p_des, -DM4310_PMAX,  DM4310_PMAX, 16);
+    uint16_t v_int  = float_to_uint(v_des, -DM4310_VMAX,  DM4310_VMAX, 12);
+    uint16_t kp_int = float_to_uint(kp,     0.0f,         500.0f,      12);
+    uint16_t kd_int = float_to_uint(kd,     0.0f,         5.0f,        12);
+    uint16_t t_int  = float_to_uint(t_ff,  -DM4310_TMAX,  DM4310_TMAX, 12);
+
+    uint8_t tx_data[8];
+    tx_data[0] = (p_int  >> 8) & 0xFF;
+    tx_data[1] =  p_int        & 0xFF;
+    tx_data[2] = (v_int  >> 4) & 0xFF;
+    tx_data[3] = ((v_int  & 0x0F) << 4) | ((kp_int >> 8) & 0x0F);
+    tx_data[4] =  kp_int       & 0xFF;
+    tx_data[5] = (kd_int >> 4) & 0xFF;
+    tx_data[6] = ((kd_int & 0x0F) << 4) | ((t_int  >> 8) & 0x0F);
+    tx_data[7] =  t_int        & 0xFF;
+
+    USER_CAN_Send(hfdcan, can_id, tx_data);
+}
+
+// 特殊控制帧：D[0..6]=0xFF，D[7] 决定操作
+static void DM_SendSpecial(FDCAN_HandleTypeDef *hfdcan, uint16_t can_id, uint8_t cmd)
+{
+    uint8_t tx_data[8] = {0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, cmd};
+    USER_CAN_Send(hfdcan, can_id, tx_data);
+}
+
+void DM_MotorEnable(FDCAN_HandleTypeDef *hfdcan, uint16_t can_id)
+{
+    DM_SendSpecial(hfdcan, can_id, 0xFC);
+}
+
+void DM_MotorDisable(FDCAN_HandleTypeDef *hfdcan, uint16_t can_id)
+{
+    DM_SendSpecial(hfdcan, can_id, 0xFD);
+}
+
+void DM_MotorClearError(FDCAN_HandleTypeDef *hfdcan, uint16_t can_id)
+{
+    DM_SendSpecial(hfdcan, can_id, 0xFB);
+}
+
+void DM_MotorSaveZero(FDCAN_HandleTypeDef *hfdcan, uint16_t can_id)
+{
+    DM_SendSpecial(hfdcan, can_id, 0xFE);
+}
+
 //TODO! 需要修改
 void Cap_CanSendData()
 {
@@ -366,39 +398,5 @@ void Cap_CanSendData()
 //	tx_data[2] = (uint16_t)(GameRobotStat.chassis_power_limit);
 //	tx_data[3] = (uint16_t)(GameRobotStat.chassis_power_limit) >> 8;
 //	HAL_FDCAN_AddMessageToTxFifoQ(&hfdcan1, &tx_header, tx_data);
-}
-
-void lk_motor_init(FDCAN_HandleTypeDef *hfdcan, int16_t StdId)
-{
-	uint8_t tx_data[8] = {0x88, 0, 0, 0, 0, 0, 0, 0};
-	USER_CAN_Send(hfdcan,StdId,tx_data);
-	uint8_t cnt = 0;
-	osDelay(1);
-	
-	tx_data[0] = 0x80;
-	while(!close){
-	USER_CAN_Send(hfdcan,StdId,tx_data);
-	cnt++;
-	if(cnt == 50){
-		cnt = 0;
-		break;
-	}
-	osDelay(1);
-	}
-	
-	tx_data[0] = 0x88;
-	while(!open){
-	USER_CAN_Send(hfdcan,StdId,tx_data);
-		cnt++;
-	if(cnt == 50){
-		cnt = 0;
-		break;
-	}
-	osDelay(1);
-	}
-	clear_error_state(hfdcan,StdId);
-	osDelay(1);
-	read_lk_state2(hfdcan,StdId);
-	osDelay(1);
 }
 

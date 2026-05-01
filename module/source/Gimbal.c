@@ -91,47 +91,16 @@ void Gimbal_InitPID()
 //		DEPID_Init(&gimbal.yaw.imuPID.deOuter, 27, 0.01, 0, 100, 500, 1);  //20 0 2.5 0.4 1000	
 }
 
+// 改用 DM4310 后，pitch 反馈直接来自 IMU，无电机 65536 编码器套圈逻辑，
+// 直接对 targetAngle 在 [pitchMin, pitchMax] 之间限幅即可。
 void PitchLimit()
 {
-    static uint16_t initPitch = -8500;//need change
-    float temp;
+    if (gimbal.pitch.targetAngle > gimbal.pitch.pitchMax)
+        gimbal.pitch.targetAngle = gimbal.pitch.pitchMax;
+    else if (gimbal.pitch.targetAngle < gimbal.pitch.pitchMin)
+        gimbal.pitch.targetAngle = gimbal.pitch.pitchMin;
 
-    temp = gimbal.pitchMotor.M4005.angle + (gimbal.pitch.targetAngle - gimbal.pitch.angle) / 360.f * 65536.f;//目标角度转换为电机单位
-	//目标原始值套圈
-    if (temp > 65536)
-        temp -= 65536;
-    else if (temp < 0)
-        temp += 65536;
-
-	//目标与initPitch套圈		//todo:为什么要与initPitch套圈？难道不是与电机当前角度套圈吗？因为目标角度是基于initPitch的绝对角度，而电机当前角度是基于initPitch的相对角度，所以需要与initPitch套圈来计算误差。
-    if (temp - initPitch > 65536 / 2.0f)
-        temp = temp - 65536;
-    else if (temp - initPitch < -65536 / 2.0f)
-        temp = temp + 65536;
-
-	//计算误差
-	errorP=temp - initPitch;
-    if ((temp - initPitch) >= gimbal.pitch.pitchMax / 360.f * 65536.f)
-    {
-        temp = initPitch + gimbal.pitch.pitchMax / 360.f * 65536.f;
-		//目标角度与电机角度套圈
-        if (temp - gimbal.pitchMotor.M4005.angle > 65536 / 2.0f)
-            temp = temp - 65536;
-        else if (temp - gimbal.pitchMotor.M4005.angle < -65536 / 2.0f)
-            temp = temp + 65536;
-        gimbal.pitch.targetAngle = gimbal.pitch.angle + (temp - gimbal.pitchMotor.M4005.angle) / 65536.f * 360.f;
-    }
-    else if ((temp - initPitch) <= gimbal.pitch.pitchMin / 360.f * 65536.f)
-    {
-
-        temp = initPitch + gimbal.pitch.pitchMin / 360.f * 65536.f;
-        if (temp - gimbal.pitchMotor.M4005.angle > 65536 / 2.0f)
-            temp = temp - 65536;
-        else if (temp - gimbal.pitchMotor.M4005.angle < -65536 / 2.0f)
-            temp = temp + 65536;
-        gimbal.pitch.targetAngle = gimbal.pitch.angle + (temp - gimbal.pitchMotor.M4005.angle) / 65536.f * 360.f;
-    }
-
+    errorP = gimbal.pitch.targetAngle - gimbal.pitch.angle;
 }
 
 

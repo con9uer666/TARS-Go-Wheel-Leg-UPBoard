@@ -4,7 +4,7 @@
 #include "stdint.h"
 #include "fdcan.h"
 #include "cmsis_os.h"
-//canµÄ×´Ì¬ĞÅÏ¢£¬ÓÃÓÚdebug
+//cançš„çŠ¶æ€ä¿¡æ¯ï¼Œç”¨äºdebug
 typedef struct
 {
 	HAL_StatusTypeDef can1_user_init_error,can2_user_init_error,can3_user_init_error;
@@ -12,28 +12,36 @@ typedef struct
 	uint16_t can1_receive_error,can2_receive_error,can3_receive_error;
 }CanState;
 
-/****½Ó¿Úº¯ÊıÉùÃ÷****/
-//·¢ËÍµç»úµçÁ÷ĞÅÏ¢
+/****æ¥å£å‡½æ•°å£°æ˜****/
+//å‘é€ç”µæœºç”µæµä¿¡æ¯
 void USER_CAN_SetMotorCurrent(FDCAN_HandleTypeDef *hcan,int16_t StdId,int16_t iq1, int16_t iq2, int16_t iq3, int16_t iq4);
-//·¢ËÍôá¿Øµç»ú
+//å‘é€ç¿æ§ç”µæœº
 void USER_CAN_SetMotorPosition_SingleCircle(FDCAN_HandleTypeDef *hfdcan,int16_t StdId,uint8_t spin,uint16_t speed,uint32_t target);
 void USER_CAN_SetMotorPosition(FDCAN_HandleTypeDef *hfdcan,int16_t StdId,uint8_t spin,uint16_t speed, int32_t target);
 void USER_CAN_SetMotorSpeed(FDCAN_HandleTypeDef *hfdcan, int16_t StdId, int32_t speed);
 void USER_CAN_SetMotorPosition_7(FDCAN_HandleTypeDef *hfdcan,int16_t StdId,uint32_t target);
 void USER_CAN_SetIncrAngle2(FDCAN_HandleTypeDef *hfdcan, int16_t StdId, int16_t speedlimit ,int32_t incrangle);
 void USER_CAN_SetMotorTorque(FDCAN_HandleTypeDef *hfdcan, int16_t StdId, int16_t iqControl);
-void start_lk_motor(FDCAN_HandleTypeDef *hfdcan, int16_t StdId);
+
+/****è¾¾å¦™ DM4310 MIT æ¨¡å¼****/
+// MIT æ¨¡å¼æ§åˆ¶å¸§ï¼šå‘é€ p_des(rad)/v_des(rad/s)/kp/kd/t_ff(NÂ·m) äº”å…ƒç´ 
+// åœ¨ STM32 ç«¯è·‘åŒç¯ PID æ—¶ï¼Œä¼  p_des=0, v_des=0, kp=0, kd=0, t_ff=PIDè¾“å‡º å³ç­‰ä»·äºçº¯åŠ›çŸ©æ¨¡å¼
+void DM_MIT_Ctrl(FDCAN_HandleTypeDef *hfdcan, uint16_t can_id,
+                 float p_des, float v_des, float kp, float kd, float t_ff);
+// DM ç‰¹æ®Šæ§åˆ¶å¸§ï¼šä½¿èƒ½/å¤±èƒ½/æ¸…é”™/ä¿å­˜é›¶ç‚¹
+void DM_MotorEnable(FDCAN_HandleTypeDef *hfdcan, uint16_t can_id);
+void DM_MotorDisable(FDCAN_HandleTypeDef *hfdcan, uint16_t can_id);
+void DM_MotorClearError(FDCAN_HandleTypeDef *hfdcan, uint16_t can_id);
+void DM_MotorSaveZero(FDCAN_HandleTypeDef *hfdcan, uint16_t can_id);
 
 
-//ÏòÊÓ¾õ·¢ËÍÊı¾İ
+//å‘è§†è§‰å‘é€æ•°æ®
 void USER_CAN_SendVisionBuf(FDCAN_HandleTypeDef *hcan,uint8_t *buf,uint8_t len);
 void clear_error_state( FDCAN_HandleTypeDef *hfdcan,int16_t StdId)  ;
 void USER_CAN_GetCapData(FDCAN_HandleTypeDef *hcan,int16_t StdId);
 void USER_CAN_SendCapData(FDCAN_HandleTypeDef *hcan,int16_t StdId,uint16_t set_target_power);
-void read_lk_state2(FDCAN_HandleTypeDef *hfdcan, int16_t StdId);
-void lk_motor_init(FDCAN_HandleTypeDef *hfdcan, int16_t StdId);
 
-//can³õÊ¼»¯
+//canåˆå§‹åŒ–
 void CAN_Init(void);
 
 #endif

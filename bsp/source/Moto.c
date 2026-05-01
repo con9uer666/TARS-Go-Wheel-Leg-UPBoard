@@ -64,6 +64,33 @@ void Motor_Update(SingleMotor *motor, int16_t angle, int16_t speed, int16_t torq
 	motor->temp = temp;
 }
 
+// 达妙 DM4310 反馈解析（MIT 模式应答）
+// 帧格式：D[0]=高4位ERR|低4位ID, D[1..2]=POS(16b),
+//        D[3..4]=VEL(12b)<<4 | TOR(12b 高4),
+//        D[5]=TOR(12b 低8), D[6]=T_MOS, D[7]=T_Rotor
+static float dm_uint_to_float(uint16_t x_int, float x_min, float x_max, uint8_t bits)
+{
+    float span = x_max - x_min;
+    return ((float)x_int) * span / (float)((1 << bits) - 1) + x_min;
+}
+
+void DMMotor_Update(DMMotor *motor, uint8_t *rxdata)
+{
+    motor->id  = rxdata[0] & 0x0F;
+    motor->err = (rxdata[0] >> 4) & 0x0F;
+
+    motor->pos_raw = ((uint16_t)rxdata[1] << 8) | rxdata[2];
+    motor->vel_raw = ((uint16_t)rxdata[3] << 4) | ((rxdata[4] >> 4) & 0x0F);
+    motor->tor_raw = ((uint16_t)(rxdata[4] & 0x0F) << 8) | rxdata[5];
+
+    motor->pos    = dm_uint_to_float(motor->pos_raw, -DM4310_PMAX, DM4310_PMAX, 16);
+    motor->vel    = dm_uint_to_float(motor->vel_raw, -DM4310_VMAX, DM4310_VMAX, 12);
+    motor->torque = dm_uint_to_float(motor->tor_raw, -DM4310_TMAX, DM4310_TMAX, 12);
+
+    motor->t_mos   = (int8_t)rxdata[6];
+    motor->t_rotor = (int8_t)rxdata[7];
+}
+
 // 更新 LK 电机数据
 void LKMotor_Update(LKMotor *motor, uint8_t *rxdata)
 {
@@ -150,7 +177,6 @@ void Init_delay()
 	last_power_flag = power_flag;
 }
 
-uint32_t frq = 0;
 extern uint8_t chaasisReady;
 /************************freertos任务****************************/
 
@@ -170,34 +196,23 @@ void Task_CANMotors_Callback()
 	//	Init_delay();
 	// Chassis_PowerCtrl();
 
-	// 4005电机过热清error
-	if (gimbal.pitchMotor_M4005.temp > 90)
+	// DM4310 故障/过热保护：err 非 1（正常使能）或线圈温度过高时清错并重新使能
+	if (gimbal.pitchMotor.DM4310.err != 1 || gimbal.pitchMotor.DM4310.t_rotor > 90)
 	{
 		PID_Clear(&gimbal.pitch.imuPID.inner);
 		DEPID_Clear(&gimbal.pitch.imuPID.deOuter);
 		gimbal.pitch.imuPID.output = 0;
-		clear_error_state(&hfdcan1, 0x141);
+		DM_MotorClearError(&hfdcan2, DM_PITCH_MOTOR_CAN_ID);
+		DM_MotorEnable(&hfdcan2, DM_PITCH_MOTOR_CAN_ID);
+	}
+	else
+	{
+		// 在 STM32 端跑双环 PID（位置外环 + 速度内环），DM 用纯力矩前馈：
+		// p_des=0, v_des=0, kp=0, kd=0, t_ff = PID 输出
+		DM_MIT_Ctrl(&hfdcan2, DM_PITCH_MOTOR_CAN_ID,
+		            0.0f, 0.0f, 0.0f, 0.0f, gimbal.pitch.imuPID.output);
 	}
 
-	//定时清error
-	if(frq == 150)
-	{
-		clear_error_state(&hfdcan3, 0x141);
-		frq++;
-	}
-	else if(frq == 300)
-	{
-//		start_lk_motor(&hfdcan3, 0x141);
-		frq = 0;
-	}
-	else 
-	{
-		USER_CAN_SetMotorTorque(&hfdcan2, 0x141 , gimbal.pitch.imuPID.output);
-		// USER_CAN_SetMotorTorque(&hfdcan2, 0x141 , 0);
-		frq++;
-	}
-	//	USER_CAN_SetMotorCurrent(&hfdcan3, 0x1FF, -gimbal.pitch.imuPID.output, 0, 0, 0);
-	//            clear_error_state(&hfdcan2,i+0x140);
 	USER_CAN_SetMotorCurrent(&hfdcan3, 0x200, shooter.fricMotor[1].speedPID.output, shooter.fricMotor[0].speedPID.output, 0, 0);
 
 }
@@ -207,7 +222,11 @@ void Task_CANMotors_Callback()
 void OS_MotorCallback(void const *argument)
 {
 	osDelay(300);
-	lk_motor_init(&hfdcan2, 0x141);	
+	// DM 上电使能序列：清错 → 使能。失败时由 Task_CANMotors_Callback 内的保护逻辑兜底重试
+	DM_MotorClearError(&hfdcan2, DM_PITCH_MOTOR_CAN_ID);
+	osDelay(2);
+	DM_MotorEnable(&hfdcan2, DM_PITCH_MOTOR_CAN_ID);
+	osDelay(2);
 	for (;;)
 	{
 		Task_CANMotors_Callback();

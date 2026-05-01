@@ -34,12 +34,12 @@ typedef struct{
   
 	struct
 	{
-		LKMotor M4005;
+		DMMotor DM4310;        // pitchMotor 用：达妙 DM4310 MIT 模式
 	  float  pitchMax,pitchMin;//限幅
 		_Bool  pitchMax_error,pitchMin_error;
 	}yawMotor,pitchMotor; //!yaw电机已经不用了，改下板控制4310了
 //  SingleMotor  yawMotor,pitchMotor;  //yaw pitch电机
-  LKMotor yawMotor_M4005,pitchMotor_M4005;
+  LKMotor yawMotor_M4005;
 
 	PID pitchVisionPID,yawVisionPID;//视觉控制PID
 	bool visionEnable;//标记自瞄是否开启
