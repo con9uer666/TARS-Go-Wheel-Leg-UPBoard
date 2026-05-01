@@ -147,18 +147,14 @@ void Gimbal_UpdataAngle()
 	//累加
 	gimbal.yaw.totalAngle += dAngle;
 
-	//处理套圈后totalAngle和targetAngle
-	while(gimbal.yaw.targetAngle - gimbal.yaw.totalAngle >= 360 || gimbal.yaw.totalAngle - gimbal.yaw.targetAngle >= 360)
-	{
-			if (gimbal.yaw.targetAngle - gimbal.yaw.totalAngle >= 360)
-			{
-				gimbal.yaw.targetAngle = gimbal.yaw.targetAngle - 360;
-			}
-			if (gimbal.yaw.totalAngle - gimbal.yaw.targetAngle >= 360)
-			{
-				gimbal.yaw.targetAngle = gimbal.yaw.targetAngle + 360;
-			}
-	}
+	// 套圈处理：把 targetAngle 折叠到 totalAngle 的 ±180° 内（最短路径）。
+	// 原来用 ±360° 阈值，误差可达 359°——头被被动转近一圈后，发给下板的
+	// PID 输出会让底盘跟着转一整圈，而不是反方向走最短角度。收紧到 ±180°
+	// 后，PID 误差始终是最短角度，下板拿到的跟随量自然也是最短路径。
+	while (gimbal.yaw.targetAngle - gimbal.yaw.totalAngle >  180.0f)
+		gimbal.yaw.targetAngle -= 360.0f;
+	while (gimbal.yaw.totalAngle - gimbal.yaw.targetAngle >= 180.0f)
+		gimbal.yaw.targetAngle += 360.0f;
 
 	gimbal.yaw.lastAngle = gimbal.yaw.angle;
 }
