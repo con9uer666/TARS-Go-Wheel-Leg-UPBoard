@@ -91,14 +91,32 @@ void Gimbal_InitPID()
 //		DEPID_Init(&gimbal.yaw.imuPID.deOuter, 27, 0.01, 0, 100, 500, 1);  //20 0 2.5 0.4 1000	
 }
 
-// 改用 DM4310 后，pitch 反馈直接来自 IMU，无电机 65536 编码器套圈逻辑，
-// 直接对 targetAngle 在 [pitchMin, pitchMax] 之间限幅即可。
+// 头会侧翻（chassis roll≠0 时 IMU pitch 不等于真实头部俯仰），
+// 所以 PID 用 IMU 闭环没问题，但限幅必须用电机自身编码器 —— 编码器和
+// 头是机械绑定的，不受底盘姿态影响。
+//
+// 标定约定：
+//   * DM 电机零点设在头部最低位置（低头 20°）
+//   * 电机 “正转”（pos 增大）方向 = 头部低头方向
+//   * 因此运行时电机 pos ∈ [pos_min, 0]，抬头让 pos 变负
+//   * 头部摆幅 = 低头20° + 仰头30° = 50° ≈ 0.873 rad（直接驱动，1:1）
+//
+// 限幅策略：到了机械极限就把 IMU 目标角度拉回到当前 IMU 角度，让 PID
+// 误差归零、不再继续往该方向推电机。两侧只各管自己的方向，反向请求
+// 不受影响。
 void PitchLimit()
 {
-    if (gimbal.pitch.targetAngle > gimbal.pitch.pitchMax)
-        gimbal.pitch.targetAngle = gimbal.pitch.pitchMax;
-    else if (gimbal.pitch.targetAngle < gimbal.pitch.pitchMin)
-        gimbal.pitch.targetAngle = gimbal.pitch.pitchMin;
+    static const float pos_low_limit  =  0.0f;    // 低头到底（电机零点）
+    static const float pos_high_limit = -0.873f;  // 仰头到顶（按实测调整）
+
+    float p = gimbal.pitchMotor.DM4310.pos;
+
+    // 撞下限（低头到底）：只禁止目标继续往低头（IMU pitch 减小）方向走
+    if (p >= pos_low_limit && gimbal.pitch.targetAngle < gimbal.pitch.angle)
+        gimbal.pitch.targetAngle = gimbal.pitch.angle;
+    // 撞上限（仰头到顶）：只禁止目标继续往仰头（IMU pitch 增大）方向走
+    if (p <= pos_high_limit && gimbal.pitch.targetAngle > gimbal.pitch.angle)
+        gimbal.pitch.targetAngle = gimbal.pitch.angle;
 
     errorP = gimbal.pitch.targetAngle - gimbal.pitch.angle;
 }
@@ -255,7 +273,7 @@ void Task_Gimbal_Callback()
 	}
 	// 更新陀螺仪角度
 	Gimbal_UpdataAngle();
-	// PitchLimit();
+	PitchLimit();
 	if (GameRobotStat.power_management_gimbal_output == 0 ) // 7.17
 	{
 		gimbal.yaw.targetAngle=gimbal.yaw.totalAngle;
